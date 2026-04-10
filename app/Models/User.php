@@ -16,13 +16,18 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
-        'role'
+        'role_id',
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
     ];
+
+    public function role()
+    {
+        return $this->belongsTo(\App\Models\Role::class);
+    }
 
     protected function casts(): array
     {
@@ -49,4 +54,5 @@ class User extends Authenticatable
     {
         return $this->hasMany(DailyLog::class, 'client_id');
     }
+
 }
