@@ -1,10 +1,11 @@
+@extends('layouts.app')
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>MaterailM Free Bootstrap Admin Template by WrapPixel</title>
+  <title>Welcome to Fitness Dashboard</title>
   
   <!-- Favicon -->
   <!-- --------------------------------------------------- -->
@@ -165,16 +166,7 @@
               </a>
             </li>
             <li class="sidebar-item">
-              <a class="sidebar-link justify-content-between" target="_blank"
-                href="https://bootstrapdemos.wrappixel.com/materialM/dist/main/index3.html" aria-expanded="false">
-                <div class="d-flex align-items-center gap-3">
-                  <span class="d-flex">
-                    <iconify-icon icon="solar:layers-line-duotone" class=""></iconify-icon>
-                  </span>
-                  <span class="hide-menu">CRM</span>
-                </div>
-                <span class="hide-menu badge bg-secondary-subtle text-secondary fs-1 py-1">Pro</span>
-              </a>
+              
             </li>
             <li class="sidebar-item">
               <a class="sidebar-link justify-content-between has-arrow" href="javascript:void(0)" aria-expanded="false">

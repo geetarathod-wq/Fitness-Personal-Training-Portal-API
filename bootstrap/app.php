@@ -9,9 +9,14 @@ return Application::configure(basePath: dirname(__DIR__))
         web: __DIR__.'/../routes/web.php',
         api: __DIR__.'/../routes/api.php',
     )
-    ->withMiddleware(function (Middleware $middleware): void {
-        //
-    })
+->withMiddleware(function ($middleware) {
+
+    $middleware->alias([
+        'trainer' => \App\Http\Middleware\TrainerOnly::class,
+        'client' => \App\Http\Middleware\ClientOnly::class,
+    ]);
+
+})
     ->withExceptions(function (Exceptions $exceptions): void {
         //
     })->create();

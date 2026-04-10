@@ -1,117 +1,62 @@
 <?php
 
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
-use App\Models\Role;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Password;
 
-// ----------------- HOME -----------------
-Route::get('/', function () {
-    return redirect()->route('login');
+// HOME
+Route::get('/', fn() => redirect()->route('login'));
+
+// LOGIN
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login'])->name('login.post');
+
+// LOGOUT
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+// ADMIN DASHBOARD
+Route::middleware(['auth', 'trainer'])->group(function () {
+    Route::get('/admin/dashboard', [DashboardController::class, 'admin'])
+        ->name('admin.dashboard');
 });
 
-// ----------------- LOGIN -----------------
-Route::get('/login', function () {
-    return view('auth.login');
-})->name('login');
+// CLIENT DASHBOARD
+Route::middleware(['auth'])->group(function () {
 
-Route::post('/login', function (Request $request) {
-    $credentials = $request->only('email', 'password');
+    Route::get('/client/dashboard', function () {
+        return view('client.dashboard');
+    })->name('client.dashboard');
 
-    if (Auth::attempt($credentials)) {
-        return redirect('/dashboard');
-    }
+    Route::get('/client/plan', function () {
+        return view('client.plan');
+    })->name('client.plan');
 
-    return back()->with('error', 'Invalid email or password');
+    Route::get('/client/logs/create', function () {
+        return view('client.add-log');
+    })->name('client.logs.create');
+
+    Route::get('/client/progress', function () {
+        return view('client.progress');
+    })->name('client.progress');
+
+    Route::get('/client/profile', function () {
+        return view('client.profile');
+    })->name('client.profile');
+
 });
 
-// ----------------- LOGOUT -----------------
-Route::post('/logout', function (Request $request) {
-    Auth::logout();
+// FORGOT PASSWORD
+Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])
+    ->name('password.request');
 
-    $request->session()->invalidate();
-    $request->session()->regenerateToken();
+Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])
+    ->name('password.email');
 
-    return redirect('/login');
-})->name('logout');
+// RESET PASSWORD
+Route::get('/reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])
+    ->name('password.reset');
 
-// ----------------- REGISTER -----------------
-
-// Show register form
-Route::get('/register', function () {
-    return view('auth.register');
-})->name('register');
-
-// Handle register
-Route::post('/register', function (Request $request) {
-
-    $request->validate([
-        'name' => 'required',
-        'email' => 'required|email|unique:users',
-        'password' => 'required|min:6',
-    ]);
-
-    $customerRole = \App\Models\Role::firstOrCreate(['name' => 'customer']);
-
-    \App\Models\User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-        'role_id' => $customerRole->id,
-    ]);
-
-    return redirect()->route('login')->with('success', 'Registered successfully!');
-});
-
-// ----------------- DASHBOARD -----------------
-Route::get('/dashboard', [\App\Http\Controllers\DashboardController::class, 'index'])
-    ->middleware(['auth', \App\Http\Middleware\TrainerOnly::class]);
-
-// ================= PASSWORD RESET =================
-
-// Show forgot password form
-Route::get('/forgot-password', function () {
-    return view('auth.password.email'); // ✅ use existing file
-})->name('password.request');
-
-// Send reset link
-Route::post('/forgot-password', function (Request $request) {
-    $request->validate(['email' => 'required|email']);
-
-    $status = Password::sendResetLink($request->only('email'));
-
-    return $status === Password::RESET_LINK_SENT
-        ? back()->with('success', 'Reset link sent!')
-        : back()->withErrors(['email' => __($status)]);
-})->name('password.email');
-
-// Show reset password form
-Route::get('/reset-password/{token}', function ($token) {
-    return view('auth.password.reset', ['token' => $token]); // ✅ existing file
-})->name('password.reset');
-
-// Handle reset
-Route::post('/reset-password', function (Request $request) {
-
-    $request->validate([
-        'token' => 'required',
-        'email' => 'required|email',
-        'password' => 'required|min:6|confirmed',
-    ]);
-
-    $status = Password::reset(
-        $request->only('email', 'password', 'password_confirmation', 'token'),
-        function ($user, $password) {
-            $user->forceFill([
-                'password' => Hash::make($password)
-            ])->save();
-        }
-    );
-
-    return $status === Password::PASSWORD_RESET
-        ? redirect()->route('login')->with('success', 'Password reset successful!')
-        : back()->withErrors(['email' => [__($status)]]);
-})->name('password.update');
+Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
+    ->name('password.update');

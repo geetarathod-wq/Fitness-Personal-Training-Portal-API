@@ -4,16 +4,18 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TrainerOnly
 {
     public function handle(Request $request, Closure $next)
     {
-        $user = $request->user();
+        if (!Auth::check()) {
+            return redirect('/login');
+        }
 
-        // ✅ Check using role relationship
-        if (!$user || !$user->role || $user->role->name !== 'trainer') {
-            return redirect('/')->with('error', 'Access denied');
+        if (Auth::user()->role_id != 1) {
+            abort(403, 'Unauthorized');
         }
 
         return $next($request);

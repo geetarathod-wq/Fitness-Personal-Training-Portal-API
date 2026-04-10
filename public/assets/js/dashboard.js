@@ -165,6 +165,7 @@ $(function () {
     },
   };
   document.getElementById("sales-profit").innerHTML = "";
+  
   var chart = new ApexCharts(document.querySelector("#sales-profit"), options);
   chart.render();
 

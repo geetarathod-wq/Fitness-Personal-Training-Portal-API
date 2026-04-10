@@ -39,13 +39,12 @@ class Kernel extends HttpKernel
     /**
      * Route middleware (THIS IS IMPORTANT PART)
      */
-    protected $routeMiddleware = [
-        // Laravel default
-        'auth' => \App\Http\Middleware\Authenticate::class,
-        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+protected $routeMiddleware = [
 
-        // ✅ YOUR CUSTOM MIDDLEWARE
-        'trainer' => \App\Http\Middleware\TrainerOnly::class,
-    ];
+    'auth' => \App\Http\Middleware\Authenticate::class,
+
+    'trainer' => \App\Http\Middleware\TrainerOnly::class,
+    'client' => \App\Http\Middleware\ClientOnly::class,
+
+];
 }
