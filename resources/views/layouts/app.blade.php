@@ -56,6 +56,13 @@
             </a>
           </li>
 
+          <li class="sidebar-item">
+            <a class="sidebar-link" href="{{ route('client.logs.index') }}">
+            <iconify-icon icon="solar:clipboard-list-line-duotone"></iconify-icon>
+            <span class="hide-menu">My Logs</span>
+          </a>
+          </li>
+
           <li class="nav-small-cap">
             <span class="hide-menu">Account</span>
           </li>

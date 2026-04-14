@@ -7,10 +7,15 @@ use App\Models\DailyLog;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
+    const ROLE_TRAINER = 1;
+    const ROLE_CLIENT = 2;
+
     use HasFactory, Notifiable;
+    use SoftDeletes;
 
     protected $fillable = [
         'name',

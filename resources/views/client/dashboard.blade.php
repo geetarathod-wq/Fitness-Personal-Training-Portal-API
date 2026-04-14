@@ -2,14 +2,6 @@
 
 @section('content')
 
-<!-- Welcome
-<div class="card mb-4">
-  <div class="card-body">
-    <h4>Welcome, {{ auth()->user()->name ?? 'User' }} 👋</h4>
-    <p class="mb-0">Track your fitness journey daily 💪</p>
-  </div>
-</div> -->
-
 <!-- Stats -->
 <div class="row">
 
@@ -17,7 +9,7 @@
     <div class="card bg-primary-subtle">
       <div class="card-body">
         <h6>Last Weight</h6>
-        <h3>72 kg</h3>
+        <h3>{{ $lastWeight ?? '0' }} kg</h3>
       </div>
     </div>
   </div>
@@ -26,7 +18,7 @@
     <div class="card bg-success-subtle">
       <div class="card-body">
         <h6>Calories</h6>
-        <h3>2200 kcal</h3>
+        <h3>{{ $lastCalories ?? '0' }} kcal</h3>
       </div>
     </div>
   </div>
@@ -35,47 +27,62 @@
     <div class="card bg-warning-subtle">
       <div class="card-body">
         <h6>Total Logs</h6>
-        <h3>15</h3>
+        <h3>{{ $totalLogs ?? 0 }}</h3>
       </div>
     </div>
   </div>
 
 </div>
 
-<!-- Workout -->
+<!-- My Plans (NEW SECTION) -->
 <div class="card mt-4">
   <div class="card-body">
-    <h5>🏋️ Today’s Workout</h5>
+    <h5>💪 My Fitness Plans</h5>
 
-    <table class="table mt-3">
-      <thead>
-        <tr>
-          <th>Exercise</th>
-          <th>Sets</th>
-          <th>Reps</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>Pushups</td>
-          <td>3</td>
-          <td>10-15</td>
-        </tr>
-        <tr>
-          <td>Squats</td>
-          <td>4</td>
-          <td>12-20</td>
-        </tr>
-      </tbody>
-    </table>
+    @forelse(($plans ?? []) as $plan)
+
+      <div class="border rounded p-3 mt-3">
+
+        <h6 class="fw-bold">{{ $plan->name }}</h6>
+
+        <p class="mb-2">
+          👨‍🏫 Trainer: {{ $plan->trainer->name ?? 'N/A' }} <br>
+          📅 Assigned: {{ $plan->assigned_date }}
+        </p>
+
+        <!-- Exercises -->
+        @if($plan->exercises->count())
+            <div class="mt-2">
+                @foreach($plan->exercises as $exercise)
+                    <div class="mb-2">
+
+                        <strong>{{ $exercise->name }}</strong><br>
+
+                        <small>
+                            Sets: {{ $exercise->pivot->sets ?? '-' }} |
+                            Reps: {{ $exercise->pivot->reps_min ?? '-' }} - {{ $exercise->pivot->reps_max ?? '-' }}
+                        </small>
+
+                    </div>
+                @endforeach
+            </div>
+        @else
+            <p class="text-muted">No exercises added</p>
+        @endif
+
+      </div>
+
+    @empty
+        <p class="mt-3">No plans assigned yet.</p>
+    @endforelse
 
   </div>
 </div>
 
-<!-- Logs -->
+<!-- Recent Logs -->
 <div class="card mt-4">
   <div class="card-body">
-    <h5>📅 Recent Logs</h5>
+    <h5>📅 My Recent Logs</h5>
 
     <table class="table mt-3">
       <thead>
@@ -83,16 +90,21 @@
           <th>Date</th>
           <th>Weight</th>
           <th>Calories</th>
-          <th>Notes</th>
         </tr>
       </thead>
+
       <tbody>
+        @forelse(($recentLogs ?? []) as $log)
         <tr>
-          <td>2026-04-09</td>
-          <td>72 kg</td>
-          <td>2100</td>
-          <td>Good workout</td>
+          <td>{{ $log->date ?? $log->created_at }}</td>
+          <td>{{ $log->weight }} kg</td>
+          <td>{{ $log->calories }}</td>
         </tr>
+        @empty
+        <tr>
+          <td colspan="3">No logs found</td>
+        </tr>
+        @endforelse
       </tbody>
     </table>
 

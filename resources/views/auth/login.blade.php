@@ -13,13 +13,15 @@
 <body>
   <div class="page-wrapper" id="main-wrapper">
     <div class="min-vh-100 d-flex align-items-center justify-content-center">
+
       <div class="card p-4" style="width:350px;">
-        
+
         <div class="text-center mb-3">
           <img src="{{ asset('assets/images/logos/logo.svg') }}" width="120">
         </div>
 
-        <form method="POST" action="/login">
+        <!-- ✅ FIXED FORM ACTION -->
+        <form method="POST" action="{{ route('login.post') }}">
           @csrf
 
           <!-- Email -->
@@ -28,53 +30,39 @@
             <input type="email" name="email" class="form-control" required>
           </div>
 
-          <!-- Password with Show/Hide -->
+          <!-- Password -->
           <div class="mb-3 position-relative">
             <label>Password</label>
+
             <input type="password" id="password" name="password" class="form-control" required>
 
-            <!-- 👁 Show/Hide Button -->
-            <span onclick="togglePassword()" 
+            <!-- Eye icon -->
+            <span onclick="togglePassword()"
                   style="position:absolute; right:10px; top:38px; cursor:pointer;">
               👁
             </span>
           </div>
 
-          <!-- Remember + Forgot -->
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            
-            <!-- Remember Me -->
-            <div>
-              <input type="checkbox" name="remember" id="remember">
-              <label for="remember">Remember me</label>
-            </div>
-
-            <!-- Forgot Password -->
-            <a href="{{ route('password.request') }}">Forgot Password?</a>
-          </div>
-
           <!-- Submit -->
-          <button type="submit" class="btn btn-primary w-100">Sign In</button>
+          <button type="submit" class="btn btn-primary w-100">
+            Sign In
+          </button>
         </form>
 
         <div class="text-center mt-3">
           <span>New user?</span>
-          <a href="/register">Create account</a>
+          <a href="{{ route('register') }}">Create account</a>
         </div>
 
       </div>
     </div>
   </div>
 
+  <!-- Toggle Password Script -->
   <script>
     function togglePassword() {
       let password = document.getElementById("password");
-
-      if (password.type === "password") {
-        password.type = "text";
-      } else {
-        password.type = "password";
-      }
+      password.type = password.type === "password" ? "text" : "password";
     }
   </script>
 

@@ -3,33 +3,37 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\User;
-use App\Models\PlanExercise;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Plan extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
+        'name',
         'trainer_id',
         'client_id',
-        'name',
         'assigned_date'
     ];
 
-    // Plan belongs to Trainer
+    // 🏋️ Exercises
+    public function exercises()
+    {
+        return $this->belongsToMany(Exercise::class, 'plan_exercises')
+            ->withPivot('sets', 'reps_min', 'reps_max')
+            ->withTimestamps();
+    }
+
+    // 👨‍🏫 Trainer
     public function trainer()
     {
         return $this->belongsTo(User::class, 'trainer_id');
     }
 
-    // Plan belongs to Client
+    // 👤 Client
     public function client()
     {
         return $this->belongsTo(User::class, 'client_id');
     }
 
-    // Plan has many exercises
-    public function planExercises()
-    {
-        return $this->hasMany(PlanExercise::class);
-    }
+    
 }

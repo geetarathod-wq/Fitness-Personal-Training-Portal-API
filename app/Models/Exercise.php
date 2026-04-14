@@ -3,17 +3,19 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\PlanExercise;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Exercise extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
         'name',
+        'description',
         'type'
     ];
 
-    public function planExercises()
+    public function plans()
     {
-        return $this->hasMany(PlanExercise::class);
+        return $this->belongsToMany(Plan::class, 'plan_exercises');
     }
 }
