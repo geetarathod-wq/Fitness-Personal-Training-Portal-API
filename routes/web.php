@@ -28,7 +28,7 @@ Route::get('/', fn() => redirect()->route('login'));
 
 /*
 |--------------------------------------------------------------------------
-| REGISTER (FIXED CLEAN WAY)
+| REGISTER
 |--------------------------------------------------------------------------
 */
 Route::get('/register', [RegisterController::class, 'show'])->name('register');
@@ -59,6 +59,19 @@ Route::middleware(['auth', 'trainer'])
         Route::resource('clients', AdminClientController::class);
         Route::resource('exercises', ExerciseController::class);
         Route::resource('plans', AdminPlanController::class);
+
+        // ✅ FIXED SEARCH ROUTES (IMPORTANT)
+        Route::get('/search-clients', [AdminPlanController::class, 'searchClients'])
+            ->name('search.clients');
+
+        Route::get('/search-exercises', [AdminPlanController::class, 'searchExercises'])
+            ->name('search.exercises');
+
+        Route::get('/search-exercises', [ExerciseController::class, 'search'])
+            ->name('search.exercises');
+
+        Route::get('/search-clients', [AdminClientController::class, 'search'])
+            ->name('search.clients');
     });
 
 /*

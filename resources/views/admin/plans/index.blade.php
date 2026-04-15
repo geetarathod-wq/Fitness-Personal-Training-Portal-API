@@ -86,27 +86,30 @@
 
                     </div>
 
-                    <div class="card-footer d-flex justify-content-between">
+                    <div class="card-footer">
+                    <div class="d-flex gap-2">
 
-                        <a href="{{ route('admin.plans.edit', $plan->id) }}"
-                           class="btn btn-sm btn-warning">
-                            Edit
+                        <!-- EDIT -->
+                        <a href="{{ route('admin.plans.edit', $plan->id) }}" 
+                        class="btn btn-sm btn-outline-warning">
+                            ✏️ Edit
                         </a>
 
-                        <form action="{{ route('admin.plans.destroy', $plan->id) }}"
-                              method="POST"
-                              onsubmit="return confirm('Are you sure?')">
-
+                        <!-- DELETE -->
+                        <form action="{{ route('admin.plans.destroy', $plan->id) }}" 
+                            method="POST"
+                            onsubmit="return confirm('Are you sure you want to delete this plan?')">
                             @csrf
                             @method('DELETE')
 
-                            <button class="btn btn-sm btn-danger">
-                                Delete
+                            <button type="submit"
+                                    class="btn btn-sm btn-outline-danger">
+                                🗑 Delete
                             </button>
-
                         </form>
 
                     </div>
+                </div>
 
                 </div>
 

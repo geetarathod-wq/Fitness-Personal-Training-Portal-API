@@ -2,72 +2,189 @@
 
 @section('content')
 
-<div class="d-flex justify-content-between mb-3">
-    <h4>Clients</h4>
+<div class="container mt-4">
 
-    <a href="{{ route('admin.clients.create') }}" class="btn btn-primary">
-        + Add Client
-    </a>
-</div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2>Clients</h2>
 
-@if(session('success'))
-<div class="alert alert-success">
-    {{ session('success') }}
-</div>
-@endif
+        <a href="{{ route('admin.clients.create') }}" class="btn btn-primary">
+            + Add Client
+        </a>
+    </div>
 
-<div class="card">
-    <div class="card-body">
+    {{-- FILTERS --}}
+    <form method="GET" action="{{ route('admin.clients.index') }}" class="mb-3">
 
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Joined</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
+        <div class="row g-2 align-items-center">
 
-            <tbody>
-                @forelse($clients as $client)
-                <tr>
-                    <td>{{ $client->name }}</td>
-                    <td>{{ $client->email }}</td>
-                    <td>{{ $client->created_at->format('d M Y') }}</td>
-                    <td>
+            {{-- SEARCH --}}
+            <div class="col-md-6 position-relative">
+                <input type="text"
+                       name="search"
+                       id="clientSearch"
+                       value="{{ request('search') }}"
+                       class="form-control"
+                       placeholder="🔍 Search client..."
+                       autocomplete="off">
 
-                        <!-- ✏️ EDIT -->
-                        <a href="{{ route('admin.clients.edit', $client->id) }}" 
-                           class="btn btn-warning btn-sm">
-                            Edit
-                        </a>
+                <div id="clientResults"
+                     class="list-group position-absolute w-100"
+                     style="z-index:1000; display:none;"></div>
+            </div>
 
-                        <!-- 🗑 DELETE -->
-                        <form method="POST" 
-                              action="{{ route('admin.clients.destroy', $client->id) }}" 
-                              style="display:inline-block;">
-                            @csrf
-                            @method('DELETE')
+            {{-- PER PAGE --}}
+            <div class="col-md-3">
+                <select name="per_page" class="form-select" onchange="this.form.submit()">
+                    <option value="10" {{ $perPage == 10 ? 'selected' : '' }}>10 / page</option>
+                    <option value="20" {{ $perPage == 20 ? 'selected' : '' }}>20 / page</option>
+                    <option value="50" {{ $perPage == 50 ? 'selected' : '' }}>50 / page</option>
+                    <option value="100" {{ $perPage == 100 ? 'selected' : '' }}>100 / page</option>
+                </select>
+            </div>
 
-                            <button class="btn btn-danger btn-sm"
-                                onclick="return confirm('Are you sure?')">
-                                Delete
-                            </button>
-                        </form>
+            {{-- SEARCH BUTTON --}}
+            <div class="col-md-3 d-flex gap-2">
+                <button class="btn btn-outline-primary w-100">Search</button>
 
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="4">No clients found</td>
-                </tr>
-                @endforelse
-            </tbody>
+                @if(request('search'))
+                    <a href="{{ route('admin.clients.index') }}" class="btn btn-outline-danger">
+                        Clear
+                    </a>
+                @endif
+            </div>
 
-        </table>
+        </div>
+    </form>
+
+    {{-- SUCCESS --}}
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    {{-- TABLE --}}
+    <table class="table table-bordered">
+
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Joined</th>
+            <th>Actions</th>
+        </tr>
+
+        @forelse($clients as $client)
+        <tr>
+            <td>{{ $client->name }}</td>
+            <td>{{ $client->email }}</td>
+            <td>{{ $client->created_at->format('d M Y') }}</td>
+
+            <td class="d-flex gap-2">
+
+                <a href="{{ route('admin.clients.edit', $client->id) }}"
+                   class="btn btn-sm btn-outline-warning">
+                    ✏️ Edit
+                </a>
+
+                <form action="{{ route('admin.clients.destroy', $client->id) }}"
+                      method="POST">
+                    @csrf
+                    @method('DELETE')
+
+                    <button class="btn btn-sm btn-outline-danger"
+                            onclick="return confirm('Delete this client?')">
+                        🗑 Delete
+                    </button>
+                </form>
+
+            </td>
+        </tr>
+        @empty
+        <tr>
+            <td colspan="4">No clients found</td>
+        </tr>
+        @endforelse
+
+    </table>
+
+    {{-- PAGINATION --}}
+    <div class="d-flex justify-content-between mt-3">
+
+        <div class="text-muted small">
+            Showing {{ $clients->firstItem() }} to {{ $clients->lastItem() }}
+            of {{ $clients->total() }}
+        </div>
+
+        <div>
+            {{ $clients->appends(request()->query())->links('pagination::bootstrap-5') }}
+        </div>
 
     </div>
+
 </div>
+
+{{-- AJAX SEARCH --}}
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const searchInput = document.getElementById('clientSearch');
+    const resultsBox = document.getElementById('clientResults');
+
+    let timer;
+
+    searchInput.addEventListener('keyup', function () {
+
+        let query = this.value.trim();
+
+        if (!query) {
+            resultsBox.style.display = 'none';
+            return;
+        }
+
+        clearTimeout(timer);
+
+        timer = setTimeout(() => {
+
+            fetch(`/admin/search-clients?search=${query}`)
+                .then(res => res.json())
+                .then(data => {
+
+                    resultsBox.innerHTML = '';
+
+                    if (data.length === 0) {
+                        resultsBox.style.display = 'block';
+                        resultsBox.innerHTML =
+                            '<div class="list-group-item">No clients found</div>';
+                        return;
+                    }
+
+                    data.forEach(client => {
+                        let div = document.createElement('div');
+                        div.className = 'list-group-item list-group-item-action';
+                        div.innerHTML = `<b>${client.name}</b><br><small>${client.email}</small>`;
+
+                        div.onclick = () => {
+                            searchInput.value = client.name;
+                            resultsBox.style.display = 'none';
+                        };
+
+                        resultsBox.appendChild(div);
+                    });
+
+                    resultsBox.style.display = 'block';
+
+                });
+
+        }, 300);
+    });
+
+    document.addEventListener('click', function (e) {
+        if (!searchInput.contains(e.target)) {
+            resultsBox.style.display = 'none';
+        }
+    });
+
+});
+</script>
 
 @endsection

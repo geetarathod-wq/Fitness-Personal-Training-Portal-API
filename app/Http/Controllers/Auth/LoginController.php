@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\User; // ✅ IMPORTANT
+use App\Http\Requests\LoginRequest;
 
 class LoginController extends Controller
 {
@@ -14,31 +14,32 @@ class LoginController extends Controller
     // =========================
     public function showLoginForm()
     {
+        // ✅ AUTO REDIRECT IF ALREADY LOGGED IN
+        if (auth()->check()) {
+            if (auth()->user()->isAdmin()) {
+                return redirect()->route('admin.dashboard');
+            }
+            return redirect()->route('client.dashboard');
+        }
+
         return view('auth.login');
     }
 
     // =========================
-    // HANDLE LOGIN (FIXED)
+    // HANDLE LOGIN
     // =========================
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
-        
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
+        $data = $request->validated(); // ✅ request dictionary
 
         if (Auth::attempt([
-            'email' => $request->email,
-            'password' => $request->password
+            'email' => $data['email'],
+            'password' => $data['password']
         ])) {
 
             $request->session()->regenerate();
 
-            $user = Auth::user();
-
-            // ✅ FIXED USING CONSTANT
-            if ($user->role_id == User::ROLE_TRAINER) {
+            if (auth()->user()->isAdmin()) {
                 return redirect()->route('admin.dashboard');
             }
 
@@ -49,7 +50,6 @@ class LoginController extends Controller
             'email' => 'Email or password is incorrect',
         ]);
     }
-
     // =========================
     // LOGOUT
     // =========================

@@ -4,7 +4,7 @@
 
 <div class="card p-4">
   <div class="d-flex justify-content-between mb-3">
-    <h4>My Daily Logs</h4>
+    <h4>My Weekly Logs</h4>
 
     <a href="{{ route('client.logs.create') }}" class="btn btn-primary">
       + Add Log

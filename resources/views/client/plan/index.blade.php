@@ -4,7 +4,7 @@
 
 <div class="container-fluid">
 
-    <h4 class="mb-3">Plans List</h4>
+    <h4 class="mb-3">📋 Plans List</h4>
 
     {{-- SUCCESS MESSAGE --}}
     @if(session('success'))
@@ -20,49 +20,61 @@
         </div>
     @else
 
-        <div class="card p-3">
+        <div class="card shadow-sm border-0 p-3">
 
-            <table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Plan</th>
-            <th>Trainer</th>
-            <th>Exercises</th>
-            <th>Assigned Date</th>
-        </tr>
-    <table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Plan</th>
-            <th>Trainer</th>
-            <th>Exercises</th>
-            <th>Assigned Date</th>
-        </tr>
-    </thead>
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
 
-    <tbody>
-        @foreach($plans as $plan)
-        <tr>
-            <td>{{ $plan->name }}</td>
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Plan</th>
+                            <th>Trainer</th>
+                            <th style="width: 40%;">Exercises</th>
+                            <th>Assigned Date</th>
+                        </tr>
+                    </thead>
 
-            <td>{{ $plan->trainer->name ?? 'N/A' }}</td>
+                    <tbody>
+                        @foreach($plans as $plan)
+                        <tr>
 
-            <td>
-                @foreach($plan->exercises as $exercise)
-                    <div class="mb-2">
-                        <strong>{{ $exercise->name }}</strong><br>
+                            <td class="fw-bold">
+                                {{ $plan->name }}
+                            </td>
 
-                        Sets: {{ $exercise->pivot->sets }} <br>
-                        Reps: {{ $exercise->pivot->reps_min }} - {{ $exercise->pivot->reps_max }}
-                    </div>
-                @endforeach
-            </td>
+                            <td>
+                                {{ $plan->trainer->name ?? 'N/A' }}
+                            </td>
 
-            <td>{{ $plan->assigned_date }}</td>
-        </tr>
-        @endforeach
-    </tbody>
-</table>
+                            <td>
+                                @forelse($plan->exercises as $exercise)
+
+                                    <div class="border rounded p-2 mb-2 bg-light">
+
+                                        <strong>{{ $exercise->name }}</strong><br>
+
+                                        <small class="text-muted">
+                                            Sets: {{ $exercise->pivot->sets ?? 0 }} |
+                                            Reps: {{ $exercise->pivot->reps_min ?? 0 }} - {{ $exercise->pivot->reps_max ?? 0 }}
+                                        </small>
+
+                                    </div>
+
+                                @empty
+                                    <span class="text-muted">No exercises</span>
+                                @endforelse
+                            </td>
+
+                            <td>
+                                {{ \Carbon\Carbon::parse($plan->assigned_date)->format('d M Y') }}
+                            </td>
+
+                        </tr>
+                        @endforeach
+                    </tbody>
+
+                </table>
+            </div>
 
         </div>
 

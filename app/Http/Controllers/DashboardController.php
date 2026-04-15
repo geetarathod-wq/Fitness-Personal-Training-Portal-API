@@ -6,36 +6,50 @@ use App\Models\User;
 use App\Models\Plan;
 use App\Models\Exercise;
 use App\Models\DailyLog;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
     // ---------------- ADMIN DASHBOARD ----------------
     public function index()
     {
-        $users=User::all();
-        // echo"<pre>";print_r($users->toArray());die();
-        // ✅ FIXED
+        // STATS (UNCHANGED)
         $clients = User::where('role_id', User::ROLE_CLIENT)->count();
-
         $plans = Plan::count();
-
         $exercises = Exercise::count();
-
         $todayLogs = DailyLog::whereDate('created_at', today())->count();
 
-        // ✅ FIXED
         $newClients = User::where('role_id', User::ROLE_CLIENT)
-            ->where('created_at', '>=', now()->subDays(7))
+            ->whereDate('created_at', '>=', now()->subDays(7))
             ->count();
+
+        // ✅ GRAPH DATA (LAST 7 DAYS)
+        $dates = [];
+        $clientCounts = [];
+
+        for ($i = 6; $i >= 0; $i--) {
+
+            $date = Carbon::now()->subDays($i);
+
+            $dates[] = $date->format('D'); // Mon, Tue
+
+            $count = User::where('role_id', User::ROLE_CLIENT)
+                ->whereDate('created_at', $date->toDateString())
+                ->count();
+
+            $clientCounts[] = $count;
+        }
 
         return view('admin.dashboard', compact(
             'clients',
             'plans',
             'exercises',
             'todayLogs',
-            'newClients'
+            'newClients',
+            'dates',
+            'clientCounts'
         ));
-    }
+        }
 
     // ---------------- CLIENT DASHBOARD ----------------
     public function clientDashboard()

@@ -60,4 +60,14 @@ class User extends Authenticatable
         return $this->hasMany(DailyLog::class, 'client_id');
     }
 
+    // ================= ROLE CHECK METHODS (ADDED) =================
+    public function isAdmin()
+    {
+        return $this->role_id == self::ROLE_TRAINER;
+    }
+
+    public function isClient()
+    {
+        return $this->role_id == self::ROLE_CLIENT;
+    }
 }

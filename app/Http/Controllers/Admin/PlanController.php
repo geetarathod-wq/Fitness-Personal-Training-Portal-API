@@ -23,9 +23,7 @@ class PlanController extends Controller
     // ➕ CREATE PAGE
     public function create()
     {
-        $exercises = Exercise::all();
-
-        // ✅ FIXED HERE
+        $exercises = Exercise::latest()->paginate(10);
         $clients = User::where('role_id', User::ROLE_CLIENT)->get();
 
         return view('admin.plans.create', compact('exercises', 'clients'));
@@ -48,9 +46,7 @@ class PlanController extends Controller
         ]);
 
         if (!empty($request->exercises)) {
-
             foreach ($request->exercises as $exerciseId) {
-
                 if (!$exerciseId) continue;
 
                 $plan->exercises()->attach($exerciseId, [
@@ -61,18 +57,15 @@ class PlanController extends Controller
             }
         }
 
-        return redirect()
-            ->route('admin.plans.index')
-            ->with('success', 'Plan created and assigned successfully');
+        return redirect()->route('admin.plans.index')
+            ->with('success', 'Plan created successfully');
     }
 
     // ✏️ EDIT PAGE
     public function edit($id)
     {
         $plan = Plan::with('exercises')->findOrFail($id);
-        $exercises = Exercise::all();
-
-        // ✅ FIXED HERE
+        $exercises = Exercise::latest()->paginate(10);
         $clients = User::where('role_id', User::ROLE_CLIENT)->get();
 
         return view('admin.plans.edit', compact('plan', 'exercises', 'clients'));
@@ -105,12 +98,33 @@ class PlanController extends Controller
             ->with('success', 'Plan updated successfully');
     }
 
+    // 🗑 DELETE
     public function destroy($id)
     {
-        $plan = Plan::findOrFail($id);
-        $plan->delete();
+        Plan::findOrFail($id)->delete();
 
         return redirect()->route('admin.plans.index')
             ->with('success', 'Plan deleted successfully');
+    }
+
+    // 🔍 CLIENT SEARCH
+    public function searchClients(Request $request)
+    {
+        $clients = User::where('role_id', User::ROLE_CLIENT)
+            ->where('name', 'LIKE', $request->search . '%')
+            ->limit(10)
+            ->get();
+
+        return response()->json($clients);
+    }
+
+    // 🔍 EXERCISE SEARCH (FINAL FIX)
+    public function searchExercises(Request $request)
+    {
+        $exercises = Exercise::where('name', 'LIKE', '%' . $request->search . '%')
+            ->limit(10)
+            ->get();
+
+        return response()->json($exercises);
     }
 }

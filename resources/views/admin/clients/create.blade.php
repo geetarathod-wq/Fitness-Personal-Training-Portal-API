@@ -26,9 +26,23 @@
                 <input type="email" name="email" class="form-control">
             </div>
 
+            <!-- ✅ UPDATED PASSWORD FIELD WITH EYE TOGGLE -->
             <div class="mb-3">
                 <label>Password</label>
-                <input type="password" name="password" class="form-control">
+
+                <div class="input-group">
+                    <input type="password" 
+                           name="password" 
+                           id="password" 
+                           class="form-control">
+
+                    <button type="button" 
+                            id="eyeBtn"
+                            class="btn btn-outline-secondary" 
+                            onclick="togglePassword()">
+                        👁️
+                    </button>
+                </div>
             </div>
 
             <button class="btn btn-success">Save</button>
@@ -37,5 +51,21 @@
 
     </div>
 </div>
+
+<!-- ✅ SCRIPT (ADDED, DOES NOT AFFECT ANYTHING ELSE) -->
+<script>
+function togglePassword() {
+    let input = document.getElementById("password");
+    let btn = document.getElementById("eyeBtn");
+
+    if (input.type === "password") {
+        input.type = "text";
+        btn.innerText = "🙈";
+    } else {
+        input.type = "password";
+        btn.innerText = "👁️";
+    }
+}
+</script>
 
 @endsection
