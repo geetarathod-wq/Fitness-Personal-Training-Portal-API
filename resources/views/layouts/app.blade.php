@@ -6,22 +6,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Fitness Dashboard</title>
 
-  <!-- CSS -->
   <link rel="stylesheet" href="{{ asset('assets/css/styles.min.css') }}">
+
+  <style>
+    .page-wrapper { display: flex; }
+
+    .left-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 250px;
+        z-index: 1000;
+    }
+
+    .body-wrapper {
+        margin-left: 250px;
+        width: calc(100% - 250px);
+    }
+
+    .app-header {
+        position: sticky;
+        top: 0;
+        z-index: 999;
+        background: #fff;
+    }
+
+    .body-wrapper-inner {
+        padding-top: 10px;
+    }
+  </style>
 </head>
 
 <body>
 
-<div class="page-wrapper" id="main-wrapper"
-     data-layout="vertical"
-     data-navbarbg="skin6"
-     data-sidebartype="full"
-     data-sidebar-position="fixed"
-     data-header-position="fixed">
+<div class="page-wrapper" id="main-wrapper">
 
   <!-- SIDEBAR -->
   <aside class="left-sidebar">
     <div>
+
       <div class="brand-logo d-flex align-items-center justify-content-between">
         <a href="{{ route('client.dashboard') }}" class="text-nowrap logo-img">
           <img src="{{ asset('assets/images/logos/logo.svg') }}" alt="">
@@ -31,9 +55,7 @@
       <nav class="sidebar-nav scroll-sidebar">
         <ul id="sidebarnav">
 
-          <li class="nav-small-cap">
-            <span class="hide-menu">Home</span>
-          </li>
+          <li class="nav-small-cap"><span class="hide-menu">Home</span></li>
 
           <li class="sidebar-item">
             <a class="sidebar-link" href="{{ route('client.dashboard') }}">
@@ -58,14 +80,12 @@
 
           <li class="sidebar-item">
             <a class="sidebar-link" href="{{ route('client.logs.index') }}">
-            <iconify-icon icon="solar:clipboard-list-line-duotone"></iconify-icon>
-            <span class="hide-menu">My Logs</span>
-          </a>
+              <iconify-icon icon="solar:clipboard-list-line-duotone"></iconify-icon>
+              <span class="hide-menu">My Logs</span>
+            </a>
           </li>
 
-          <li class="nav-small-cap">
-            <span class="hide-menu">Account</span>
-          </li>
+          <li class="nav-small-cap"><span class="hide-menu">Account</span></li>
 
           <li class="sidebar-item">
             <a class="sidebar-link" href="{{ route('client.profile') }}">
@@ -96,51 +116,17 @@
     <header class="app-header shadow-sm">
       <nav class="navbar navbar-expand-lg navbar-light px-3">
 
-        <!-- Left -->
-<div class="d-flex align-items-center">
+        <div class="d-flex flex-column">
+          <h5 class="mb-0 fw-semibold">
+            👋 Welcome, {{ auth()->user()->name ?? 'User' }}
+          </h5>
+          <small class="text-muted">Track your fitness journey 💪</small>
+        </div>
 
-  <a class="nav-link d-block d-xl-none me-3" href="javascript:void(0)">
-    <i class="ti ti-menu-2"></i>
-  </a>
-
-  <!-- TEXT BLOCK -->
-  <div class="d-flex flex-column">
-    <h5 class="mb-0 fw-semibold">
-      👋 Welcome, {{ auth()->user()->name ?? 'User' }}
-    </h5>
-    <small class="text-muted">
-      Track your fitness journey daily 💪
-    </small>
-  </div>
-
-</div>
-        <!-- Right -->
         <div class="ms-auto">
-          <ul class="navbar-nav flex-row align-items-center">
-
-            <li class="nav-item dropdown">
-              <a class="nav-link" href="#" data-bs-toggle="dropdown">
-                <img src="{{ asset('assets/images/profile/user-1.jpg') }}"
-                     class="rounded-circle" width="35">
-              </a>
-
-              <div class="dropdown-menu dropdown-menu-end">
-                <div class="message-body">
-
-                  <a href="{{ route('client.profile') }}" class="dropdown-item">
-                    My Profile
-                  </a>
-
-                  <form method="POST" action="{{ route('logout') }}">
-                    @csrf
-                    <button class="dropdown-item">Logout</button>
-                  </form>
-
-                </div>
-              </div>
-            </li>
-
-          </ul>
+          <img src="{{ asset('assets/images/profile/user-1.jpg') }}"
+               class="rounded-circle"
+               width="35">
         </div>
 
       </nav>
@@ -148,7 +134,7 @@
 
     <!-- CONTENT -->
     <div class="body-wrapper-inner">
-      <div class="container-fluid mt-3">
+      <div class="container-fluid pt-3">
         @yield('content')
       </div>
     </div>
@@ -156,15 +142,10 @@
   </div>
 </div>
 
-<!-- JS -->
 <script src="{{ asset('assets/libs/jquery/dist/jquery.min.js') }}"></script>
 <script src="{{ asset('assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
 <script src="{{ asset('assets/js/sidebarmenu.js') }}"></script>
 <script src="{{ asset('assets/js/app.min.js') }}"></script>
-<script src="{{ asset('assets/libs/apexcharts/dist/apexcharts.min.js') }}"></script>
-<script src="{{ asset('assets/libs/simplebar/dist/simplebar.js') }}"></script>
-<script src="{{ asset('assets/js/dashboard.js') }}"></script>
-
 <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
 
 </body>

@@ -7,7 +7,6 @@
     <h2 class="mb-4">➕ Create Fitness Plan</h2>
 
     <form method="POST" action="{{ route('admin.plans.store') }}">
-        <input type="hidden" name="exercises[]" value="">
         @csrf
 
         {{-- PLAN DETAILS --}}
@@ -18,14 +17,17 @@
                 <input type="text" name="name" class="form-control" required>
             </div>
 
-            <div class="mb-3">
+            {{-- CLIENT SEARCH --}}
+            <div class="mb-3 position-relative">
                 <label>Assign Client</label>
-                <select name="client_id" class="form-control" required>
-                    <option value="">Select Client</option>
-                    @foreach($clients as $client)
-                        <option value="{{ $client->id }}">{{ $client->name }}</option>
-                    @endforeach
-                </select>
+
+                <input type="text" id="clientSearch" class="form-control" placeholder="Type client name...">
+
+                <input type="hidden" name="client_id" id="client_id">
+
+                <div id="clientResults"
+                     class="list-group mt-2 position-absolute w-100"
+                     style="z-index:1000; display:none;"></div>
             </div>
 
             <div class="mb-3">
@@ -40,7 +42,12 @@
 
             <h5>Select Exercises</h5>
 
-            @foreach($exercises as $exercise)
+            {{-- ❌ REMOVED: Exercise Search Bar --}}
+
+            {{-- EXERCISE LIST --}}
+            <div id="exerciseContainer">
+
+                @foreach($exercises as $exercise)
 
                 <div class="border p-2 mb-3 rounded">
 
@@ -53,7 +60,8 @@
                         <strong>{{ $exercise->name }}</strong>
                     </label>
 
-                    <div class="row mt-2 exercise-fields d-none" id="exercise-{{ $exercise->id }}">
+                    <div class="row mt-2 exercise-fields d-none"
+                         id="exercise-{{ $exercise->id }}">
 
                         <div class="col-md-4">
                             <input type="number"
@@ -80,7 +88,24 @@
 
                 </div>
 
-            @endforeach
+                @endforeach
+
+            </div>
+
+            {{-- PAGINATION --}}
+            <div class="d-flex justify-content-between align-items-center mt-3">
+
+                <div>
+                    Showing {{ $exercises->firstItem() ?? 0 }}
+                    to {{ $exercises->lastItem() ?? 0 }}
+                    of {{ $exercises->total() }} exercises
+                </div>
+
+                <div>
+                    {{ $exercises->links('pagination::bootstrap-5') }}
+                </div>
+
+            </div>
 
         </div>
 
@@ -92,10 +117,80 @@
 
 </div>
 
-{{-- JS SECTION --}}
+{{-- ================= JS ================= --}}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
+    // ================= CLIENT SEARCH =================
+    const searchInput = document.getElementById('clientSearch');
+    const resultsBox = document.getElementById('clientResults');
+    const hiddenInput = document.getElementById('client_id');
+
+    let debounceTimer;
+
+    searchInput.addEventListener('keyup', function () {
+
+        let query = this.value.trim();
+
+        if (query.length === 0) {
+            resultsBox.style.display = 'none';
+            resultsBox.innerHTML = '';
+            hiddenInput.value = '';
+            return;
+        }
+
+        clearTimeout(debounceTimer);
+
+        debounceTimer = setTimeout(() => {
+
+            fetch(`/admin/search-clients?search=${query}`)
+                .then(res => res.json())
+                .then(data => {
+
+                    resultsBox.innerHTML = '';
+
+                    if (data.length === 0) {
+                        resultsBox.style.display = 'block';
+                        resultsBox.innerHTML =
+                            '<div class="list-group-item text-muted">No clients found</div>';
+                        return;
+                    }
+
+                    data.forEach(client => {
+
+                        let item = document.createElement('div');
+                        item.className = 'list-group-item list-group-item-action';
+                        item.style.cursor = 'pointer';
+
+                        item.innerHTML = `
+                            <strong>${client.name}</strong><br>
+                            <small class="text-muted">${client.email}</small>
+                        `;
+
+                        item.addEventListener('click', function () {
+                            searchInput.value = client.name;
+                            hiddenInput.value = client.id;
+                            resultsBox.style.display = 'none';
+                        });
+
+                        resultsBox.appendChild(item);
+                    });
+
+                    resultsBox.style.display = 'block';
+
+                });
+
+        }, 300);
+
+    });
+
+    document.addEventListener('click', function (e) {
+        if (!searchInput.contains(e.target) && !resultsBox.contains(e.target)) {
+            resultsBox.style.display = 'none';
+        }
+    });
+
+    // ================= EXERCISE TOGGLE ONLY =================
     document.querySelectorAll('.exercise-checkbox').forEach(function (checkbox) {
 
         checkbox.addEventListener('change', function () {

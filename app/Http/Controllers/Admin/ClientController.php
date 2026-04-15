@@ -4,28 +4,43 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Models\Role;
 use Illuminate\Http\Request;
 
 class ClientController extends Controller
 {
     // 📋 LIST CLIENTS
-    public function index()
+    public function index(Request $request)
     {
-        $clients = User::whereHas('role', function ($q) {
-            $q->where('name', 'customer');
-        })->latest()->get();
+        $query = User::where('role_id', User::ROLE_CLIENT);
 
-        return view('admin.clients.index', compact('clients'));
+        // SEARCH
+        if ($request->search) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'LIKE', $request->search . '%')
+                  ->orWhere('email', 'LIKE', $request->search . '%');
+            });
+        }
+
+        // ✅ PER PAGE (allowed values only)
+        $allowedPerPage = [10, 20, 50, 100];
+        $perPage = $request->get('per_page', 10);
+
+        if (!in_array($perPage, $allowedPerPage)) {
+            $perPage = 10;
+        }
+
+        $clients = $query->latest()->paginate($perPage);
+
+        return view('admin.clients.index', compact('clients', 'perPage'));
     }
 
-    // ➕ CREATE FORM
+    // CREATE
     public function create()
     {
         return view('admin.clients.create');
     }
 
-    // 💾 STORE CLIENT
+    // STORE
     public function store(Request $request)
     {
         $request->validate([
@@ -34,27 +49,25 @@ class ClientController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        $role = Role::where('name', 'customer')->first();
-
         User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-            'role_id' => $role->id,
+            'role_id' => User::ROLE_CLIENT,
         ]);
 
         return redirect()->route('admin.clients.index')
             ->with('success', 'Client added');
     }
 
-    // ✏️ EDIT PAGE
+    // EDIT
     public function edit($id)
     {
         $client = User::findOrFail($id);
         return view('admin.clients.edit', compact('client'));
     }
 
-    // 🔄 UPDATE CLIENT
+    // UPDATE
     public function update(Request $request, $id)
     {
         $client = User::findOrFail($id);
@@ -73,11 +86,27 @@ class ClientController extends Controller
             ->with('success', 'Client updated successfully');
     }
 
-    // 🗑 DELETE CLIENT
+    // DELETE
     public function destroy($id)
     {
         User::findOrFail($id)->delete();
 
         return back()->with('success', 'Client deleted');
+    }
+
+    // AJAX SEARCH
+    public function search(Request $request)
+    {
+        $search = $request->search;
+
+        $clients = User::where('role_id', User::ROLE_CLIENT)
+            ->where(function ($q) use ($search) {
+                $q->where('name', 'LIKE', '%' . $search . '%')
+                  ->orWhere('email', 'LIKE', '%' . $search . '%');
+            })
+            ->limit(10)
+            ->get();
+
+        return response()->json($clients);
     }
 }

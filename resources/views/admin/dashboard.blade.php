@@ -130,14 +130,17 @@ document.addEventListener("DOMContentLoaded", function () {
             height: 300
         },
         series: [{
-            name: 'Clients',
-            data: [2, 3, 4, 5, 6, 7, 8] // you can make dynamic later
+            name: 'New Clients',
+            data: @json($clientCounts) // ✅ dynamic
         }],
         xaxis: {
-            categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            categories: @json($dates) // ✅ dynamic
         },
         stroke: {
             curve: 'smooth'
+        },
+        markers: {
+            size: 5
         }
     };
 

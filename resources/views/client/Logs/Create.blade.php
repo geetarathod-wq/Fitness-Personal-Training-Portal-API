@@ -3,7 +3,7 @@
 @section('content')
 
 <div class="card p-4">
-  <h4 class="mb-4">Add Daily Log</h4>
+  <h4 class="mb-4">Add Weekly Log</h4>
 
   <form method="POST" action="{{ route('client.logs.store') }}">
     @csrf
