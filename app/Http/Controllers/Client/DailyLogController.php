@@ -13,25 +13,25 @@ class DailyLogController extends Controller
         return view('client.logs.create');
     }
 
-    public function store(Request $request)
+        public function store(Request $request)
     {
         $request->validate([
             'date' => 'required|date',
             'weight' => 'nullable|numeric',
             'calories' => 'nullable|numeric',
-            'notes' => 'nullable|string'
+            'notes' => 'nullable',
         ]);
 
         DailyLog::create([
-            'client_id' => auth()->id(),
+            'client_id' => auth()->id(), 
             'date' => $request->date,
             'weight' => $request->weight,
             'calories' => $request->calories,
             'notes' => $request->notes,
         ]);
 
-        return redirect()->route('client.dashboard')
-            ->with('success', 'Log added successfully!');
+        return redirect()->route('client.logs.index')
+            ->with('success', 'Log added successfully');
     }
 
     public function index()

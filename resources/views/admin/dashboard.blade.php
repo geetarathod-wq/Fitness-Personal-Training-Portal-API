@@ -2,14 +2,15 @@
 
 @section('content')
 
-<div class="container-fluid">
+<div class="container-fluid pt-0 mt-0">
 
     <!-- HEADER -->
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h3 class="fw-bold">👋 Welcome, {{ auth()->user()->name }}</h3>
+            <h3 class="fw-bold mb-1">👋 Welcome, {{ auth()->user()->name }}</h3>
             <p class="text-muted mb-0">Manage your gym smartly 💪</p>
         </div>
+
         <div>
             <a href="{{ route('admin.plans.create') }}" class="btn btn-primary">
                 ➕ Create Plan
@@ -58,7 +59,7 @@
 
     </div>
 
-    <!-- ✅ GRAPH ADDED HERE -->
+    <!-- GRAPH -->
     <div class="card mt-4 shadow-sm">
         <div class="card-body">
             <h5 class="mb-3">📈 Client Growth (Last 7 Days)</h5>
@@ -69,7 +70,6 @@
     <!-- SECOND ROW -->
     <div class="row mt-4">
 
-        <!-- NEW CLIENTS -->
         <div class="col-md-6">
             <div class="card shadow-sm p-3">
                 <h5 class="mb-3">🆕 New Clients (Last 7 Days)</h5>
@@ -78,7 +78,6 @@
             </div>
         </div>
 
-        <!-- QUICK ACTIONS -->
         <div class="col-md-6">
             <div class="card shadow-sm p-3">
                 <h5 class="mb-3">⚡ Quick Actions</h5>
@@ -118,7 +117,7 @@
 
 </div>
 
-<!-- ✅ ADD THIS SCRIPT (VERY IMPORTANT) -->
+<!-- CHART -->
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
 <script>
@@ -131,10 +130,10 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         series: [{
             name: 'New Clients',
-            data: @json($clientCounts) // ✅ dynamic
+            data: @json($clientCounts)
         }],
         xaxis: {
-            categories: @json($dates) // ✅ dynamic
+            categories: @json($dates)
         },
         stroke: {
             curve: 'smooth'

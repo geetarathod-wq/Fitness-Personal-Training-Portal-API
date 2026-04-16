@@ -23,7 +23,9 @@ class PlanController extends Controller
     // ➕ CREATE PAGE
     public function create()
     {
-        $exercises = Exercise::latest()->paginate(10);
+        // ✅ FIX: removed pagination
+        $exercises = Exercise::latest()->get();
+
         $clients = User::where('role_id', User::ROLE_CLIENT)->get();
 
         return view('admin.plans.create', compact('exercises', 'clients'));
@@ -65,7 +67,7 @@ class PlanController extends Controller
     public function edit($id)
     {
         $plan = Plan::with('exercises')->findOrFail($id);
-        $exercises = Exercise::latest()->paginate(10);
+        $exercises = Exercise::latest()->get();
         $clients = User::where('role_id', User::ROLE_CLIENT)->get();
 
         return view('admin.plans.edit', compact('plan', 'exercises', 'clients'));
@@ -110,15 +112,13 @@ class PlanController extends Controller
     // 🔍 CLIENT SEARCH
     public function searchClients(Request $request)
     {
-        $clients = User::where('role_id', User::ROLE_CLIENT)
-            ->where('name', 'LIKE', $request->search . '%')
+        return User::where('role_id', User::ROLE_CLIENT)
+            ->where('name', 'like', '%' . $request->search . '%')
             ->limit(10)
             ->get();
-
-        return response()->json($clients);
     }
 
-    // 🔍 EXERCISE SEARCH (FINAL FIX)
+    // 🔍 EXERCISE SEARCH (unused now but kept)
     public function searchExercises(Request $request)
     {
         $exercises = Exercise::where('name', 'LIKE', '%' . $request->search . '%')

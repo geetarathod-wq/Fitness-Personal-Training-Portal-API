@@ -6,10 +6,6 @@
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Clients</h2>
-
-        <a href="{{ route('admin.clients.create') }}" class="btn btn-primary">
-            + Add Client
-        </a>
     </div>
 
     {{-- FILTERS --}}
@@ -27,6 +23,9 @@
                        placeholder="🔍 Search client..."
                        autocomplete="off">
 
+                {{-- KEEP PER PAGE --}}
+                <input type="hidden" name="per_page" value="{{ $perPage }}">
+
                 <div id="clientResults"
                      class="list-group position-absolute w-100"
                      style="z-index:1000; display:none;"></div>
@@ -42,12 +41,14 @@
                 </select>
             </div>
 
-            {{-- SEARCH BUTTON --}}
+            {{-- BUTTONS --}}
             <div class="col-md-3 d-flex gap-2">
-                <button class="btn btn-outline-primary w-100">Search</button>
+
+                <button class="btn btn-primary w-100">Search</button>
 
                 @if(request('search'))
-                    <a href="{{ route('admin.clients.index') }}" class="btn btn-outline-danger">
+                    <a href="{{ route('admin.clients.index') }}"
+                       class="btn btn-danger">
                         Clear
                     </a>
                 @endif
@@ -81,6 +82,11 @@
 
             <td class="d-flex gap-2">
 
+                <a href="{{ route('admin.clients.graph', $client->id) }}"
+                   class="btn btn-sm btn-outline-info">
+                    📊 Graph
+                </a>
+
                 <a href="{{ route('admin.clients.edit', $client->id) }}"
                    class="btn btn-sm btn-outline-warning">
                     ✏️ Edit
@@ -107,7 +113,7 @@
 
     </table>
 
-    {{-- PAGINATION --}}
+    {{-- PAGINATION (FIXED ONLY HERE) --}}
     <div class="d-flex justify-content-between mt-3">
 
         <div class="text-muted small">
@@ -116,7 +122,8 @@
         </div>
 
         <div>
-            {{ $clients->appends(request()->query())->links('pagination::bootstrap-5') }}
+            {{-- ✅ FIX: only preserve required filters --}}
+            {{ $clients->appends(request()->only(['search','per_page']))->links('pagination::bootstrap-5') }}
         </div>
 
     </div>
@@ -159,13 +166,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
 
                     data.forEach(client => {
+
                         let div = document.createElement('div');
                         div.className = 'list-group-item list-group-item-action';
                         div.innerHTML = `<b>${client.name}</b><br><small>${client.email}</small>`;
 
+                        // ✅ FIX: keep search state properly
                         div.onclick = () => {
                             searchInput.value = client.name;
                             resultsBox.style.display = 'none';
+
+                            // IMPORTANT FIX
+                            searchInput.form.submit();
                         };
 
                         resultsBox.appendChild(div);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\DailyLog;
 
 class ClientController extends Controller
 {
@@ -14,14 +15,14 @@ class ClientController extends Controller
         $query = User::where('role_id', User::ROLE_CLIENT);
 
         // SEARCH
-        if ($request->search) {
+        if ($request->filled('search')) {
             $query->where(function ($q) use ($request) {
-                $q->where('name', 'LIKE', $request->search . '%')
-                  ->orWhere('email', 'LIKE', $request->search . '%');
+                $q->where('name', 'LIKE', '%' . $request->search . '%')
+                ->orWhere('email', 'LIKE', '%' . $request->search . '%');
             });
         }
 
-        // ✅ PER PAGE (allowed values only)
+        // PER PAGE
         $allowedPerPage = [10, 20, 50, 100];
         $perPage = $request->get('per_page', 10);
 
@@ -108,5 +109,16 @@ class ClientController extends Controller
             ->get();
 
         return response()->json($clients);
+    }
+
+    public function graph($id)
+    {
+        $client = User::findOrFail($id);
+
+        $logs = DailyLog::where('client_id', $id)
+            ->orderBy('date')
+            ->get();
+
+        return view('admin.clients.graph', compact('client', 'logs'));
     }
 }

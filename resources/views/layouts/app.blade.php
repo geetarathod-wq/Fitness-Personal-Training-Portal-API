@@ -25,13 +25,6 @@
         width: calc(100% - 250px);
     }
 
-    .app-header {
-        position: sticky;
-        top: 0;
-        z-index: 999;
-        background: #fff;
-    }
-
     .body-wrapper-inner {
         padding-top: 10px;
     }
@@ -112,27 +105,7 @@
   <!-- MAIN -->
   <div class="body-wrapper">
 
-    <!-- HEADER -->
-    <header class="app-header shadow-sm">
-      <nav class="navbar navbar-expand-lg navbar-light px-3">
-
-        <div class="d-flex flex-column">
-          <h5 class="mb-0 fw-semibold">
-            👋 Welcome, {{ auth()->user()->name ?? 'User' }}
-          </h5>
-          <small class="text-muted">Track your fitness journey 💪</small>
-        </div>
-
-        <div class="ms-auto">
-          <img src="{{ asset('assets/images/profile/user-1.jpg') }}"
-               class="rounded-circle"
-               width="35">
-        </div>
-
-      </nav>
-    </header>
-
-    <!-- CONTENT -->
+    <!-- CONTENT ONLY (NO HEADER) -->
     <div class="body-wrapper-inner">
       <div class="container-fluid pt-3">
         @yield('content')

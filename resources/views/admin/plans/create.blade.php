@@ -17,16 +17,20 @@
                 <input type="text" name="name" class="form-control" required>
             </div>
 
-            {{-- CLIENT SEARCH --}}
+            {{-- CLIENT SEARCH (FIXED) --}}
             <div class="mb-3 position-relative">
                 <label>Assign Client</label>
 
-                <input type="text" id="clientSearch" class="form-control" placeholder="Type client name...">
+                <input type="text"
+                       id="clientSearch"
+                       class="form-control"
+                       placeholder="Type client name..."
+                       autocomplete="off">
 
                 <input type="hidden" name="client_id" id="client_id">
 
                 <div id="clientResults"
-                     class="list-group mt-2 position-absolute w-100"
+                     class="list-group position-absolute w-100"
                      style="z-index:1000; display:none;"></div>
             </div>
 
@@ -42,10 +46,7 @@
 
             <h5>Select Exercises</h5>
 
-            {{-- ❌ REMOVED: Exercise Search Bar --}}
-
-            {{-- EXERCISE LIST --}}
-            <div id="exerciseContainer">
+            <div id="exerciseContainer" style="max-height: 600px; overflow-y: auto;">
 
                 @foreach($exercises as $exercise)
 
@@ -64,24 +65,15 @@
                          id="exercise-{{ $exercise->id }}">
 
                         <div class="col-md-4">
-                            <input type="number"
-                                   name="sets[{{ $exercise->id }}]"
-                                   placeholder="Sets"
-                                   class="form-control">
+                            <input type="number" name="sets[{{ $exercise->id }}]" placeholder="Sets" class="form-control">
                         </div>
 
                         <div class="col-md-4">
-                            <input type="number"
-                                   name="reps_min[{{ $exercise->id }}]"
-                                   placeholder="Min Reps"
-                                   class="form-control">
+                            <input type="number" name="reps_min[{{ $exercise->id }}]" placeholder="Min Reps" class="form-control">
                         </div>
 
                         <div class="col-md-4">
-                            <input type="number"
-                                   name="reps_max[{{ $exercise->id }}]"
-                                   placeholder="Max Reps"
-                                   class="form-control">
+                            <input type="number" name="reps_max[{{ $exercise->id }}]" placeholder="Max Reps" class="form-control">
                         </div>
 
                     </div>
@@ -89,21 +81,6 @@
                 </div>
 
                 @endforeach
-
-            </div>
-
-            {{-- PAGINATION --}}
-            <div class="d-flex justify-content-between align-items-center mt-3">
-
-                <div>
-                    Showing {{ $exercises->firstItem() ?? 0 }}
-                    to {{ $exercises->lastItem() ?? 0 }}
-                    of {{ $exercises->total() }} exercises
-                </div>
-
-                <div>
-                    {{ $exercises->links('pagination::bootstrap-5') }}
-                </div>
 
             </div>
 
@@ -117,31 +94,103 @@
 
 </div>
 
-{{-- ================= JS ================= --}}
+{{-- JS --}}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    // ================= CLIENT SEARCH =================
+    const STORAGE_KEY = "create_plan_form";
+
+    /* ---------------- SAVE FORM ---------------- */
+    function saveForm() {
+        let data = {
+            name: document.querySelector('[name="name"]').value,
+            client_id: document.getElementById('client_id').value,
+            assigned_date: document.querySelector('[name="assigned_date"]').value,
+            exercises: []
+        };
+
+        document.querySelectorAll('.exercise-checkbox:checked').forEach(cb => {
+            let id = cb.value;
+
+            data.exercises.push({
+                id: id,
+                sets: document.querySelector(`[name="sets[${id}]"]`)?.value || '',
+                reps_min: document.querySelector(`[name="reps_min[${id}]"]`)?.value || '',
+                reps_max: document.querySelector(`[name="reps_max[${id}]"]`)?.value || ''
+            });
+        });
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    }
+
+    /* ---------------- RESTORE FORM ---------------- */
+    function restoreForm() {
+        let saved = localStorage.getItem(STORAGE_KEY);
+        if (!saved) return;
+
+        let data = JSON.parse(saved);
+
+        document.querySelector('[name="name"]').value = data.name || '';
+        document.querySelector('[name="assigned_date"]').value = data.assigned_date || '';
+        document.getElementById('client_id').value = data.client_id || '';
+
+        data.exercises.forEach(ex => {
+            let checkbox = document.querySelector(`input[value="${ex.id}"]`);
+            if (checkbox) {
+                checkbox.checked = true;
+                checkbox.dispatchEvent(new Event('change'));
+
+                setTimeout(() => {
+                    document.querySelector(`[name="sets[${ex.id}]"]`).value = ex.sets;
+                    document.querySelector(`[name="reps_min[${ex.id}]"]`).value = ex.reps_min;
+                    document.querySelector(`[name="reps_max[${ex.id}]"]`).value = ex.reps_max;
+                }, 50);
+            }
+        });
+    }
+
+    document.addEventListener('input', saveForm);
+    document.addEventListener('change', saveForm);
+
+    restoreForm();
+
+    document.querySelector('form').addEventListener('submit', function () {
+        localStorage.removeItem(STORAGE_KEY);
+    });
+
+    /* ---------------- EXERCISE TOGGLE ---------------- */
+    document.querySelectorAll('.exercise-checkbox').forEach(cb => {
+        cb.addEventListener('change', function () {
+            let id = this.dataset.id;
+            let section = document.getElementById('exercise-' + id);
+
+            if (this.checked) {
+                section.classList.remove('d-none');
+            } else {
+                section.classList.add('d-none');
+            }
+        });
+    });
+
+    /* ---------------- CLIENT SEARCH FIXED ---------------- */
     const searchInput = document.getElementById('clientSearch');
     const resultsBox = document.getElementById('clientResults');
-    const hiddenInput = document.getElementById('client_id');
+    const clientIdInput = document.getElementById('client_id');
 
-    let debounceTimer;
+    let timer;
 
     searchInput.addEventListener('keyup', function () {
 
         let query = this.value.trim();
 
-        if (query.length === 0) {
+        if (!query) {
             resultsBox.style.display = 'none';
-            resultsBox.innerHTML = '';
-            hiddenInput.value = '';
             return;
         }
 
-        clearTimeout(debounceTimer);
+        clearTimeout(timer);
 
-        debounceTimer = setTimeout(() => {
+        timer = setTimeout(() => {
 
             fetch(`/admin/search-clients?search=${query}`)
                 .then(res => res.json())
@@ -150,30 +199,27 @@ document.addEventListener('DOMContentLoaded', function () {
                     resultsBox.innerHTML = '';
 
                     if (data.length === 0) {
-                        resultsBox.style.display = 'block';
                         resultsBox.innerHTML =
-                            '<div class="list-group-item text-muted">No clients found</div>';
+                            '<div class="list-group-item">No clients found</div>';
+                        resultsBox.style.display = 'block';
                         return;
                     }
 
                     data.forEach(client => {
 
-                        let item = document.createElement('div');
-                        item.className = 'list-group-item list-group-item-action';
-                        item.style.cursor = 'pointer';
+                        let div = document.createElement('div');
+                        div.className = 'list-group-item list-group-item-action';
+                        div.style.cursor = "pointer";
 
-                        item.innerHTML = `
-                            <strong>${client.name}</strong><br>
-                            <small class="text-muted">${client.email}</small>
-                        `;
+                        div.innerHTML = `<b>${client.name}</b><br><small>${client.email}</small>`;
 
-                        item.addEventListener('click', function () {
+                        div.onclick = () => {
                             searchInput.value = client.name;
-                            hiddenInput.value = client.id;
+                            clientIdInput.value = client.id;
                             resultsBox.style.display = 'none';
-                        });
+                        };
 
-                        resultsBox.appendChild(item);
+                        resultsBox.appendChild(div);
                     });
 
                     resultsBox.style.display = 'block';
@@ -181,31 +227,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
         }, 300);
-
     });
 
     document.addEventListener('click', function (e) {
-        if (!searchInput.contains(e.target) && !resultsBox.contains(e.target)) {
+        if (!searchInput.contains(e.target)) {
             resultsBox.style.display = 'none';
         }
-    });
-
-    // ================= EXERCISE TOGGLE ONLY =================
-    document.querySelectorAll('.exercise-checkbox').forEach(function (checkbox) {
-
-        checkbox.addEventListener('change', function () {
-
-            let id = this.getAttribute('data-id');
-            let section = document.getElementById('exercise-' + id);
-
-            if (this.checked) {
-                section.classList.remove('d-none');
-            } else {
-                section.classList.add('d-none');
-            }
-
-        });
-
     });
 
 });
