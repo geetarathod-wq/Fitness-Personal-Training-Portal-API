@@ -2,43 +2,37 @@
 
 use Illuminate\Support\Facades\Route;
 
-use App\Http\Controllers\ClientController;
+// Controllers
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+
 use App\Http\Controllers\DashboardController;
+
+use App\Http\Controllers\Admin\ClientController as AdminClientController;
+use App\Http\Controllers\Admin\ExerciseController;
+use App\Http\Controllers\Admin\PlanController as AdminPlanController;
 
 use App\Http\Controllers\Client\PlanController;
 use App\Http\Controllers\Client\DailyLogController;
 use App\Http\Controllers\Client\ProfileController;
-
-use App\Http\Controllers\Auth\ForgotPasswordController;
-use App\Http\Controllers\Auth\ResetPasswordController;
-
-// Admin Controllers
-use App\Http\Controllers\Admin\ClientController as AdminClientController;
-use App\Http\Controllers\Admin\ExerciseController;
-use App\Http\Controllers\Admin\PlanController as AdminPlanController;
-use App\Http\Controllers\Auth\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
 | HOME
 |--------------------------------------------------------------------------
 */
-Route::get('/', fn() => redirect()->route('login'));
-
-/*
-|--------------------------------------------------------------------------
-| REGISTER
-|--------------------------------------------------------------------------
-*/
-Route::get('/register', [RegisterController::class, 'show'])->name('register');
-Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
+Route::get('/', fn () => redirect()->route('login'));
 
 /*
 |--------------------------------------------------------------------------
 | AUTH
 |--------------------------------------------------------------------------
 */
+Route::get('/register', [RegisterController::class, 'show'])->name('register');
+Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
+
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
@@ -53,25 +47,36 @@ Route::middleware(['auth', 'trainer'])
     ->name('admin.')
     ->group(function () {
 
+        // DASHBOARD
         Route::get('/dashboard', [DashboardController::class, 'index'])
             ->name('dashboard');
 
+        // RESOURCES
         Route::resource('clients', AdminClientController::class);
         Route::resource('exercises', ExerciseController::class);
         Route::resource('plans', AdminPlanController::class);
 
-        // ✅ FIXED SEARCH ROUTES (IMPORTANT)
-        Route::get('/search-clients', [AdminPlanController::class, 'searchClients'])
+        // SEARCH
+        Route::get('/search-clients', [AdminClientController::class, 'search'])
             ->name('search.clients');
-
-        Route::get('/search-exercises', [AdminPlanController::class, 'searchExercises'])
-            ->name('search.exercises');
 
         Route::get('/search-exercises', [ExerciseController::class, 'search'])
             ->name('search.exercises');
 
-        Route::get('/search-clients', [AdminClientController::class, 'search'])
-            ->name('search.clients');
+        // GRAPH
+        Route::get('/clients/{id}/graph', [AdminClientController::class, 'graph'])
+            ->name('clients.graph');
+
+        /*
+        |--------------------------------------------------------------------------
+        | ✅ ADMIN PROFILE ROUTES (NEW)
+        |--------------------------------------------------------------------------
+        */
+        Route::get('/profile', [DashboardController::class, 'adminProfile'])
+            ->name('profile');
+
+        Route::post('/profile/update', [DashboardController::class, 'updateAdminProfile'])
+            ->name('profile.update');
     });
 
 /*
@@ -79,36 +84,32 @@ Route::middleware(['auth', 'trainer'])
 | CLIENT ROUTES
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth'])
-    ->group(function () {
+Route::middleware(['auth'])->group(function () {
 
-        Route::get('/client/dashboard', [ClientController::class, 'dashboard'])
-            ->name('client.dashboard');
+    Route::get('/client/dashboard', [DashboardController::class, 'clientDashboard'])
+        ->name('client.dashboard');
 
-        Route::get('/client/plan', [PlanController::class, 'index'])
-            ->name('client.plan');
+    Route::get('/client/plan', [PlanController::class, 'index'])
+        ->name('client.plan');
 
-        Route::get('/client/logs', [DailyLogController::class, 'index'])
-            ->name('client.logs.index');
+    Route::get('/client/logs', [DailyLogController::class, 'index'])
+        ->name('client.logs.index');
 
-        Route::get('/client/logs/create', [DailyLogController::class, 'create'])
-            ->name('client.logs.create');
+    Route::get('/client/logs/create', [DailyLogController::class, 'create'])
+        ->name('client.logs.create');
 
-        Route::post('/client/logs/store', [DailyLogController::class, 'store'])
-            ->name('client.logs.store');
+    Route::post('/client/logs/store', [DailyLogController::class, 'store'])
+        ->name('client.logs.store');
 
-        Route::delete('/client/logs/{id}', [DailyLogController::class, 'destroy'])
-            ->name('client.logs.delete');
+    Route::delete('/client/logs/{id}', [DailyLogController::class, 'destroy'])
+        ->name('client.logs.delete');
 
-        Route::get('/client/progress', fn () => view('client.progress'))
-            ->name('client.progress');
+    Route::get('/client/profile', [ProfileController::class, 'index'])
+        ->name('client.profile');
 
-        Route::get('/client/profile', [ProfileController::class, 'index'])
-            ->name('client.profile');
-
-        Route::post('/client/profile/update', [ProfileController::class, 'update'])
-            ->name('client.profile.update');
-    });
+    Route::post('/client/profile/update', [ProfileController::class, 'update'])
+        ->name('client.profile.update');
+});
 
 /*
 |--------------------------------------------------------------------------

@@ -1,19 +1,21 @@
+@extends('layouts.admin')
+
+@section('content')
+
 @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show">
         {{ session('success') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 @endif
-@extends('layouts.admin')
-
-@section('content')
 
 <div class="container mt-4">
 
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="fw-bold">🏋️ Fitness Plans</h2>
 
-        <a href="{{ route('admin.plans.create') }}" class="btn btn-primary">
+        {{-- ✅ FIXED LINK (IMPORTANT) --}}
+        <a href="{{ route('admin.plans.create') }}?clear=1" class="btn btn-primary">
             + Create Plan
         </a>
     </div>
@@ -87,29 +89,29 @@
                     </div>
 
                     <div class="card-footer">
-                    <div class="d-flex gap-2">
+                        <div class="d-flex gap-2">
 
-                        <!-- EDIT -->
-                        <a href="{{ route('admin.plans.edit', $plan->id) }}" 
-                        class="btn btn-sm btn-outline-warning">
-                            ✏️ Edit
-                        </a>
+                            <!-- EDIT -->
+                            <a href="{{ route('admin.plans.edit', $plan->id) }}" 
+                               class="btn btn-sm btn-outline-warning">
+                                ✏️ Edit
+                            </a>
 
-                        <!-- DELETE -->
-                        <form action="{{ route('admin.plans.destroy', $plan->id) }}" 
-                            method="POST"
-                            onsubmit="return confirm('Are you sure you want to delete this plan?')">
-                            @csrf
-                            @method('DELETE')
+                            <!-- DELETE -->
+                            <form action="{{ route('admin.plans.destroy', $plan->id) }}" 
+                                  method="POST"
+                                  onsubmit="return confirm('Are you sure you want to delete this plan?')">
+                                @csrf
+                                @method('DELETE')
 
-                            <button type="submit"
-                                    class="btn btn-sm btn-outline-danger">
-                                🗑 Delete
-                            </button>
-                        </form>
+                                <button type="submit"
+                                        class="btn btn-sm btn-outline-danger">
+                                    🗑 Delete
+                                </button>
+                            </form>
 
+                        </div>
                     </div>
-                </div>
 
                 </div>
 

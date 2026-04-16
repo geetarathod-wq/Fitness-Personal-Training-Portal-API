@@ -41,7 +41,7 @@
 
             <span onclick="togglePassword('password')"
                   style="position:absolute; right:15px; top:38px; cursor:pointer;">
-              👁️
+              
             </span>
           </div>
 
@@ -52,7 +52,7 @@
 
             <span onclick="togglePassword('confirm_password')"
                   style="position:absolute; right:15px; top:38px; cursor:pointer;">
-              👁️
+              
             </span>
 
             <small id="msg"></small>
