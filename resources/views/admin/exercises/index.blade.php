@@ -28,9 +28,12 @@
                        name="search"
                        id="exerciseSearch"
                        class="form-control"
-                       placeholder="Search exercises..."
+                       placeholder="🔍 Search exercises..."
                        value="{{ request('search') }}"
                        autocomplete="off">
+
+                {{-- ✅ KEEP PER PAGE --}}
+                <input type="hidden" name="per_page" value="{{ $perPage }}">
 
                 <div id="exerciseResults"
                      class="list-group position-absolute w-100"
@@ -119,14 +122,15 @@
         </div>
 
         <div>
-            {{ $exercises->appends(request()->query())->links('pagination::bootstrap-5') }}
+            {{-- ✅ preserve filters --}}
+            {{ $exercises->appends(request()->only(['search','per_page']))->links('pagination::bootstrap-5') }}
         </div>
 
     </div>
 
 </div>
 
-{{-- AJAX SEARCH --}}
+{{-- ✅ AJAX SEARCH (CLIENT-LIKE FIXED) --}}
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -148,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         timer = setTimeout(() => {
 
-            fetch(`/admin/search-exercises?search=${query}`)
+            fetch(`/admin/search-exercises?search=${encodeURIComponent(query)}`)
                 .then(res => res.json())
                 .then(data => {
 
@@ -162,13 +166,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     }
 
                     data.forEach(ex => {
+
                         let div = document.createElement('div');
                         div.className = 'list-group-item list-group-item-action';
                         div.innerHTML = `<b>${ex.name}</b> <small>(${ex.type ?? ''})</small>`;
 
+                        // ✅ FIXED (same as client)
                         div.onclick = () => {
                             searchInput.value = ex.name;
                             resultsBox.style.display = 'none';
+
+                            // 🔥 THIS WAS MISSING
+                            searchInput.form.submit();
                         };
 
                         resultsBox.appendChild(div);

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Laravel\Sanctum\HasApiTokens;
 use App\Models\Plan;
 use App\Models\DailyLog;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,11 +12,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+
+    // ROLE CONSTANTS
     const ROLE_TRAINER = 1;
     const ROLE_CLIENT = 2;
-
-    use HasFactory, Notifiable;
-    use SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -29,17 +30,19 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    public function role()
-    {
-        return $this->belongsTo(\App\Models\Role::class);
-    }
-
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    // ================= RELATIONSHIPS =================
+
+    public function role()
+    {
+        return $this->belongsTo(\App\Models\Role::class);
     }
 
     // Trainer → creates plans
@@ -60,7 +63,8 @@ class User extends Authenticatable
         return $this->hasMany(DailyLog::class, 'client_id');
     }
 
-    // ================= ROLE CHECK METHODS (ADDED) =================
+    // ================= ROLE CHECK METHODS =================
+
     public function isAdmin()
     {
         return $this->role_id == self::ROLE_TRAINER;
