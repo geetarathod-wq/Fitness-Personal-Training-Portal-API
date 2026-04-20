@@ -34,7 +34,7 @@
 
 </div>
 
-<!-- 📊 GRAPH -->
+<!-- GRAPH -->
 <div class="card mt-4">
   <div class="card-body">
     <h5>📊 My Progress</h5>
@@ -48,7 +48,7 @@
   </div>
 </div>
 
-<!-- My Plans -->
+<!-- Plans -->
 <div class="card mt-4">
   <div class="card-body">
     <h5>💪 My Fitness Plans</h5>
@@ -65,17 +65,15 @@
         </p>
 
         @if($plan->exercises->count())
-            <div class="mt-2">
-                @foreach($plan->exercises as $exercise)
-                    <div class="mb-2">
-                        <strong>{{ $exercise->name }}</strong><br>
-                        <small>
-                            Sets: {{ $exercise->pivot->sets ?? '-' }} |
-                            Reps: {{ $exercise->pivot->reps_min ?? '-' }} - {{ $exercise->pivot->reps_max ?? '-' }}
-                        </small>
-                    </div>
-                @endforeach
-            </div>
+            @foreach($plan->exercises as $exercise)
+                <div class="mb-2">
+                    <strong>{{ $exercise->name }}</strong><br>
+                    <small>
+                        Sets: {{ $exercise->pivot->sets ?? '-' }} |
+                        Reps: {{ $exercise->pivot->reps_min ?? '-' }} - {{ $exercise->pivot->reps_max ?? '-' }}
+                    </small>
+                </div>
+            @endforeach
         @else
             <p class="text-muted">No exercises added</p>
         @endif
@@ -121,16 +119,17 @@
   </div>
 </div>
 
+@endsection
+
+@push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
     let logs = @json($allLogs ?? []);
-
     if (!logs || logs.length === 0) return;
 
-    // ✅ Format dates nicely
     let labels = logs.map(l => {
         let d = l.date ? new Date(l.date) : new Date(l.created_at);
         return d.toLocaleDateString('en-IN', { day: '2-digit', month: 'short' });
@@ -140,7 +139,6 @@ document.addEventListener('DOMContentLoaded', function () {
     let calories = logs.map(l => Number(l.calories) || 0);
 
     let ctx = document.getElementById('progressChart');
-
     if (!ctx) return;
 
     new Chart(ctx, {
@@ -149,13 +147,10 @@ document.addEventListener('DOMContentLoaded', function () {
             labels: labels,
             datasets: [
                 {
-                    label: 'Weight (kg)',
+                    label: 'Weight',
                     data: weights,
                     borderColor: '#0d6efd',
                     backgroundColor: 'rgba(13,110,253,0.1)',
-                    borderWidth: 3,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#0d6efd',
                     fill: true,
                     tension: 0.4
                 },
@@ -164,53 +159,13 @@ document.addEventListener('DOMContentLoaded', function () {
                     data: calories,
                     borderColor: '#198754',
                     backgroundColor: 'rgba(25,135,84,0.1)',
-                    borderWidth: 3,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#198754',
                     fill: true,
                     tension: 0.4
                 }
             ]
-        },
-        options: {
-            responsive: true,
-            interaction: {
-                mode: 'index',
-                intersect: false
-            },
-            plugins: {
-                legend: {
-                    position: 'top',
-                    labels: {
-                        font: {
-                            size: 12
-                        }
-                    }
-                },
-                tooltip: {
-                    backgroundColor: '#000',
-                    titleColor: '#fff',
-                    bodyColor: '#fff',
-                    padding: 10
-                }
-            },
-            scales: {
-                x: {
-                    grid: {
-                        display: false
-                    }
-                },
-                y: {
-                    beginAtZero: true,
-                    grid: {
-                        color: '#eee'
-                    }
-                }
-            }
         }
     });
 
 });
 </script>
-
-@endsection
+@endpush

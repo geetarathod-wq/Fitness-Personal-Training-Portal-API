@@ -2,65 +2,86 @@
 
 @section('content')
 
-<div class="card p-4">
-  <div class="d-flex justify-content-between mb-3">
-    <h4>My Weekly Logs</h4>
+<div class="container mt-4">
 
-    <a href="{{ route('client.logs.create') }}" class="btn btn-primary">
-      + Add Log
-    </a>
-  </div>
+    {{-- HEADER --}}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>My Weekly Logs</h4>
 
-  @if(session('success'))
-    <div class="alert alert-success">
-      {{ session('success') }}
+        <a href="{{ route('client.logs.create') }}" class="btn btn-primary">
+            + Add Log
+        </a>
     </div>
-  @endif
 
-  @if($logs->isEmpty())
-    <p>No logs found.</p>
-  @else
+    {{-- SUCCESS --}}
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
 
-  <div class="table-responsive">
-    <table class="table table-bordered">
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Weight</th>
-          <th>Calories</th>
-          <th>Notes</th>
-          <th>Action</th>
-        </tr>
-      </thead>
+    {{-- DATATABLE --}}
+    <table id="logsTable" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Weight</th>
+                <th>Calories</th>
+                <th>Notes</th>
+                <th>Action</th>
+            </tr>
+        </thead>
 
-      <tbody>
-        @foreach($logs as $log)
-        <tr>
-          <td>{{ $log->date }}</td>
-          <td>{{ $log->weight ?? '-' }} kg</td>
-          <td>{{ $log->calories ?? '-' }}</td>
-          <td>{{ $log->notes ?? '-' }}</td>
+        <tbody>
+            @forelse($logs as $log)
+            <tr>
+                <td>{{ $log->date }}</td>
+                <td>{{ $log->weight ?? '-' }} kg</td>
+                <td>{{ $log->calories ?? '-' }}</td>
+                <td>{{ $log->notes ?? '-' }}</td>
 
-          <td>
-            <form method="POST"
-                  action="{{ route('client.logs.delete', $log->id) }}"
-                  onsubmit="return confirm('Delete this log?')">
-              @csrf
-              @method('DELETE')
+                <td>
+                    <form method="POST"
+                          action="{{ route('client.logs.delete', $log->id) }}"
+                          onsubmit="return confirm('Delete this log?')">
+                        @csrf
+                        @method('DELETE')
 
-              <button class="btn btn-danger btn-sm">
-                Delete
-              </button>
-            </form>
-          </td>
-        </tr>
-        @endforeach
-      </tbody>
-
+                        <button class="btn btn-sm btn-outline-danger">
+                            🗑 Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="5">No logs found</td>
+            </tr>
+            @endforelse
+        </tbody>
     </table>
-  </div>
 
-  @endif
 </div>
 
 @endsection
+
+
+{{-- ✅ IMPORTANT: PUSH SCRIPT (NOT NORMAL SCRIPT) --}}
+@push('scripts')
+<script>
+$(document).ready(function () {
+    $('#logsTable').DataTable({
+        pageLength: 10,
+        lengthMenu: [10, 20, 50, 100],
+        ordering: true,
+        searching: true,
+        paging: true,
+        info: true,
+        responsive: true,
+        columnDefs: [
+            { orderable: false, targets: 4 }
+        ]
+    });
+});
+</script>
+@endpush

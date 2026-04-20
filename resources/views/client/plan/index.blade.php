@@ -2,20 +2,20 @@
 
 @section('content')
 
-<div class="container-fluid">
+<div class="container-fluid pt-2"> {{-- reduced top space --}}
 
-    <h4 class="mb-3">📋 Plans List</h4>
+    <h4 class="mb-2">📋 Plans List</h4>
 
     {{-- SUCCESS MESSAGE --}}
     @if(session('success'))
-        <div class="alert alert-success">
+        <div class="alert alert-success py-2 mb-2">
             {{ session('success') }}
         </div>
     @endif
 
     {{-- NO DATA --}}
     @if($plans->isEmpty())
-        <div class="alert alert-warning">
+        <div class="alert alert-warning py-2">
             No plans assigned yet.
         </div>
     @else
@@ -23,7 +23,7 @@
         <div class="card shadow-sm border-0 p-3">
 
             <div class="table-responsive">
-                <table class="table table-bordered table-hover align-middle">
+                <table class="table table-bordered table-hover align-middle mb-0">
 
                     <thead class="table-dark">
                         <tr>

@@ -13,7 +13,7 @@ class DailyLogController extends Controller
         return view('client.logs.create');
     }
 
-        public function store(Request $request)
+    public function store(Request $request)
     {
         $request->validate([
             'date' => 'required|date',

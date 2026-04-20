@@ -5,29 +5,31 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\DailyLog;
 use Illuminate\Http\Request;
+use App\Http\Requests\Api\DailyLogRequest;
 
-class WorkoutLogController extends Controller
+class DailyLogController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         return response()->json([
-            'data' => DailyLog::latest()->get()
+            'data' => DailyLog::where('client_id', $request->user()->id)
+                ->orderBy('date', 'desc')
+                ->get()
         ]);
     }
 
-    public function store(Request $request)
+    public function store(DailyLogRequest $request)
     {
-        $request->validate([
-            'client_id' => 'required|integer',
-            'notes' => 'nullable|string',
-            'date' => 'required|date',
+        $log = DailyLog::create([
+            'client_id' => $request->user()->id,
+            'weight'    => $request->weight,
+            'calories'  => $request->calories,
+            'date'      => $request->date,
         ]);
 
-        $log = DailyLog::create($request->all());
-
         return response()->json([
-            'message' => 'Log created',
-            'data' => $log
+            'message' => 'Log saved successfully',
+            'data'    => $log
         ], 201);
     }
 
@@ -52,6 +54,6 @@ class WorkoutLogController extends Controller
 
         $log->delete();
 
-        return response()->json(['message' => 'Deleted']);
+        return response()->json(['message' => 'Deleted successfully']);
     }
 }

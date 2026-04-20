@@ -6,7 +6,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Fitness Dashboard</title>
 
+  {{-- MAIN CSS --}}
   <link rel="stylesheet" href="{{ asset('assets/css/styles.min.css') }}">
+
+  {{-- DATATABLE CSS --}}
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
+  {{-- ICON --}}
+  <script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
 
   <style>
     .page-wrapper { display: flex; }
@@ -26,7 +33,13 @@
     }
 
     .body-wrapper-inner {
-        padding-top: 10px;
+        padding-top: 0; /* FIXED TOP SPACE */
+    }
+
+    .top-header {
+        background: #fff;
+        padding: 12px 20px;
+        border-bottom: 1px solid #eee;
     }
   </style>
 </head>
@@ -35,7 +48,7 @@
 
 <div class="page-wrapper" id="main-wrapper">
 
-  <!-- SIDEBAR -->
+  <!-- SIDEBAR (UNCHANGED) -->
   <aside class="left-sidebar">
     <div>
 
@@ -105,7 +118,33 @@
   <!-- MAIN -->
   <div class="body-wrapper">
 
-    <!-- CONTENT ONLY (NO HEADER) -->
+    {{-- ✅ HEADER (NEW ADDED) --}}
+    @php
+        $hour = now()->format('H');
+
+        if ($hour < 12) {
+            $greeting = 'Good Morning';
+        } elseif ($hour < 17) {
+            $greeting = 'Good Afternoon';
+        } else {
+            $greeting = 'Good Evening';
+        }
+    @endphp
+
+    <div class="top-header d-flex justify-content-between align-items-center">
+
+        <h5 class="mb-0">
+            {{ $greeting }}, {{ auth()->user()->name ?? 'User' }} 👋
+        </h5>
+
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <button class="btn btn-sm btn-outline-danger">Logout</button>
+        </form>
+
+    </div>
+
+    <!-- CONTENT -->
     <div class="body-wrapper-inner">
       <div class="container-fluid pt-3">
         @yield('content')
@@ -113,13 +152,27 @@
     </div>
 
   </div>
+
 </div>
 
+{{-- SCRIPTS --}}
+
+<!-- jQuery (ONLY ONCE) -->
 <script src="{{ asset('assets/libs/jquery/dist/jquery.min.js') }}"></script>
+
+<!-- Bootstrap -->
 <script src="{{ asset('assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+
+<!-- THEME -->
 <script src="{{ asset('assets/js/sidebarmenu.js') }}"></script>
 <script src="{{ asset('assets/js/app.min.js') }}"></script>
-<script src="https://cdn.jsdelivr.net/npm/iconify-icon@1.0.8/dist/iconify-icon.min.js"></script>
+
+<!-- DATATABLE -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+{{-- PAGE SCRIPTS --}}
+@stack('scripts')
 
 </body>
 </html>

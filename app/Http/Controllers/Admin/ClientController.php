@@ -10,31 +10,14 @@ use App\Models\DailyLog;
 class ClientController extends Controller
 {
     // 📋 LIST CLIENTS
-    public function index(Request $request)
+    public function index()
     {
-        $query = User::where('role_id', User::ROLE_CLIENT);
+        $clients = User::where('role_id', User::ROLE_CLIENT)
+            ->latest()
+            ->get(); 
 
-        // SEARCH
-        if ($request->filled('search')) {
-            $query->where(function ($q) use ($request) {
-                $q->where('name', 'LIKE', '%' . $request->search . '%')
-                ->orWhere('email', 'LIKE', '%' . $request->search . '%');
-            });
-        }
-
-        // PER PAGE
-        $allowedPerPage = [10, 20, 50, 100];
-        $perPage = $request->get('per_page', 10);
-
-        if (!in_array($perPage, $allowedPerPage)) {
-            $perPage = 10;
-        }
-
-        $clients = $query->latest()->paginate($perPage);
-
-        return view('admin.clients.index', compact('clients', 'perPage'));
+        return view('admin.clients.index', compact('clients'));
     }
-
     // CREATE
     public function create()
     {
@@ -91,11 +74,10 @@ class ClientController extends Controller
     public function destroy($id)
     {
         User::findOrFail($id)->delete();
-
         return back()->with('success', 'Client deleted');
     }
 
-    // AJAX SEARCH
+    // AJAX SEARCH 
     public function search(Request $request)
     {
         $search = $request->search;

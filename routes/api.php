@@ -6,10 +6,12 @@ use App\Http\Controllers\Api\PlanController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\WorkoutLogController;
 use App\Http\Controllers\Api\WorkoutTemplateController;
+use App\Http\Controllers\Api\ExerciseController;
+use App\Http\Controllers\Api\DailyLogController;
 
 /*
 |--------------------------------------------------------------------------
-| PUBLIC ROUTES (NO LOGIN)
+| PUBLIC ROUTES (NO AUTH)
 |--------------------------------------------------------------------------
 */
 
@@ -19,53 +21,84 @@ Route::post('/login', [AuthController::class, 'login']);
 
 /*
 |--------------------------------------------------------------------------
-| PROTECTED ROUTES (TOKEN REQUIRED)
+| PROTECTED ROUTES (SANCTUM)
 |--------------------------------------------------------------------------
 */
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    // LOGOUT
+    /*
+    |--------------------------------------------------------------------------
+    | AUTH
+    |--------------------------------------------------------------------------
+    */
     Route::post('/logout', [AuthController::class, 'logout']);
+
 
     /*
     |--------------------------------------------------------------------------
-    | TRAINER ONLY ROUTES
+    | TRAINER ROUTES
     |--------------------------------------------------------------------------
     */
     Route::middleware('trainer')->group(function () {
 
-        // PLAN MANAGEMENT
-        Route::post('/plans', [PlanController::class, 'store']);
-        Route::put('/plans/{id}', [PlanController::class, 'update']);
-        Route::delete('/plans/{id}', [PlanController::class, 'destroy']);
-        Route::post('/plans/{id}/exercises', [PlanController::class, 'addExercises']);
+        /*
+        |-----------------------------
+        | CLIENTS (RESOURCE ROUTE)
+        |-----------------------------
+        */
+        Route::apiResource('clients', ClientController::class)
+            ->only(['index', 'store', 'destroy']);
 
-        // CLIENT MANAGEMENT
-        Route::get('/clients', [ClientController::class, 'index']);
-        Route::post('/clients', [ClientController::class, 'store']);
-        Route::delete('/clients/{id}', [ClientController::class, 'destroy']);
+        /*
+        |-----------------------------
+        | PLANS
+        |-----------------------------
+        */
+        Route::apiResource('plans', PlanController::class)
+            ->only(['store', 'update', 'destroy']);
+
+        Route::post('/plans/{id}/exercises', [PlanController::class, 'addExercises']);
     });
 
 
     /*
     |--------------------------------------------------------------------------
-    | CLIENT ONLY ROUTES
+    | CLIENT ROUTES
     |--------------------------------------------------------------------------
     */
     Route::middleware('client')->group(function () {
 
-        // VIEW PLANS
-        Route::get('/plans', [PlanController::class, 'index']);
-        Route::get('/plans/{id}', [PlanController::class, 'show']);
+        /*
+        |-----------------------------
+        | PLANS (READ ONLY)
+        |-----------------------------
+        */
+        Route::apiResource('plans', PlanController::class)
+            ->only(['index', 'show']);
 
-        // WORKOUT LOGS
-        Route::get('/logs', [WorkoutLogController::class, 'index']);
-        Route::post('/logs', [WorkoutLogController::class, 'store']);
-        Route::get('/logs/{id}', [WorkoutLogController::class, 'show']);
-        Route::delete('/logs/{id}', [WorkoutLogController::class, 'destroy']);
+        /*
+        |-----------------------------
+        | WORKOUT LOGS
+        |-----------------------------
+        */
+        Route::apiResource('logs', WorkoutLogController::class)
+            ->only(['index', 'store', 'show', 'destroy']);
 
-        // WORKOUT TEMPLATES
+        /*
+        |-----------------------------
+        | WORKOUT TEMPLATES
+        |-----------------------------
+        */
         Route::get('/templates', [WorkoutTemplateController::class, 'index']);
     });
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | EXERCISES (COMMON FOR AUTH USERS)
+    |--------------------------------------------------------------------------
+    */
+    Route::apiResource('exercises', ExerciseController::class)
+        ->only(['index', 'store']);
 });

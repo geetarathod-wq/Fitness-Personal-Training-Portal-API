@@ -9,29 +9,11 @@ use Illuminate\Http\Request;
 class ExerciseController extends Controller
 {
     // 📋 LIST
-    public function index(Request $request)
+    public function index()
     {
-        $query = Exercise::query();
+        $exercises = \App\Models\Exercise::latest()->get(); // IMPORTANT
 
-        // SEARCH
-        if ($request->search) {
-            $query->where(function ($q) use ($request) {
-                $q->where('name', 'LIKE', '%' . $request->search . '%')
-                  ->orWhere('type', 'LIKE', '%' . $request->search . '%');
-            });
-        }
-
-        // ✅ PER PAGE CONTROL
-        $allowedPerPage = [10, 20, 50, 100];
-        $perPage = $request->get('per_page', 10);
-
-        if (!in_array($perPage, $allowedPerPage)) {
-            $perPage = 10;
-        }
-
-        $exercises = $query->latest()->paginate($perPage);
-
-        return view('admin.exercises.index', compact('exercises', 'perPage'));
+        return view('admin.exercises.index', compact('exercises'));
     }
 
     // CREATE
