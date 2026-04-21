@@ -20,6 +20,7 @@ class WorkoutLogRequest extends FormRequest
             'reps'        => 'required|integer|min:1|max:100',
             'weight'      => 'nullable|numeric|min:0|max:1000',
             'duration'    => 'nullable|integer|min:0|max:300',
+            'calories'    => 'required|numeric',
             'notes'       => 'nullable|string|max:1000',
             'logged_at'   => 'nullable|date',
         ];

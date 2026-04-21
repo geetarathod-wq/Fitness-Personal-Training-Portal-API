@@ -6,9 +6,6 @@ use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
 {
-    /**
-     * Global HTTP middleware stack
-     */
     protected $middleware = [
         \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
         \Illuminate\Http\Middleware\TrustProxies::class,
@@ -18,9 +15,6 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
     ];
 
-    /**
-     * Route middleware groups
-     */
     protected $middlewareGroups = [
         'web' => [
             \Illuminate\Cookie\Middleware\EncryptCookies::class,
@@ -32,19 +26,14 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
 
-    /**
-     * Route middleware (THIS IS IMPORTANT PART)
-     */
-protected $routeMiddleware = [
-
-    'auth' => \App\Http\Middleware\Authenticate::class,
-
-    'trainer' => \App\Http\Middleware\TrainerOnly::class,
-    'client' => \App\Http\Middleware\ClientOnly::class,
-
-];
+    protected $middlewareAliases = [
+        'auth' => \App\Http\Middleware\Authenticate::class,
+        'trainer' => \App\Http\Middleware\TrainerOnly::class,
+        'client' => \App\Http\Middleware\ClientOnly::class,
+    ];
 }

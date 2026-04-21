@@ -10,12 +10,12 @@ class TrainerOnly
 {
     public function handle(Request $request, Closure $next)
     {
-        if (!Auth::check()) {
-            return redirect('/login');
-        }
+        $user = Auth::user();
 
-        if (Auth::user()->role_id != 1) {
-            abort(403, 'Unauthorized');
+        if (!$user || (int)$user->role_id !== 1) {
+            return response()->json([
+                'message' => 'Unauthorized'
+            ], 403);
         }
 
         return $next($request);

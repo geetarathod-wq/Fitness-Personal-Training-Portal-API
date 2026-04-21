@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Api;
+namespace App\Http\Requests\API;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -15,8 +15,8 @@ class ExerciseRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'type' => 'nullable|string|max:100',
-            'description' => 'nullable|string|max:1000',
+            'type' => 'nullable|string',
+            'description' => 'nullable|string',
         ];
     }
 }

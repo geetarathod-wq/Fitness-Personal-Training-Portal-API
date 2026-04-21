@@ -4,7 +4,7 @@
 
 <div class="container mt-4">
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
+    <div class="d-flex justify-content-between mb-3">
         <h2>Exercises</h2>
 
         <a href="{{ route('admin.exercises.create') }}" class="btn btn-primary">
@@ -12,15 +12,11 @@
         </a>
     </div>
 
-    {{-- SUCCESS --}}
     @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
+        <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    {{-- DATATABLE --}}
-    <table id="clientsTable" class="table table-bordered table-striped">
+    <table id="exerciseTable" class="table table-bordered">
         <thead>
             <tr>
                 <th>Name</th>
@@ -29,57 +25,32 @@
                 <th>Actions</th>
             </tr>
         </thead>
-
-        <tbody>
-            @forelse($exercises as $exercise)
-            <tr>
-                <td>{{ $exercise->name }}</td>
-                <td>{{ $exercise->type }}</td>
-                <td>{{ $exercise->description }}</td>
-
-                <td>
-                    <div class="d-flex gap-2">
-
-                        <a href="{{ route('admin.exercises.edit', $exercise->id) }}"
-                           class="btn btn-sm btn-outline-warning">✏️</a>
-
-                        <form action="{{ route('admin.exercises.destroy', $exercise->id) }}"
-                              method="POST"
-                              onsubmit="return confirm('Delete this exercise?')">
-                            @csrf
-                            @method('DELETE')
-
-                            <button class="btn btn-sm btn-outline-danger">🗑</button>
-                        </form>
-
-                    </div>
-                </td>
-            </tr>
-            @empty
-            <tr>
-                <td colspan="4">No exercises found</td>
-            </tr>
-            @endforelse
-        </tbody>
     </table>
 
 </div>
 
-{{-- ✅ EXACT SAME SCRIPT AS CLIENT --}}
+{{-- ✅ DATATABLE --}}
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    $('#clientsTable').DataTable({
-        pageLength: 10,
-        lengthMenu: [10, 20, 50, 100],
-        ordering: true,
-        searching: true,
-        paging: true,
-        info: true,
-        responsive: true,
-        columnDefs: [
-            { orderable: false, targets: 3 }
+$(document).ready(function () {
+
+    $('#exerciseTable').DataTable({
+        processing: true,
+        serverSide: true,
+
+        // ✅ VERY IMPORTANT FIX
+        ajax: "{{ route('admin.exercises.data') }}",
+
+        columns: [
+            { data: 'name', name: 'name' },
+            { data: 'type', name: 'type' },
+            { data: 'description', name: 'description' },
+            { data: 'action', orderable: false, searchable: false }
         ]
     });
+
 });
 </script>
 

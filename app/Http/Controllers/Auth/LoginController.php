@@ -9,12 +9,9 @@ use App\Http\Requests\LoginRequest;
 
 class LoginController extends Controller
 {
-    // =========================
     // SHOW LOGIN PAGE
-    // =========================
     public function showLoginForm()
     {
-        // ✅ AUTO REDIRECT IF ALREADY LOGGED IN
         if (auth()->check()) {
             if (auth()->user()->isAdmin()) {
                 return redirect()->route('admin.dashboard');
@@ -25,13 +22,10 @@ class LoginController extends Controller
         return view('auth.login');
     }
 
-    // =========================
     // HANDLE LOGIN
-    // =========================
     public function login(LoginRequest $request)
     {
-        $data = $request->validated(); // ✅ request dictionary
-
+        $data = $request->validated();
         if (Auth::attempt([
             'email' => $data['email'],
             'password' => $data['password']
@@ -50,9 +44,8 @@ class LoginController extends Controller
             'email' => 'Email or password is incorrect',
         ]);
     }
-    // =========================
+
     // LOGOUT
-    // =========================
     public function logout(Request $request)
     {
         Auth::logout();

@@ -5,10 +5,9 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
 use App\Http\Requests\Api\RegisterRequest;
 use App\Http\Requests\Api\LoginRequest;
-use Illuminate\Http\Request;
-
 class AuthController extends Controller
 {
     public function register(RegisterRequest $request)

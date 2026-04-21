@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Api\Admin;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Exercise;
+use Illuminate\Http\Request;
 use App\Http\Requests\Api\ExerciseRequest;
 
 class ExerciseController extends Controller
@@ -45,13 +46,44 @@ class ExerciseController extends Controller
         ]);
     }
 
-    public function search($search)
-    {
-        $data = Exercise::where('name', 'like', "%$search%")
-            ->orWhere('type', 'like', "%$search%")
-            ->limit(10)
-            ->get();
+public function search(Request $request)
+{
+    $search = $request->query('search');
 
-        return response()->json($data);
+    if (!$search) {
+        return response()->json([
+            'message' => 'Search keyword required'
+        ], 400);
+    }
+
+    $exercises = Exercise::where('name', 'LIKE', "%{$search}%")
+        ->orWhere('type', 'LIKE', "%{$search}%")
+        ->orWhere('description', 'LIKE', "%{$search}%")
+        ->get();
+
+    if ($exercises->count() === 0) {
+        return response()->json([
+            'message' => 'No exercises found',
+            'data' => []
+        ]);
+    }
+
+    return response()->json([
+        'data' => $exercises
+    ]);
+}
+    public function show($id)
+    {
+        $exercise = Exercise::find($id);
+
+        if (!$exercise) {
+            return response()->json([
+                'message' => 'Exercise not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'data' => $exercise
+        ]);
     }
 }

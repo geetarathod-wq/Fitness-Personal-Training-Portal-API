@@ -4,39 +4,60 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Http\Request;
 use App\Models\DailyLog;
+use App\Http\Requests\Admin\StoreClientRequest;
+use App\Http\Requests\Admin\UpdateClientRequest;
+use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class ClientController extends Controller
 {
-    // 📋 LIST CLIENTS
     public function index()
     {
-        $clients = User::where('role_id', User::ROLE_CLIENT)
-            ->latest()
-            ->get(); 
-
-        return view('admin.clients.index', compact('clients'));
+        return view('admin.clients.index');
     }
-    // CREATE
+
+    public function getData(Request $request){
+        $clients = User::where('role_id', User::ROLE_CLIENT)->latest()->get();
+
+        return DataTables::of($clients)
+
+            ->addColumn('name', function ($row) {
+                return $row->name;
+            })
+            ->addColumn('email', function ($row) {
+                return $row->email;
+            })
+            ->addColumn('joined', function ($row) {
+                return $row->created_at->format('d M Y');
+            })
+            ->addColumn('action', function ($row) {
+                return '
+                    <a href="/admin/clients/'.$row->id.'/edit" class="btn btn-sm btn-primary">Edit</a>
+                    <form method="POST" action="/admin/clients/'.$row->id.'" style="display:inline;">
+                        '.csrf_field().'
+                        '.method_field("DELETE").'
+                        <button class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                ';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
     public function create()
     {
         return view('admin.clients.create');
     }
 
-    // STORE
-    public function store(Request $request)
+    public function store(StoreClientRequest $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6',
-        ]);
+        $data = $request->validated();
 
         User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => bcrypt($data['password']),
             'role_id' => User::ROLE_CLIENT,
         ]);
 
@@ -44,48 +65,37 @@ class ClientController extends Controller
             ->with('success', 'Client added');
     }
 
-    // EDIT
     public function edit($id)
     {
         $client = User::findOrFail($id);
         return view('admin.clients.edit', compact('client'));
     }
 
-    // UPDATE
-    public function update(Request $request, $id)
+    public function update(UpdateClientRequest $request, $id)
     {
         $client = User::findOrFail($id);
 
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email,' . $client->id,
-        ]);
-
-        $client->update([
-            'name' => $request->name,
-            'email' => $request->email,
-        ]);
+        $client->update($request->validated());
 
         return redirect()->route('admin.clients.index')
             ->with('success', 'Client updated successfully');
     }
 
-    // DELETE
     public function destroy($id)
     {
         User::findOrFail($id)->delete();
+
         return back()->with('success', 'Client deleted');
     }
 
-    // AJAX SEARCH 
     public function search(Request $request)
     {
         $search = $request->search;
 
         $clients = User::where('role_id', User::ROLE_CLIENT)
             ->where(function ($q) use ($search) {
-                $q->where('name', 'LIKE', '%' . $search . '%')
-                  ->orWhere('email', 'LIKE', '%' . $search . '%');
+                $q->where('name', 'LIKE', "%$search%")
+                  ->orWhere('email', 'LIKE', "%$search%");
             })
             ->limit(10)
             ->get();

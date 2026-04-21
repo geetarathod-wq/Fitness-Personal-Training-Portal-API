@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Api\Admin;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Plan;
+use Illuminate\Http\Request;
 use App\Http\Requests\Api\PlanRequest;
 
 class PlanController extends Controller
@@ -15,16 +16,23 @@ class PlanController extends Controller
         ]);
     }
 
-    public function store(PlanRequest $request)
-    {
-        $plan = Plan::create($request->validated());
+public function store(Request $request)
+{
+    $request->validate([
+        'name' => 'required',
+        'client_id' => 'required',
+        'assigned_date' => 'required',
+    ]);
 
-        return response()->json([
-            'message' => 'Plan created',
-            'data' => $plan
-        ], 201);
-    }
+    $plan = Plan::create([
+        'name' => $request->name,
+        'client_id' => $request->client_id,
+        'assigned_date' => $request->assigned_date,
+        'trainer_id' => auth()->id(),
+    ]);
 
+    return response()->json($plan, 201);
+}
     public function update(PlanRequest $request, $id)
     {
         $plan = Plan::findOrFail($id);

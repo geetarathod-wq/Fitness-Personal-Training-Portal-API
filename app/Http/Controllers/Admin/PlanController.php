@@ -7,39 +7,26 @@ use App\Models\Plan;
 use App\Models\Exercise;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Requests\Api\PlanRequest;
 
 class PlanController extends Controller
 {
-    // 📋 LIST ALL PLANS
     public function index()
     {
-        $plans = Plan::with(['client', 'exercises'])
-            ->latest()
-            ->get();
-
+        $plans = Plan::with(['client', 'exercises'])->latest()->get();
         return view('admin.plans.index', compact('plans'));
     }
 
-    // ➕ CREATE PAGE
     public function create()
     {
-        // ✅ FIX: removed pagination
         $exercises = Exercise::latest()->get();
-
         $clients = User::where('role_id', User::ROLE_CLIENT)->get();
 
         return view('admin.plans.create', compact('exercises', 'clients'));
     }
 
-    // 💾 STORE PLAN
-    public function store(Request $request)
+    public function store(PlanRequest $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'client_id' => 'required',
-            'assigned_date' => 'required',
-        ]);
-
         $plan = Plan::create([
             'name' => $request->name,
             'trainer_id' => auth()->id(),
@@ -47,7 +34,7 @@ class PlanController extends Controller
             'assigned_date' => $request->assigned_date,
         ]);
 
-        if (!empty($request->exercises)) {
+        if ($request->exercises) {
             foreach ($request->exercises as $exerciseId) {
                 if (!$exerciseId) continue;
 
@@ -63,7 +50,6 @@ class PlanController extends Controller
             ->with('success', 'Plan created successfully');
     }
 
-    // ✏️ EDIT PAGE
     public function edit($id)
     {
         $plan = Plan::with('exercises')->findOrFail($id);
@@ -73,8 +59,7 @@ class PlanController extends Controller
         return view('admin.plans.edit', compact('plan', 'exercises', 'clients'));
     }
 
-    // 🔄 UPDATE PLAN
-    public function update(Request $request, $id)
+    public function update(PlanRequest $request, $id)
     {
         $plan = Plan::findOrFail($id);
 
@@ -82,6 +67,7 @@ class PlanController extends Controller
             'name' => $request->name,
             'client_id' => $request->client_id,
             'assigned_date' => $request->assigned_date,
+            'trainer_id' => auth()->id(),
         ]);
 
         $plan->exercises()->detach();
@@ -100,7 +86,6 @@ class PlanController extends Controller
             ->with('success', 'Plan updated successfully');
     }
 
-    // 🗑 DELETE
     public function destroy($id)
     {
         Plan::findOrFail($id)->delete();
@@ -109,22 +94,18 @@ class PlanController extends Controller
             ->with('success', 'Plan deleted successfully');
     }
 
-    // 🔍 CLIENT SEARCH
     public function searchClients(Request $request)
     {
         return User::where('role_id', User::ROLE_CLIENT)
-            ->where('name', 'like', '%' . $request->search . '%')
+            ->where('name', 'like', "%{$request->search}%")
             ->limit(10)
             ->get();
     }
 
-    // 🔍 EXERCISE SEARCH (unused now but kept)
     public function searchExercises(Request $request)
     {
-        $exercises = Exercise::where('name', 'LIKE', '%' . $request->search . '%')
+        return Exercise::where('name', 'like', "%{$request->search}%")
             ->limit(10)
             ->get();
-
-        return response()->json($exercises);
     }
 }

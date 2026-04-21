@@ -2,6 +2,28 @@
 
 @section('content')
 
+@php
+    $hour = now()->format('H');
+
+    if ($hour < 12) {
+        $greeting = 'Good Morning';
+    } elseif ($hour < 17) {
+        $greeting = 'Good Afternoon';
+    } else {
+        $greeting = 'Good Evening';
+    }
+@endphp
+
+<!-- ✅ WELCOME TEXT (TOP OF PAGE) -->
+<div class="mb-4">
+    <h4 class="fw-bold">
+        {{ $greeting }}, {{ auth()->user()->name }} 👋
+    </h4>
+    <p class="text-muted mb-0">
+        Manage your fitness smartly 💪
+    </p>
+</div>
+
 <!-- Stats -->
 <div class="row">
 
@@ -120,6 +142,7 @@
 </div>
 
 @endsection
+
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

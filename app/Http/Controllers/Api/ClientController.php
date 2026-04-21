@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Api\Admin;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Http\Requests\Api\ClientRequest;
 use App\Http\Requests\Api\UpdateClientRequest;
-
 class ClientController extends Controller
 {
     public function index()

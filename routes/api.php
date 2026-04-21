@@ -2,103 +2,42 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\ExerciseController;
 use App\Http\Controllers\Api\PlanController;
 use App\Http\Controllers\Api\ClientController;
 use App\Http\Controllers\Api\WorkoutLogController;
 use App\Http\Controllers\Api\WorkoutTemplateController;
-use App\Http\Controllers\Api\ExerciseController;
 use App\Http\Controllers\Api\DailyLogController;
+use App\Http\Controllers\Api\DashboardController;
 
-/*
-|--------------------------------------------------------------------------
-| PUBLIC ROUTES (NO AUTH)
-|--------------------------------------------------------------------------
-*/
+Route::post('/register',[AuthController::class,'register']);
+Route::post('/login',[AuthController::class,'login']);
 
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
+Route::get('/exercises/search',[ExerciseController::class,'search']);
 
+Route::middleware('auth:sanctum')->group(function(){
 
-/*
-|--------------------------------------------------------------------------
-| PROTECTED ROUTES (SANCTUM)
-|--------------------------------------------------------------------------
-*/
+Route::post('/logout',[AuthController::class,'logout']);
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::get('/logs/weekly',[WorkoutLogController::class,'weekly']);
+Route::get('/logs/monthly',[WorkoutLogController::class,'monthly']);
+Route::get('/logs/calories',[WorkoutLogController::class,'calories']);
 
-    /*
-    |--------------------------------------------------------------------------
-    | AUTH
-    |--------------------------------------------------------------------------
-    */
-    Route::post('/logout', [AuthController::class, 'logout']);
+Route::middleware('trainer')->group(function(){
+Route::apiResource('clients',ClientController::class)->only(['index','store','destroy']);
+Route::apiResource('plans',PlanController::class)->only(['store','update','destroy']);
+Route::post('/plans/{id}/exercises',[PlanController::class,'addExercises']);
+Route::get('/dashboard/trainer',[DashboardController::class,'trainer']);
 
+});
 
-    /*
-    |--------------------------------------------------------------------------
-    | TRAINER ROUTES
-    |--------------------------------------------------------------------------
-    */
-    Route::middleware('trainer')->group(function () {
+Route::middleware('client')->group(function(){
+Route::apiResource('plans',PlanController::class)->only(['index','show']);
+Route::apiResource('logs',WorkoutLogController::class)->only(['index','store','show','destroy']);
+Route::get('/templates',[WorkoutTemplateController::class,'index']);
+});
 
-        /*
-        |-----------------------------
-        | CLIENTS (RESOURCE ROUTE)
-        |-----------------------------
-        */
-        Route::apiResource('clients', ClientController::class)
-            ->only(['index', 'store', 'destroy']);
+Route::apiResource('exercises',ExerciseController::class);
+Route::apiResource('daily-logs',DailyLogController::class)->only(['index','store','show','destroy']);
 
-        /*
-        |-----------------------------
-        | PLANS
-        |-----------------------------
-        */
-        Route::apiResource('plans', PlanController::class)
-            ->only(['store', 'update', 'destroy']);
-
-        Route::post('/plans/{id}/exercises', [PlanController::class, 'addExercises']);
-    });
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | CLIENT ROUTES
-    |--------------------------------------------------------------------------
-    */
-    Route::middleware('client')->group(function () {
-
-        /*
-        |-----------------------------
-        | PLANS (READ ONLY)
-        |-----------------------------
-        */
-        Route::apiResource('plans', PlanController::class)
-            ->only(['index', 'show']);
-
-        /*
-        |-----------------------------
-        | WORKOUT LOGS
-        |-----------------------------
-        */
-        Route::apiResource('logs', WorkoutLogController::class)
-            ->only(['index', 'store', 'show', 'destroy']);
-
-        /*
-        |-----------------------------
-        | WORKOUT TEMPLATES
-        |-----------------------------
-        */
-        Route::get('/templates', [WorkoutTemplateController::class, 'index']);
-    });
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | EXERCISES (COMMON FOR AUTH USERS)
-    |--------------------------------------------------------------------------
-    */
-    Route::apiResource('exercises', ExerciseController::class)
-        ->only(['index', 'store']);
 });

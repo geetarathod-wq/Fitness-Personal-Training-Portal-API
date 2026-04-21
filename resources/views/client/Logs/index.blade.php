@@ -13,51 +13,41 @@
         </a>
     </div>
 
-    {{-- SUCCESS --}}
+    {{-- SUCCESS MESSAGE --}}
     @if(session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
         </div>
     @endif
 
-    {{-- DATATABLE --}}
-    <table id="logsTable" class="table table-bordered table-striped">
+    {{-- TABLE --}}
+    <table id="logsTable" class="table table-bordered">
         <thead>
             <tr>
                 <th>Date</th>
                 <th>Weight</th>
                 <th>Calories</th>
-                <th>Notes</th>
-                <th>Action</th>
+                <th>Actions</th>
             </tr>
         </thead>
 
         <tbody>
-            @forelse($logs as $log)
-            <tr>
-                <td>{{ $log->date }}</td>
-                <td>{{ $log->weight ?? '-' }} kg</td>
-                <td>{{ $log->calories ?? '-' }}</td>
-                <td>{{ $log->notes ?? '-' }}</td>
-
-                <td>
-                    <form method="POST"
-                          action="{{ route('client.logs.delete', $log->id) }}"
-                          onsubmit="return confirm('Delete this log?')">
-                        @csrf
-                        @method('DELETE')
-
-                        <button class="btn btn-sm btn-outline-danger">
-                            🗑 Delete
-                        </button>
-                    </form>
-                </td>
-            </tr>
-            @empty
-            <tr>
-                <td colspan="5">No logs found</td>
-            </tr>
-            @endforelse
+            @foreach($logs as $log)
+                <tr>
+                    <td>{{ $log->date }}</td>
+                    <td>{{ $log->weight }}</td>
+                    <td>{{ $log->calories }}</td>
+                    <td>
+                        <form method="POST" action="{{ route('client.logs.delete', $log->id) }}">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            @endforeach
         </tbody>
     </table>
 
@@ -65,11 +55,11 @@
 
 @endsection
 
-
-{{-- ✅ IMPORTANT: PUSH SCRIPT (NOT NORMAL SCRIPT) --}}
+{{-- DATATABLE SCRIPT --}}
 @push('scripts')
 <script>
 $(document).ready(function () {
+
     $('#logsTable').DataTable({
         pageLength: 10,
         lengthMenu: [10, 20, 50, 100],
@@ -78,10 +68,13 @@ $(document).ready(function () {
         paging: true,
         info: true,
         responsive: true,
+
+
         columnDefs: [
-            { orderable: false, targets: 4 }
+            { orderable: false, targets: 3 }
         ]
     });
+
 });
 </script>
 @endpush

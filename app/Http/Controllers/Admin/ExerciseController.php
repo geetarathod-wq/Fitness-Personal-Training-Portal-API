@@ -4,78 +4,73 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Exercise;
+use App\Http\Requests\Admin\StoreExerciseRequest;
+use App\Http\Requests\Admin\UpdateExerciseRequest;
 use Illuminate\Http\Request;
+use Yajra\DataTables\Facades\DataTables;
 
 class ExerciseController extends Controller
 {
-    // 📋 LIST
     public function index()
     {
-        $exercises = \App\Models\Exercise::latest()->get(); // IMPORTANT
-
-        return view('admin.exercises.index', compact('exercises'));
+        return view('admin.exercises.index');
     }
 
-    // CREATE
+    public function getData(Request $request)
+    {
+        $exercises = Exercise::latest()->get();
+
+        return DataTables::of($exercises)
+            ->addColumn('name', fn($row) => $row->name)
+            ->addColumn('type', fn($row) => $row->type)
+            ->addColumn('description', fn($row) => $row->description)
+            ->addColumn('action', function ($row) {
+                return '
+                    <a href="'.route('admin.exercises.edit', $row->id).'" class="btn btn-sm btn-warning">Edit</a>
+
+                    <form method="POST" action="'.route('admin.exercises.destroy', $row->id).'" style="display:inline;">
+                        '.csrf_field().'
+                        '.method_field("DELETE").'
+                        <button class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+                ';
+            })
+            ->rawColumns(['action'])
+            ->make(true);
+    }
+
     public function create()
     {
         return view('admin.exercises.create');
     }
 
-    // STORE
-    public function store(Request $request)
+    public function store(StoreExerciseRequest $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'type' => 'nullable',
-            'description' => 'nullable',
-        ]);
-
-        Exercise::create($request->only(['name', 'type', 'description']));
+        Exercise::create($request->validated());
 
         return redirect()->route('admin.exercises.index')
-            ->with('success', 'Exercise created successfully');
+            ->with('success', 'Exercise created');
     }
 
-    // EDIT
     public function edit($id)
     {
         $exercise = Exercise::findOrFail($id);
         return view('admin.exercises.edit', compact('exercise'));
     }
 
-    // UPDATE
-    public function update(Request $request, $id)
+    public function update(UpdateExerciseRequest $request, $id)
     {
         $exercise = Exercise::findOrFail($id);
-
-        $exercise->update($request->only(['name', 'type', 'description']));
+        $exercise->update($request->validated());
 
         return redirect()->route('admin.exercises.index')
-            ->with('success', 'Exercise updated successfully');
+            ->with('success', 'Updated');
     }
 
-    // DELETE
     public function destroy($id)
     {
         Exercise::findOrFail($id)->delete();
 
-        return redirect()->route('admin.exercises.index')
-            ->with('success', 'Exercise deleted successfully');
-    }
-
-    // AJAX SEARCH
-    public function search(Request $request)
-    {
-        $search = $request->search;
-
-        $exercises = Exercise::where(function ($q) use ($search) {
-                $q->where('name', 'LIKE', '%' . $search . '%')
-                  ->orWhere('type', 'LIKE', '%' . $search . '%');
-            })
-            ->limit(10)
-            ->get();
-
-        return response()->json($exercises);
+        return back()->with('success', 'Deleted');
     }
 }

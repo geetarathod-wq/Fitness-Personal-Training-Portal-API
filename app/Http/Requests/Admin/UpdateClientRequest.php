@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Api;
+namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -13,11 +13,11 @@ class UpdateClientRequest extends FormRequest
 
     public function rules(): array
     {
-        $clientId = $this->route('id');
+        $id = $this->route('id');
 
         return [
-            'name'  => 'sometimes|string|max:255',
-            'email' => 'sometimes|email|unique:users,email,' . $clientId,
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email,' . $id,
         ];
     }
 }
