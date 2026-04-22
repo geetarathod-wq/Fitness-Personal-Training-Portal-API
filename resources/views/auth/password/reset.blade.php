@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Reset Password</title>
 
-  <link rel="shortcut icon" href="{{ asset('assets/images/logos/favicon.png') }}">
+  <link rel="icon" type="image/svg+xml" href="{{ asset('assets/images/logos/logo.svg') }}">
   <link rel="stylesheet" href="{{ asset('assets/css/styles.min.css') }}">
 </head>
 

@@ -20,28 +20,25 @@
 
 </div>
 
-{{-- DATATABLE SCRIPT --}}
-<script
-  src="https://code.jquery.com/jquery-4.0.0.min.js"
-  integrity="sha256-OaVG6prZf4v69dPg6PhVattBXkcOWQB62pdZ3ORyrao="
-  crossorigin="anonymous"></script>
+@endsection
+
+@push('scripts')
 <script>
-
     $(function () {
-
         $('#clientsTable').DataTable({
             processing: true,
             serverSide: true,
+            deferRender: true,
+            pageLength: 25,
+            order: [[2, 'desc']],
             ajax: "{{ route('admin.clients.data') }}",
-
             columns: [
-                { data: 'name', name: 'name' },
-                { data: 'email', name: 'email' },
-                { data: 'joined', name: 'joined' },
-                { data: 'action', name: 'action', orderable: false, searchable: false },
+                { data: 'name',       name: 'name' },
+                { data: 'email',      name: 'email' },
+                { data: 'created_at', name: 'created_at' },
+                { data: 'action',     name: 'action', orderable: false, searchable: false },
             ]
         });
     });
-</script> 
-
-@endsection
+</script>
+@endpush

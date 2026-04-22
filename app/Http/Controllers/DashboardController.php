@@ -62,7 +62,9 @@ class DashboardController extends Controller
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|email',
-            'password' => 'nullable|min:6'
+            'password' => 'nullable|min:6|confirmed',
+        ], [
+            'password.confirmed' => 'The password confirmation does not match.',
         ]);
 
         $user = auth()->user();
