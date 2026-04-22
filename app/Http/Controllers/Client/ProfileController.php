@@ -20,7 +20,9 @@ class ProfileController extends Controller
         $request->validate([
             'name' => 'required',
             'email' => 'required|email',
-            'password' => 'nullable|min:6'
+            'password' => 'nullable|min:6|confirmed',
+        ], [
+            'password.confirmed' => 'The password confirmation does not match.',
         ]);
 
         $user->name = $request->name;

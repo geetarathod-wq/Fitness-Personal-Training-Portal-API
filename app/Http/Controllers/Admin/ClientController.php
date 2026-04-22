@@ -18,31 +18,24 @@ class ClientController extends Controller
     }
 
     public function getData(Request $request){
-        $clients = User::where('role_id', User::ROLE_CLIENT)->latest()->get();
+        $clients = User::query()
+            ->where('role_id', User::ROLE_CLIENT)
+            ->select(['id', 'name', 'email', 'created_at']);
 
-        return DataTables::of($clients)
+        $csrf = csrf_token();
 
-            ->addColumn('name', function ($row) {
-                return $row->name;
-            })
-            ->addColumn('email', function ($row) {
-                return $row->email;
-            })
-            ->addColumn('joined', function ($row) {
-                return $row->created_at->format('d M Y');
-            })
-            ->addColumn('action', function ($row) {
-                return '
-                    <a href="/admin/clients/'.$row->id.'/edit" class="btn btn-sm btn-primary">Edit</a>
-                    <form method="POST" action="/admin/clients/'.$row->id.'" style="display:inline;">
-                        '.csrf_field().'
-                        '.method_field("DELETE").'
-                        <button class="btn btn-sm btn-danger">Delete</button>
-                    </form>
-                ';
-            })
+        return DataTables::eloquent($clients)
+            ->editColumn('created_at', fn ($row) => $row->created_at->format('d M Y'))
+            ->addColumn('action', fn ($row) =>
+                '<a href="/admin/clients/'.$row->id.'/edit" class="btn btn-sm btn-primary">Edit</a>
+                 <form method="POST" action="/admin/clients/'.$row->id.'" style="display:inline;">
+                    <input type="hidden" name="_token" value="'.$csrf.'">
+                    <input type="hidden" name="_method" value="DELETE">
+                    <button class="btn btn-sm btn-danger">Delete</button>
+                 </form>'
+            )
             ->rawColumns(['action'])
-            ->make(true);
+            ->toJson();
     }
 
     public function create()

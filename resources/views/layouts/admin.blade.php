@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Admin Dashboard</title>
 
+    <link rel="icon" type="image/svg+xml" href="{{ asset('assets/images/logos/logo.svg') }}">
+
     {{-- MAIN CSS --}}
     <link rel="stylesheet" href="{{ asset('assets/css/styles.min.css') }}">
     {{-- ICON --}}

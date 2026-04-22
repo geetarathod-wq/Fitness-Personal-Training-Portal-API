@@ -7,7 +7,7 @@
 >
   <title>Forgot Password </title>
 
-  <link rel="shortcut icon" href="{{ asset('assets/images/logos/favicon.png') }}">
+  <link rel="icon" type="image/svg+xml" href="{{ asset('assets/images/logos/logo.svg') }}">
   <link rel="stylesheet" href="{{ asset('assets/css/styles.min.css') }}">
 </head>
 
