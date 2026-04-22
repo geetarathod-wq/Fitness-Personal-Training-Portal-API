@@ -14,7 +14,7 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
-    // ROLE CONSTANTS
+    // ================= ROLE CONSTANTS =================
     const ROLE_TRAINER = 1;
     const ROLE_CLIENT = 2;
 
@@ -45,19 +45,16 @@ class User extends Authenticatable
         return $this->belongsTo(\App\Models\Role::class);
     }
 
-    // Trainer → creates plans
     public function trainerPlans()
     {
         return $this->hasMany(Plan::class, 'trainer_id');
     }
 
-    // Client → receives plans
     public function clientPlans()
     {
         return $this->hasMany(Plan::class, 'client_id');
     }
 
-    // Client → daily logs
     public function dailyLogs()
     {
         return $this->hasMany(DailyLog::class, 'client_id');
@@ -65,7 +62,7 @@ class User extends Authenticatable
 
     // ================= ROLE CHECK METHODS =================
 
-    public function isAdmin()
+    public function isTrainer()
     {
         return $this->role_id == self::ROLE_TRAINER;
     }

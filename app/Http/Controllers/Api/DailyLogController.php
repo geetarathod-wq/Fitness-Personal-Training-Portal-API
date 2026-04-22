@@ -9,65 +9,80 @@ use App\Http\Requests\Api\DailyLogRequest;
 
 class DailyLogController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum');
+    }
+
+    // 📄 GET ALL LOGS
     public function index(Request $request)
     {
+        $logs = DailyLog::where('user_id', $request->user()->id)
+            ->orderBy('date', 'desc')
+            ->get();
+
         return response()->json([
-            'data' => DailyLog::where('client_id', $request->user()->id)
-                ->orderBy('date', 'desc')
-                ->get()
+            'data' => $logs
         ]);
     }
 
+    // ➕ STORE LOG
     public function store(DailyLogRequest $request)
     {
-        $log = DailyLog::create([
-            'user_id'   => $request->user()->id,   
-            'client_id' => $request->user()->id,  
+        $userId = $request->user()->id;
 
-            'date' => $request->date,
-            'weight' => $request->weight,
-            'calories' => $request->calories,
-            'notes' => $request->notes ?? null
+        $log = DailyLog::create([
+            'user_id'   => $userId,
+            'client_id' => $userId, // keep backward compatibility
+
+            'date'      => $request->date,
+            'weight'    => $request->weight,
+            'bodyfat'   => $request->bodyfat ?? null,
+            'calories'  => $request->calories,
+            'notes'     => $request->notes ?? null,
         ]);
 
         return response()->json([
             'message' => 'Log saved successfully',
-            'data'    => $log
+            'data' => $log
         ], 201);
     }
-public function show(Request $request, $id)
-{
-    $log = DailyLog::where('id', $id)
-        ->where('client_id', $request->user()->id)
-        ->first();
 
-    if (!$log) {
+    // 🔍 SHOW SINGLE LOG (SECURE)
+    public function show(Request $request, $id)
+    {
+        $log = DailyLog::where('id', $id)
+            ->where('user_id', $request->user()->id)
+            ->first();
+
+        if (!$log) {
+            return response()->json([
+                'message' => 'Daily log not found'
+            ], 404);
+        }
+
         return response()->json([
-            'message' => 'Daily log not found'
-        ], 404);
+            'data' => $log
+        ]);
     }
 
-    return response()->json([
-        'data' => $log
-    ]);
-}
+    // ❌ DELETE LOG (SECURE)
+    public function destroy(Request $request, $id)
+    {
+        $log = DailyLog::where('id', $id)
+            ->where('user_id', $request->user()->id)
+            ->first();
 
-public function destroy(Request $request, $id)
-{
-    $log = DailyLog::where('id', $id)
-        ->where('client_id', $request->user()->id)
-        ->first();
+        if (!$log) {
+            return response()->json([
+                'message' => 'Not found'
+            ], 404);
+        }
 
-    if (!$log) {
+        $log->delete();
+
         return response()->json([
-            'message' => 'Not found'
-        ], 404);
+            'message' => 'Deleted successfully'
+        ]);
     }
-
-    $log->delete();
-
-    return response()->json([
-        'message' => 'Deleted successfully'
-    ]);
-}
 }

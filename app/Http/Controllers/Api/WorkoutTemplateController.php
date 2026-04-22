@@ -4,46 +4,50 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Plan;
 
 class WorkoutTemplateController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        return response()->json([
+            'data' => Plan::with(['exercises', 'trainer'])->get()
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        return response()->json([
+            'message' => 'Templates are managed via Plans module'
+        ], 200);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $template = Plan::with(['exercises', 'trainer'])->find($id);
+
+        if (!$template) {
+            return response()->json([
+                'message' => 'Template not found'
+            ], 404);
+        }
+
+        return response()->json([
+            'data' => $template
+        ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        //
+        return response()->json([
+            'message' => 'Templates are managed via Plans module'
+        ], 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        return response()->json([
+            'message' => 'Templates cannot be deleted from this endpoint'
+        ], 200);
     }
 }

@@ -12,7 +12,6 @@ use App\Http\Controllers\Api\DashboardController;
 
 Route::post('/register',[AuthController::class,'register']);
 Route::post('/login',[AuthController::class,'login']);
-
 Route::get('/exercises/search',[ExerciseController::class,'search']);
 
 Route::middleware('auth:sanctum')->group(function(){

@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 
 class TrainerOnly
 {
@@ -12,7 +13,7 @@ class TrainerOnly
     {
         $user = Auth::user();
 
-        if (!$user || (int)$user->role_id !== 1) {
+        if (!$user || (int)$user->role_id !== User::ROLE_TRAINER) {
             return response()->json([
                 'message' => 'Unauthorized (Trainer only access)'
             ], 403);

@@ -4,18 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\User;
+use App\Models\Exercise;
 
 class Plan extends Model
 {
     use SoftDeletes;
+
     protected $fillable = [
         'name',
         'trainer_id',
+        'user_id',
         'client_id',
         'assigned_date'
     ];
 
-    // 🏋️ Exercises
     public function exercises()
     {
         return $this->belongsToMany(Exercise::class, 'plan_exercises')
@@ -23,18 +26,26 @@ class Plan extends Model
             ->withTimestamps();
     }
 
-    // 👨‍🏫 Trainer
     public function trainer()
     {
         return $this->belongsTo(User::class, 'trainer_id');
     }
 
-    // 👤 Client
     public function client()
     {
         return $this->belongsTo(User::class, 'client_id');
     }
-    
 
-    
+    protected static function booted()
+    {
+        static::creating(function ($model) {
+            if (!$model->user_id && $model->client_id) {
+                $model->user_id = $model->client_id;
+            }
+
+            if (!$model->client_id && $model->user_id) {
+                $model->client_id = $model->user_id;
+            }
+        });
+    }
 }

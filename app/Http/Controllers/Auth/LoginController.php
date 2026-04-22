@@ -13,9 +13,12 @@ class LoginController extends Controller
     public function showLoginForm()
     {
         if (auth()->check()) {
-            if (auth()->user()->isAdmin()) {
+
+            // ✅ FIXED: use isTrainer instead of isAdmin
+            if (auth()->user()->isTrainer()) {
                 return redirect()->route('admin.dashboard');
             }
+
             return redirect()->route('client.dashboard');
         }
 
@@ -26,6 +29,7 @@ class LoginController extends Controller
     public function login(LoginRequest $request)
     {
         $data = $request->validated();
+
         if (Auth::attempt([
             'email' => $data['email'],
             'password' => $data['password']
@@ -33,7 +37,10 @@ class LoginController extends Controller
 
             $request->session()->regenerate();
 
-            if (auth()->user()->isAdmin()) {
+            $user = auth()->user();
+
+            // ✅ FIXED: use isTrainer instead of isAdmin
+            if ($user->isTrainer()) {
                 return redirect()->route('admin.dashboard');
             }
 
