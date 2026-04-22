@@ -11,7 +11,9 @@ class ClientOnly
     public function handle(Request $request, Closure $next)
     {
         if (!Auth::check() || Auth::user()->role_id != 2) {
-            abort(403);
+            return response()->json([
+                'message' => 'Unauthorized (Client only access)'
+            ], 403);
         }
 
         return $next($request);

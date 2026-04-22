@@ -71,4 +71,44 @@ public function store(Request $request)
                 ->get()
         );
     }
+
+    public function addExercises(Request $request, $id)
+{
+    $plan = Plan::where('id', $id)->first();
+
+    if (!$plan) {
+        return response()->json([
+            'message' => 'Plan not found'
+        ], 404);
+    }
+
+    $request->validate([
+        'exercise_ids' => 'required|array',
+        'exercise_ids.*' => 'exists:exercises,id'
+    ]);
+
+    $plan->exercises()->syncWithoutDetaching($request->exercise_ids);
+
+    return response()->json([
+        'message' => 'Exercises added successfully',
+        'plan_id' => $plan->id
+    ]);
+}
+
+public function show(Request $request, $id)
+{
+    $plan = Plan::with('exercises')
+        ->where('id', $id)
+        ->first();
+
+    if (!$plan) {
+        return response()->json([
+            'message' => 'Plan not found'
+        ], 404);
+    }
+
+    return response()->json([
+        'data' => $plan
+    ]);
+}
 }

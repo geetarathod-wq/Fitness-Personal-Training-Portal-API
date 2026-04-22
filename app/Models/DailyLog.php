@@ -8,6 +8,7 @@ use App\Models\User;
 class DailyLog extends Model
 {
     protected $fillable = [
+        'user_id',
         'client_id',
         'date',
         'weight',

@@ -14,7 +14,7 @@ class TrainerOnly
 
         if (!$user || (int)$user->role_id !== 1) {
             return response()->json([
-                'message' => 'Unauthorized'
+                'message' => 'Unauthorized (Trainer only access)'
             ], 403);
         }
 

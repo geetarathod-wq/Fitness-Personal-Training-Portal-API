@@ -20,14 +20,17 @@ class WorkoutLogController extends Controller
     {
         $log = WorkoutLog::create([
             'user_id'     => $request->user()->id,
+
             'plan_id'     => $request->plan_id,
             'exercise_id' => $request->exercise_id,
             'sets'        => $request->sets,
             'reps'        => $request->reps,
-            'calories'    => $request->calories,
-            'weight'      => $request->weight,
             'duration'    => $request->duration,
             'notes'       => $request->notes,
+
+            'weight'      => $request->weight,
+            'calories'    => $request->calories,
+
             'date'        => $request->logged_at ?? now()->toDateString(),
         ]);
 
@@ -65,7 +68,6 @@ class WorkoutLogController extends Controller
         return response()->json(['message' => 'Workout log deleted successfully']);
     }
 
-    // 📊 WEEKLY ANALYTICS
     public function weekly(Request $request)
     {
         $logs = WorkoutLog::where('user_id', $request->user()->id)
@@ -83,7 +85,6 @@ class WorkoutLogController extends Controller
         ]);
     }
 
-    // 📊 MONTHLY ANALYTICS
     public function monthly(Request $request)
     {
         $logs = WorkoutLog::where('user_id', $request->user()->id)
@@ -100,7 +101,6 @@ class WorkoutLogController extends Controller
         ]);
     }
 
-   
     public function calories(Request $request)
     {
         $total = WorkoutLog::where('user_id', $request->user()->id)

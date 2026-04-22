@@ -21,10 +21,13 @@ class DailyLogController extends Controller
     public function store(DailyLogRequest $request)
     {
         $log = DailyLog::create([
-            'client_id' => $request->user()->id,
-            'weight'    => $request->weight,
-            'calories'  => $request->calories,
-            'date'      => $request->date,
+            'user_id'   => $request->user()->id,   
+            'client_id' => $request->user()->id,  
+
+            'date' => $request->date,
+            'weight' => $request->weight,
+            'calories' => $request->calories,
+            'notes' => $request->notes ?? null
         ]);
 
         return response()->json([
@@ -32,28 +35,39 @@ class DailyLogController extends Controller
             'data'    => $log
         ], 201);
     }
+public function show(Request $request, $id)
+{
+    $log = DailyLog::where('id', $id)
+        ->where('client_id', $request->user()->id)
+        ->first();
 
-    public function show($id)
-    {
-        $log = DailyLog::find($id);
-
-        if (!$log) {
-            return response()->json(['message' => 'Not found'], 404);
-        }
-
-        return response()->json(['data' => $log]);
+    if (!$log) {
+        return response()->json([
+            'message' => 'Daily log not found'
+        ], 404);
     }
 
-    public function destroy($id)
-    {
-        $log = DailyLog::find($id);
+    return response()->json([
+        'data' => $log
+    ]);
+}
 
-        if (!$log) {
-            return response()->json(['message' => 'Not found'], 404);
-        }
+public function destroy(Request $request, $id)
+{
+    $log = DailyLog::where('id', $id)
+        ->where('client_id', $request->user()->id)
+        ->first();
 
-        $log->delete();
-
-        return response()->json(['message' => 'Deleted successfully']);
+    if (!$log) {
+        return response()->json([
+            'message' => 'Not found'
+        ], 404);
     }
+
+    $log->delete();
+
+    return response()->json([
+        'message' => 'Deleted successfully'
+    ]);
+}
 }
