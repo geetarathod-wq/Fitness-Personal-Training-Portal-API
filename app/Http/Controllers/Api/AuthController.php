@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use App\Http\Requests\Api\RegisterRequest;
 use App\Http\Requests\Api\LoginRequest;
+
 class AuthController extends Controller
 {
     public function register(RegisterRequest $request)

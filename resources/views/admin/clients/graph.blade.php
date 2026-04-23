@@ -1,77 +1,50 @@
 @extends('layouts.admin')
-
 @section('content')
-
 <div class="container mt-4">
-
-    <h3>📊 Client Progress: {{ $client->name }}</h3>
-
-    <div class="card mt-3">
-        <div class="card-body">
-
-            @if($logs->count() > 0)
-                <canvas id="clientChart" height="100"></canvas>
-            @else
-                <p class="text-muted">No data available</p>
-            @endif
-
-        </div>
-    </div>
-
+<h3>{{ $client->name }} - Progress Graph</h3>
+@if($logs->isEmpty())
+<div class="alert alert-warning">No progress data available.</div>
+@else
+<canvas id="progressChart" height="100"></canvas>
+@endif
 </div>
-
-<!-- Chart.js -->
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-
-    let logs = @json($logs);
-
-    if (!logs || logs.length === 0) return;
-
-    let labels = logs.map(l => l.date ?? (l.created_at ? l.created_at.split('T')[0] : ''));
-
-    let weights = logs.map(l => Number(l.weight) || 0);
-    let calories = logs.map(l => Number(l.calories) || 0);
-
-    new Chart(document.getElementById('clientChart'), {
-        type: 'line',
-        data: {
-            labels: labels,
-            datasets: [
-                {
-                    label: 'Weight (kg)',
-                    data: weights,
-                    borderColor: '#0d6efd',
-                    backgroundColor: 'rgba(13,110,253,0.1)',
-                    tension: 0.4
-                },
-                {
-                    label: 'Calories',
-                    data: calories,
-                    borderColor: '#198754',
-                    backgroundColor: 'rgba(25,135,84,0.1)',
-                    tension: 0.4
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top'
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-
-});
-</script>
-
 @endsection
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+@if(!$logs->isEmpty())
+const labels=@json($logs->pluck('date'));
+const weightData=@json($logs->pluck('weight'));
+const caloriesData=@json($logs->pluck('calories')->map(fn($c)=>$c??0));
+const ctx=document.getElementById('progressChart').getContext('2d');
+new Chart(ctx,{
+type:'line',
+data:{
+labels:labels,
+datasets:[
+{
+label:'Weight (kg)',
+data:weightData,
+borderWidth:2,
+tension:0.4,
+fill:false
+},
+{
+label:'Calories',
+data:caloriesData,
+borderWidth:2,
+tension:0.4,
+fill:false
+}
+]
+},
+options:{
+responsive:true,
+plugins:{
+legend:{display:true}
+}
+}
+});
+@endif
+</script>
+@endpush

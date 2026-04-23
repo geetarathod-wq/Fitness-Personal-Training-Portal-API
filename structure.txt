@@ -3,7 +3,6 @@ Volume serial number is E46B-D8D2
 C:.
 ¦   .editorconfig
 ¦   .env
-¦   .env.example
 ¦   .gitattributes
 ¦   .gitignore
 ¦   artisan
@@ -37,6 +36,7 @@ C:.
 ¦   ¦   ¦   ¦       AuthController.php
 ¦   ¦   ¦   ¦       ClientController.php
 ¦   ¦   ¦   ¦       DailyLogController.php
+¦   ¦   ¦   ¦       DashboardController.php
 ¦   ¦   ¦   ¦       ExerciseController.php
 ¦   ¦   ¦   ¦       PlanController.php
 ¦   ¦   ¦   ¦       ProfileController.php
@@ -81,7 +81,9 @@ C:.
 ¦   ¦   ¦   ¦       ClientRequest.php
 ¦   ¦   ¦   ¦       DailyLogRequest.php
 ¦   ¦   ¦   ¦       ExerciseRequest.php
+¦   ¦   ¦   ¦       LoginRequest.php
 ¦   ¦   ¦   ¦       PlanRequest.php
+¦   ¦   ¦   ¦       RegisterRequest.php
 ¦   ¦   ¦   ¦       WorkoutLogRequest.php
 ¦   ¦   ¦   ¦       WorkoutTemplateRequest.php
 ¦   ¦   ¦   ¦       
@@ -97,12 +99,14 @@ C:.
 ¦   ¦           WorkoutResource.php
 ¦   ¦           
 ¦   +---Models
+¦   ¦       Client.php
 ¦   ¦       DailyLog.php
 ¦   ¦       Exercise.php
 ¦   ¦       Plan.php
 ¦   ¦       PlanExercise.php
 ¦   ¦       Role.php
 ¦   ¦       User.php
+¦   ¦       WorkoutLog.php
 ¦   ¦       
 ¦   +---Observers
 ¦   ¦       WorkoutLogObserver.php
@@ -160,8 +164,12 @@ C:.
 ¦   ¦       2026_04_13_142103_add_description_to_exercises_table.php
 ¦   ¦       2026_04_14_072429_add_deleted_at_to_tables.php
 ¦   ¦       2026_04_17_103505_create_personal_access_tokens_table.php
+¦   ¦       2026_04_21_150428_create_workout_logs_table.php
+¦   ¦       2026_04_21_155724_create_clients_table.php
+¦   ¦       2026_04_22_075756_update_workout_logs_table.php
 ¦   ¦       
 ¦   +---seeders
+¦           ClientSeeder.php
 ¦           DatabaseSeeder.php
 ¦           RolesAndUsersSeeder.php
 ¦           RoleSeeder.php
@@ -6917,8 +6925,8 @@ C:.
 ¦   ¦   ¦           
 ¦   ¦   +---sessions
 ¦   ¦   ¦       .gitignore
-¦   ¦   ¦       DuVSmkUHXmPFZFrBb8LnZAj8hcsvy8lB2ehH67mC
-¦   ¦   ¦       ym1exL5lDEVi0pDOQI18aTLfzTo1nZ0TLm7IH0B3
+¦   ¦   ¦       jxNiBS4HPGfp6X9Qv1Csv1wm2rXBGSBY9ODu7YWm
+¦   ¦   ¦       WvpF7TBFEDwaodv6dPHMSR8YBUtFeWDoXdp9FS9n
 ¦   ¦   ¦       
 ¦   ¦   +---testing
 ¦   ¦   ¦       .gitignore
@@ -6928,14 +6936,12 @@ C:.
 ¦   ¦           052f9e409cab82b07bbfbfbc57a195c2.php
 ¦   ¦           0b167787f0c208016a384b8876287b5c.php
 ¦   ¦           0f7a6f05093aa7decf31f732c50dbe4e.php
-¦   ¦           13c4cd2c29fc4c59136c562dfb251040.php
 ¦   ¦           15c9be8e89bf05d6b0e91717de2c9945.php
 ¦   ¦           161ffaef4e03933552c25c484881983b.php
 ¦   ¦           162816222cf874bb7b2257ba35225c14.php
 ¦   ¦           1be3fbf13237f8048a5ea4dd1c61b573.php
 ¦   ¦           1c8f1b10e2970822a4e5e80306d528e9.php
 ¦   ¦           201ff0026c760258913a8d3ebc2d9410.php
-¦   ¦           260cb9ac456c4e847f94e8013d734d78.php
 ¦   ¦           2c45f0856b650498491e8a7c8770cd2e.php
 ¦   ¦           3f50c85ab408bd1c208da8a05e677484.php
 ¦   ¦           4304b3071eb1686d4f085617f46232bd.php
@@ -6943,16 +6949,12 @@ C:.
 ¦   ¦           4a64bae016b799eed636be6acb786f84.php
 ¦   ¦           5761cab745bedc1ea01b2b3193f2282e.php
 ¦   ¦           58c1b13a647ab322a2eec0fc972c5360.php
-¦   ¦           5942fd6ffd00442b0bf6df5feda27dbc.php
 ¦   ¦           63b52243030a0d83583f6a1fade9176c.php
 ¦   ¦           6603da8a454da77fc624a78a1aba4ed4.php
 ¦   ¦           68863114d267d212eebb9659a94136f5.php
-¦   ¦           6964fd649c80e228811e6267eb422c06.php
 ¦   ¦           69e6b19201c0edc273941c37e7ce990d.php
-¦   ¦           6bb23e4d6a918ace3c6ac528efbd797c.php
 ¦   ¦           741db982c79b992997391b8b1509fc96.php
 ¦   ¦           7483d51cc843bc74b577852a1c5577b0.php
-¦   ¦           75ddd15c4a5d2d8566f1f677ed0d2bb6.php
 ¦   ¦           7610425cbd0ddda8c8847f43d6f01b68.php
 ¦   ¦           78cfec4be20571e8283a768c3247ff48.php
 ¦   ¦           8df0f74c011e8f2b904e457f625e7c5b.php
@@ -6966,10 +6968,8 @@ C:.
 ¦   ¦           a2174fb9b6df26d2be8fdfa2f3d4300f.php
 ¦   ¦           a56dd8d2363d4910399da8747ab9c2dd.php
 ¦   ¦           abb457c55a74762992de7b36d40777ad.php
-¦   ¦           afc1fcd746cca8015e8a800646ea8d70.php
 ¦   ¦           bd59a16543cfda63099e488ac54090ee.php
 ¦   ¦           bf4f47afc8610a33d8511f8750b85704.php
-¦   ¦           c2dc30380d4907da701ffacdd45e31fe.php
 ¦   ¦           cec53d1b8b28b8a21b8b280cf898a86b.php
 ¦   ¦           d45f4aff6bfe8a8a03d78cc13839a47b.php
 ¦   ¦           d951484c630656df2ba2f1757bbed973.php
@@ -6987,6 +6987,7 @@ C:.
 ¦   ¦           fa5650665d12643f0794437a8ee725a9.php
 ¦   ¦           fa9677cb18be25bfe31e826eebc4cdd5.php
 ¦   ¦           fadf2802e4e337b568f5e08dcb799986.php
+¦   ¦           ff210052871530f6c274a68e8a1b7597.php
 ¦   ¦           ff639354749b92b229fdcecf952c1696.php
 ¦   ¦           
 ¦   +---logs
@@ -8534,7 +8535,6 @@ C:.
     ¦   ¦           ¦           BatchCanceled.php
     ¦   ¦           ¦           BatchDispatched.php
     ¦   ¦           ¦           BatchFinished.php
-    ¦   ¦           ¦           BatchStarted.php
     ¦   ¦           ¦           
     ¦   ¦           +---Cache
     ¦   ¦           ¦   ¦   ApcStore.php
@@ -8591,9 +8591,6 @@ C:.
     ¦   ¦           ¦   ¦       CacheFlushFailed.php
     ¦   ¦           ¦   ¦       CacheFlushing.php
     ¦   ¦           ¦   ¦       CacheHit.php
-    ¦   ¦           ¦   ¦       CacheLocksFlushed.php
-    ¦   ¦           ¦   ¦       CacheLocksFlushFailed.php
-    ¦   ¦           ¦   ¦       CacheLocksFlushing.php
     ¦   ¦           ¦   ¦       CacheMissed.php
     ¦   ¦           ¦   ¦       ForgettingKey.php
     ¦   ¦           ¦   ¦       KeyForgetFailed.php
@@ -8677,14 +8674,6 @@ C:.
     ¦   ¦           ¦   ¦   QuestionHelper.php
     ¦   ¦           ¦   ¦   Signals.php
     ¦   ¦           ¦   ¦   
-    ¦   ¦           ¦   +---Attributes
-    ¦   ¦           ¦   ¦       Aliases.php
-    ¦   ¦           ¦   ¦       Description.php
-    ¦   ¦           ¦   ¦       Help.php
-    ¦   ¦           ¦   ¦       Hidden.php
-    ¦   ¦           ¦   ¦       Signature.php
-    ¦   ¦           ¦   ¦       Usage.php
-    ¦   ¦           ¦   ¦       
     ¦   ¦           ¦   +---Concerns
     ¦   ¦           ¦   ¦       CallsCommands.php
     ¦   ¦           ¦   ¦       ConfiguresPrompts.php
@@ -8707,8 +8696,6 @@ C:.
     ¦   ¦           ¦   ¦       ScheduledTaskFinished.php
     ¦   ¦           ¦   ¦       ScheduledTaskSkipped.php
     ¦   ¦           ¦   ¦       ScheduledTaskStarting.php
-    ¦   ¦           ¦   ¦       SchedulePaused.php
-    ¦   ¦           ¦   ¦       ScheduleResumed.php
     ¦   ¦           ¦   ¦       
     ¦   ¦           ¦   +---resources
     ¦   ¦           ¦   ¦   +---views
@@ -8735,8 +8722,6 @@ C:.
     ¦   ¦           ¦   ¦       ScheduleFinishCommand.php
     ¦   ¦           ¦   ¦       ScheduleInterruptCommand.php
     ¦   ¦           ¦   ¦       ScheduleListCommand.php
-    ¦   ¦           ¦   ¦       SchedulePauseCommand.php
-    ¦   ¦           ¦   ¦       ScheduleResumeCommand.php
     ¦   ¦           ¦   ¦       ScheduleRunCommand.php
     ¦   ¦           ¦   ¦       ScheduleTestCommand.php
     ¦   ¦           ¦   ¦       ScheduleWorkCommand.php
@@ -8834,7 +8819,6 @@ C:.
     ¦   ¦           ¦   ¦       QueueingDispatcher.php
     ¦   ¦           ¦   ¦       
     ¦   ¦           ¦   +---Cache
-    ¦   ¦           ¦   ¦       CanFlushLocks.php
     ¦   ¦           ¦   ¦       Factory.php
     ¦   ¦           ¦   ¦       Lock.php
     ¦   ¦           ¦   ¦       LockProvider.php
@@ -9148,7 +9132,6 @@ C:.
     ¦   ¦           ¦   ¦   ¦   MassPrunable.php
     ¦   ¦           ¦   ¦   ¦   MissingAttributeException.php
     ¦   ¦           ¦   ¦   ¦   Model.php
-    ¦   ¦           ¦   ¦   ¦   ModelInfo.php
     ¦   ¦           ¦   ¦   ¦   ModelInspector.php
     ¦   ¦           ¦   ¦   ¦   ModelNotFoundException.php
     ¦   ¦           ¦   ¦   ¦   PendingHasThroughRelationship.php
@@ -9160,29 +9143,17 @@ C:.
     ¦   ¦           ¦   ¦   ¦   SoftDeletingScope.php
     ¦   ¦           ¦   ¦   ¦   
     ¦   ¦           ¦   ¦   +---Attributes
-    ¦   ¦           ¦   ¦   ¦       Appends.php
     ¦   ¦           ¦   ¦   ¦       Boot.php
     ¦   ¦           ¦   ¦   ¦       CollectedBy.php
-    ¦   ¦           ¦   ¦   ¦       Connection.php
-    ¦   ¦           ¦   ¦   ¦       DateFormat.php
-    ¦   ¦           ¦   ¦   ¦       Fillable.php
-    ¦   ¦           ¦   ¦   ¦       Guarded.php
-    ¦   ¦           ¦   ¦   ¦       Hidden.php
     ¦   ¦           ¦   ¦   ¦       Initialize.php
     ¦   ¦           ¦   ¦   ¦       ObservedBy.php
     ¦   ¦           ¦   ¦   ¦       Scope.php
     ¦   ¦           ¦   ¦   ¦       ScopedBy.php
-    ¦   ¦           ¦   ¦   ¦       Table.php
-    ¦   ¦           ¦   ¦   ¦       Touches.php
-    ¦   ¦           ¦   ¦   ¦       Unguarded.php
     ¦   ¦           ¦   ¦   ¦       UseEloquentBuilder.php
     ¦   ¦           ¦   ¦   ¦       UseFactory.php
     ¦   ¦           ¦   ¦   ¦       UsePolicy.php
     ¦   ¦           ¦   ¦   ¦       UseResource.php
     ¦   ¦           ¦   ¦   ¦       UseResourceCollection.php
-    ¦   ¦           ¦   ¦   ¦       Visible.php
-    ¦   ¦           ¦   ¦   ¦       WithoutIncrementing.php
-    ¦   ¦           ¦   ¦   ¦       WithoutTimestamps.php
     ¦   ¦           ¦   ¦   ¦       
     ¦   ¦           ¦   ¦   +---Casts
     ¦   ¦           ¦   ¦   ¦       ArrayObject.php
@@ -9218,17 +9189,14 @@ C:.
     ¦   ¦           ¦   ¦   ¦       TransformsToResource.php
     ¦   ¦           ¦   ¦   ¦       
     ¦   ¦           ¦   ¦   +---Factories
-    ¦   ¦           ¦   ¦   ¦   ¦   BelongsToManyRelationship.php
-    ¦   ¦           ¦   ¦   ¦   ¦   BelongsToRelationship.php
-    ¦   ¦           ¦   ¦   ¦   ¦   CrossJoinSequence.php
-    ¦   ¦           ¦   ¦   ¦   ¦   Factory.php
-    ¦   ¦           ¦   ¦   ¦   ¦   HasFactory.php
-    ¦   ¦           ¦   ¦   ¦   ¦   Relationship.php
-    ¦   ¦           ¦   ¦   ¦   ¦   Sequence.php
-    ¦   ¦           ¦   ¦   ¦   ¦   
-    ¦   ¦           ¦   ¦   ¦   +---Attributes
-    ¦   ¦           ¦   ¦   ¦           UseModel.php
-    ¦   ¦           ¦   ¦   ¦           
+    ¦   ¦           ¦   ¦   ¦       BelongsToManyRelationship.php
+    ¦   ¦           ¦   ¦   ¦       BelongsToRelationship.php
+    ¦   ¦           ¦   ¦   ¦       CrossJoinSequence.php
+    ¦   ¦           ¦   ¦   ¦       Factory.php
+    ¦   ¦           ¦   ¦   ¦       HasFactory.php
+    ¦   ¦           ¦   ¦   ¦       Relationship.php
+    ¦   ¦           ¦   ¦   ¦       Sequence.php
+    ¦   ¦           ¦   ¦   ¦       
     ¦   ¦           ¦   ¦   +---Relations
     ¦   ¦           ¦   ¦       ¦   BelongsTo.php
     ¦   ¦           ¦   ¦       ¦   BelongsToMany.php
@@ -9608,12 +9576,6 @@ C:.
     ¦   ¦           ¦   ¦   ¦   Kernel.php
     ¦   ¦           ¦   ¦   ¦   MaintenanceModeBypassCookie.php
     ¦   ¦           ¦   ¦   ¦   
-    ¦   ¦           ¦   ¦   +---Attributes
-    ¦   ¦           ¦   ¦   ¦       ErrorBag.php
-    ¦   ¦           ¦   ¦   ¦       RedirectTo.php
-    ¦   ¦           ¦   ¦   ¦       RedirectToRoute.php
-    ¦   ¦           ¦   ¦   ¦       StopOnFirstFailure.php
-    ¦   ¦           ¦   ¦   ¦       
     ¦   ¦           ¦   ¦   +---Events
     ¦   ¦           ¦   ¦   ¦       RequestHandled.php
     ¦   ¦           ¦   ¦   ¦       
@@ -9622,7 +9584,6 @@ C:.
     ¦   ¦           ¦   ¦       ¦   ConvertEmptyStringsToNull.php
     ¦   ¦           ¦   ¦       ¦   HandlePrecognitiveRequests.php
     ¦   ¦           ¦   ¦       ¦   InvokeDeferredCallbacks.php
-    ¦   ¦           ¦   ¦       ¦   PreventRequestForgery.php
     ¦   ¦           ¦   ¦       ¦   PreventRequestsDuringMaintenance.php
     ¦   ¦           ¦   ¦       ¦   TransformsRequest.php
     ¦   ¦           ¦   ¦       ¦   TrimStrings.php
@@ -9669,7 +9630,6 @@ C:.
     ¦   ¦           ¦   ¦           ¦   ¦   http-method.blade.php
     ¦   ¦           ¦   ¦           ¦   ¦   laravel-ascii-spotlight.blade.php
     ¦   ¦           ¦   ¦           ¦   ¦   layout.blade.php
-    ¦   ¦           ¦   ¦           ¦   ¦   previous-exceptions.blade.php
     ¦   ¦           ¦   ¦           ¦   ¦   query.blade.php
     ¦   ¦           ¦   ¦           ¦   ¦   request-body.blade.php
     ¦   ¦           ¦   ¦           ¦   ¦   request-header.blade.php
@@ -9735,13 +9695,6 @@ C:.
     ¦   ¦           ¦   ¦   ¦   WithoutMiddleware.php
     ¦   ¦           ¦   ¦   ¦   Wormhole.php
     ¦   ¦           ¦   ¦   ¦   
-    ¦   ¦           ¦   ¦   +---Attributes
-    ¦   ¦           ¦   ¦   ¦       Seed.php
-    ¦   ¦           ¦   ¦   ¦       Seeder.php
-    ¦   ¦           ¦   ¦   ¦       SetUp.php
-    ¦   ¦           ¦   ¦   ¦       TearDown.php
-    ¦   ¦           ¦   ¦   ¦       UnitTest.php
-    ¦   ¦           ¦   ¦   ¦       
     ¦   ¦           ¦   ¦   +---Concerns
     ¦   ¦           ¦   ¦   ¦       InteractsWithAuthentication.php
     ¦   ¦           ¦   ¦   ¦       InteractsWithConsole.php
@@ -9821,7 +9774,6 @@ C:.
     ¦   ¦           ¦   +---Exceptions
     ¦   ¦           ¦   ¦       HttpResponseException.php
     ¦   ¦           ¦   ¦       MalformedUrlException.php
-    ¦   ¦           ¦   ¦       OriginMismatchException.php
     ¦   ¦           ¦   ¦       PostTooLargeException.php
     ¦   ¦           ¦   ¦       ThrottleRequestsException.php
     ¦   ¦           ¦   ¦       
@@ -9844,10 +9796,6 @@ C:.
     ¦   ¦           ¦   ¦   ¦   MissingValue.php
     ¦   ¦           ¦   ¦   ¦   PotentiallyMissing.php
     ¦   ¦           ¦   ¦   ¦   
-    ¦   ¦           ¦   ¦   +---Attributes
-    ¦   ¦           ¦   ¦   ¦       Collects.php
-    ¦   ¦           ¦   ¦   ¦       PreserveKeys.php
-    ¦   ¦           ¦   ¦   ¦       
     ¦   ¦           ¦   ¦   +---Json
     ¦   ¦           ¦   ¦   ¦       AnonymousResourceCollection.php
     ¦   ¦           ¦   ¦   ¦       JsonResource.php
@@ -10033,13 +9981,13 @@ C:.
     ¦   ¦           ¦   ¦   
     ¦   ¦           ¦   +---resources
     ¦   ¦           ¦       +---views
-    ¦   ¦           ¦               bootstrap-3.blade.php
     ¦   ¦           ¦               bootstrap-4.blade.php
     ¦   ¦           ¦               bootstrap-5.blade.php
+    ¦   ¦           ¦               default.blade.php
     ¦   ¦           ¦               semantic-ui.blade.php
-    ¦   ¦           ¦               simple-bootstrap-3.blade.php
     ¦   ¦           ¦               simple-bootstrap-4.blade.php
     ¦   ¦           ¦               simple-bootstrap-5.blade.php
+    ¦   ¦           ¦               simple-default.blade.php
     ¦   ¦           ¦               simple-tailwind.blade.php
     ¦   ¦           ¦               tailwind.blade.php
     ¦   ¦           ¦               
@@ -10090,7 +10038,6 @@ C:.
     ¦   ¦           ¦   ¦   NullQueue.php
     ¦   ¦           ¦   ¦   Queue.php
     ¦   ¦           ¦   ¦   QueueManager.php
-    ¦   ¦           ¦   ¦   QueueRoutes.php
     ¦   ¦           ¦   ¦   QueueServiceProvider.php
     ¦   ¦           ¦   ¦   README.md
     ¦   ¦           ¦   ¦   RedisQueue.php
@@ -10101,19 +10048,9 @@ C:.
     ¦   ¦           ¦   ¦   TimeoutExceededException.php
     ¦   ¦           ¦   ¦   Worker.php
     ¦   ¦           ¦   ¦   WorkerOptions.php
-    ¦   ¦           ¦   ¦   WorkerStopReason.php
     ¦   ¦           ¦   ¦   
     ¦   ¦           ¦   +---Attributes
-    ¦   ¦           ¦   ¦       Backoff.php
-    ¦   ¦           ¦   ¦       Connection.php
     ¦   ¦           ¦   ¦       DeleteWhenMissingModels.php
-    ¦   ¦           ¦   ¦       FailOnTimeout.php
-    ¦   ¦           ¦   ¦       MaxExceptions.php
-    ¦   ¦           ¦   ¦       Queue.php
-    ¦   ¦           ¦   ¦       ReadsQueueAttributes.php
-    ¦   ¦           ¦   ¦       Timeout.php
-    ¦   ¦           ¦   ¦       Tries.php
-    ¦   ¦           ¦   ¦       UniqueFor.php
     ¦   ¦           ¦   ¦       WithoutRelations.php
     ¦   ¦           ¦   ¦       
     ¦   ¦           ¦   +---Capsule
@@ -10287,11 +10224,6 @@ C:.
     ¦   ¦           ¦   ¦   UrlGenerator.php
     ¦   ¦           ¦   ¦   ViewController.php
     ¦   ¦           ¦   ¦   
-    ¦   ¦           ¦   +---Attributes
-    ¦   ¦           ¦   ¦   +---Controllers
-    ¦   ¦           ¦   ¦           Authorize.php
-    ¦   ¦           ¦   ¦           Middleware.php
-    ¦   ¦           ¦   ¦           
     ¦   ¦           ¦   +---Console
     ¦   ¦           ¦   ¦   ¦   ControllerMakeCommand.php
     ¦   ¦           ¦   ¦   ¦   MiddlewareMakeCommand.php
@@ -10467,10 +10399,6 @@ C:.
     ¦   ¦           ¦   ¦       View.php
     ¦   ¦           ¦   ¦       Vite.php
     ¦   ¦           ¦   ¦       
-    ¦   ¦           ¦   +---Queue
-    ¦   ¦           ¦   ¦   +---Concerns
-    ¦   ¦           ¦   ¦           ResolvesQueueRoutes.php
-    ¦   ¦           ¦   ¦           
     ¦   ¦           ¦   +---Testing
     ¦   ¦           ¦   ¦   +---Fakes
     ¦   ¦           ¦   ¦           BatchFake.php
@@ -10493,7 +10421,6 @@ C:.
     ¦   ¦           ¦           ForwardsCalls.php
     ¦   ¦           ¦           InteractsWithData.php
     ¦   ¦           ¦           Localizable.php
-    ¦   ¦           ¦           ReadsClassAttributes.php
     ¦   ¦           ¦           Tappable.php
     ¦   ¦           ¦           
     ¦   ¦           +---Testing
@@ -10524,7 +10451,6 @@ C:.
     ¦   ¦           ¦   ¦       CountInDatabase.php
     ¦   ¦           ¦   ¦       HasInDatabase.php
     ¦   ¦           ¦   ¦       NotSoftDeletedInDatabase.php
-    ¦   ¦           ¦   ¦       SeeInHtml.php
     ¦   ¦           ¦   ¦       SeeInOrder.php
     ¦   ¦           ¦   ¦       SoftDeletedInDatabase.php
     ¦   ¦           ¦   ¦       
@@ -10892,7 +10818,6 @@ C:.
     ¦   ¦       +---Exceptions
     ¦   ¦       ¦       InvalidSignatureException.php
     ¦   ¦       ¦       MissingSecretKeyException.php
-    ¦   ¦       ¦       PhpVersionNotSupportedException.php
     ¦   ¦       ¦       
     ¦   ¦       +---Serializers
     ¦   ¦       ¦       Native.php
@@ -14286,7 +14211,7 @@ C:.
     ¦       ¦   
     ¦       +---src
     ¦           +---Common
-    ¦           ¦   ¦   TempFolderCheck.php
+    ¦           ¦   ¦   TempFolderOptionTrait.php
     ¦           ¦   ¦   
     ¦           ¦   +---Entity
     ¦           ¦   ¦   ¦   Cell.php
@@ -14301,7 +14226,6 @@ C:.
     ¦           ¦   ¦   ¦       FormulaCell.php
     ¦           ¦   ¦   ¦       NumericCell.php
     ¦           ¦   ¦   ¦       StringCell.php
-    ¦           ¦   ¦   ¦       TextRunCell.php
     ¦           ¦   ¦   ¦       
     ¦           ¦   ¦   +---Comment
     ¦           ¦   ¦   ¦       Comment.php
@@ -14309,15 +14233,11 @@ C:.
     ¦           ¦   ¦   ¦       
     ¦           ¦   ¦   +---Style
     ¦           ¦   ¦           Border.php
-    ¦           ¦   ¦           BorderName.php
     ¦           ¦   ¦           BorderPart.php
-    ¦           ¦   ¦           BorderStyle.php
-    ¦           ¦   ¦           BorderWidth.php
     ¦           ¦   ¦           CellAlignment.php
     ¦           ¦   ¦           CellVerticalAlignment.php
     ¦           ¦   ¦           Color.php
     ¦           ¦   ¦           Style.php
-    ¦           ¦   ¦           TextRunVerticalStyle.php
     ¦           ¦   ¦           
     ¦           ¦   +---Exception
     ¦           ¦   ¦       EncodingConversionException.php
@@ -14351,6 +14271,9 @@ C:.
     ¦           ¦   ¦   ¦   ColumnWidth.php
     ¦           ¦   ¦   ¦   XMLProcessor.php
     ¦           ¦   ¦   ¦   
+    ¦           ¦   ¦   +---Creator
+    ¦           ¦   ¦   ¦       ReaderFactory.php
+    ¦           ¦   ¦   ¦       
     ¦           ¦   ¦   +---Manager
     ¦           ¦   ¦           RowManager.php
     ¦           ¦   ¦           
@@ -14424,8 +14347,10 @@ C:.
     ¦               +---Common
     ¦               ¦   ¦   AbstractOptions.php
     ¦               ¦   ¦   ColumnWidth.php
-    ¦               ¦   ¦   ColumnWidthContainer.php
     ¦               ¦   ¦   
+    ¦               ¦   +---Creator
+    ¦               ¦   ¦       WriterFactory.php
+    ¦               ¦   ¦       
     ¦               ¦   +---Entity
     ¦               ¦   ¦       Sheet.php
     ¦               ¦   ¦       Workbook.php
@@ -14448,18 +14373,24 @@ C:.
     ¦               ¦               AbstractStyleRegistry.php
     ¦               ¦               PossiblyUpdatedStyle.php
     ¦               ¦               StyleManagerInterface.php
+    ¦               ¦               StyleMerger.php
     ¦               ¦               
     ¦               +---CSV
     ¦               ¦       Options.php
     ¦               ¦       Writer.php
     ¦               ¦       
     ¦               +---Exception
-    ¦               ¦       InvalidSheetNameException.php
-    ¦               ¦       SheetNotFoundException.php
-    ¦               ¦       WriterAlreadyOpenedException.php
-    ¦               ¦       WriterException.php
-    ¦               ¦       WriterNotOpenedException.php
-    ¦               ¦       
+    ¦               ¦   ¦   InvalidSheetNameException.php
+    ¦               ¦   ¦   SheetNotFoundException.php
+    ¦               ¦   ¦   WriterAlreadyOpenedException.php
+    ¦               ¦   ¦   WriterException.php
+    ¦               ¦   ¦   WriterNotOpenedException.php
+    ¦               ¦   ¦   
+    ¦               ¦   +---Border
+    ¦               ¦           InvalidNameException.php
+    ¦               ¦           InvalidStyleException.php
+    ¦               ¦           InvalidWidthException.php
+    ¦               ¦           
     ¦               +---ODS
     ¦               ¦   ¦   Options.php
     ¦               ¦   ¦   Writer.php
@@ -14478,7 +14409,6 @@ C:.
     ¦               ¦               
     ¦               +---XLSX
     ¦                   ¦   MergeCell.php
-    ¦                   ¦   MergeCellContainer.php
     ¦                   ¦   Options.php
     ¦                   ¦   Properties.php
     ¦                   ¦   Writer.php
@@ -14504,36 +14434,14 @@ C:.
     ¦                   ¦           StyleRegistry.php
     ¦                   ¦           
     ¦                   +---Options
-    ¦                   ¦       HeaderFooter.php
-    ¦                   ¦       PageMargin.php
-    ¦                   ¦       PageOrientation.php
-    ¦                   ¦       PageSetup.php
-    ¦                   ¦       PaperSize.php
-    ¦                   ¦       SheetProtection.php
-    ¦                   ¦       WorkbookProtection.php
-    ¦                   ¦       
-    ¦                   +---Validation
-    ¦                       ¦   AbstractOperatorValidationRule.php
-    ¦                       ¦   CellReference.php
-    ¦                       ¦   DataValidationRuleInterface.php
-    ¦                       ¦   ErrorStyle.php
-    ¦                       ¦   SerializedValidationRule.php
-    ¦                       ¦   ValidationContainer.php
-    ¦                       ¦   ValidationDisplay.php
-    ¦                       ¦   ValidationOperator.php
-    ¦                       ¦   ValidationRule.php
-    ¦                       ¦   ValidationRuleType.php
-    ¦                       ¦   
-    ¦                       +---Rules
-    ¦                               CustomValidationRule.php
-    ¦                               DateValidationRule.php
-    ¦                               DecimalValidationRule.php
-    ¦                               ListValidationRule.php
-    ¦                               TextLengthValidationRule.php
-    ¦                               TimeOfDay.php
-    ¦                               TimeValidationRule.php
-    ¦                               WholeNumberValidationRule.php
-    ¦                               
+    ¦                           HeaderFooter.php
+    ¦                           PageMargin.php
+    ¦                           PageOrientation.php
+    ¦                           PageSetup.php
+    ¦                           PaperSize.php
+    ¦                           SheetProtection.php
+    ¦                           WorkbookProtection.php
+    ¦                           
     +---phar-io
     ¦   +---manifest
     ¦   ¦   ¦   .php-cs-fixer.dist.php
@@ -15416,7 +15324,7 @@ C:.
     ¦                   
     +---phpunit
     ¦   +---php-code-coverage
-    ¦   ¦   ¦   ChangeLog-12.5.md
+    ¦   ¦   ¦   ChangeLog-11.0.md
     ¦   ¦   ¦   composer.json
     ¦   ¦   ¦   LICENSE
     ¦   ¦   ¦   README.md
@@ -15428,14 +15336,7 @@ C:.
     ¦   ¦       ¦   Version.php
     ¦   ¦       ¦   
     ¦   ¦       +---Data
-    ¦   ¦       ¦       ProcessedBranchCoverageData.php
-    ¦   ¦       ¦       ProcessedClassType.php
     ¦   ¦       ¦       ProcessedCodeCoverageData.php
-    ¦   ¦       ¦       ProcessedFunctionCoverageData.php
-    ¦   ¦       ¦       ProcessedFunctionType.php
-    ¦   ¦       ¦       ProcessedMethodType.php
-    ¦   ¦       ¦       ProcessedPathCoverageData.php
-    ¦   ¦       ¦       ProcessedTraitType.php
     ¦   ¦       ¦       RawCodeCoverageData.php
     ¦   ¦       ¦       
     ¦   ¦       +---Driver
@@ -15446,11 +15347,11 @@ C:.
     ¦   ¦       ¦       
     ¦   ¦       +---Exception
     ¦   ¦       ¦       BranchAndPathCoverageNotSupportedException.php
+    ¦   ¦       ¦       DeadCodeDetectionNotSupportedException.php
     ¦   ¦       ¦       DirectoryCouldNotBeCreatedException.php
     ¦   ¦       ¦       Exception.php
     ¦   ¦       ¦       FileCouldNotBeWrittenException.php
     ¦   ¦       ¦       InvalidArgumentException.php
-    ¦   ¦       ¦       InvalidCodeCoverageTargetException.php
     ¦   ¦       ¦       NoCodeCoverageDriverAvailableException.php
     ¦   ¦       ¦       NoCodeCoverageDriverWithPathCoverageSupportAvailableException.php
     ¦   ¦       ¦       ParserException.php
@@ -15464,7 +15365,6 @@ C:.
     ¦   ¦       ¦       WriteOperationFailedException.php
     ¦   ¦       ¦       XdebugNotAvailableException.php
     ¦   ¦       ¦       XdebugNotEnabledException.php
-    ¦   ¦       ¦       XdebugVersionNotSupportedException.php
     ¦   ¦       ¦       XmlException.php
     ¦   ¦       ¦       
     ¦   ¦       +---Node
@@ -15479,7 +15379,6 @@ C:.
     ¦   ¦       ¦   ¦   Clover.php
     ¦   ¦       ¦   ¦   Cobertura.php
     ¦   ¦       ¦   ¦   Crap4j.php
-    ¦   ¦       ¦   ¦   OpenClover.php
     ¦   ¦       ¦   ¦   PHP.php
     ¦   ¦       ¦   ¦   Text.php
     ¦   ¦       ¦   ¦   Thresholds.php
@@ -15516,9 +15415,9 @@ C:.
     ¦   ¦       ¦   ¦           ¦   paths.html.dist
     ¦   ¦       ¦   ¦           ¦   
     ¦   ¦       ¦   ¦           +---css
-    ¦   ¦       ¦   ¦           ¦       billboard.min.css
     ¦   ¦       ¦   ¦           ¦       bootstrap.min.css
     ¦   ¦       ¦   ¦           ¦       custom.css
+    ¦   ¦       ¦   ¦           ¦       nv.d3.min.css
     ¦   ¦       ¦   ¦           ¦       octicons.css
     ¦   ¦       ¦   ¦           ¦       style.css
     ¦   ¦       ¦   ¦           ¦       
@@ -15527,10 +15426,11 @@ C:.
     ¦   ¦       ¦   ¦           ¦       file-directory.svg
     ¦   ¦       ¦   ¦           ¦       
     ¦   ¦       ¦   ¦           +---js
-    ¦   ¦       ¦   ¦                   billboard.pkgd.min.js
     ¦   ¦       ¦   ¦                   bootstrap.bundle.min.js
+    ¦   ¦       ¦   ¦                   d3.min.js
     ¦   ¦       ¦   ¦                   file.js
     ¦   ¦       ¦   ¦                   jquery.min.js
+    ¦   ¦       ¦   ¦                   nv.d3.min.js
     ¦   ¦       ¦   ¦                   
     ¦   ¦       ¦   +---Xml
     ¦   ¦       ¦           BuildInformation.php
@@ -15548,45 +15448,13 @@ C:.
     ¦   ¦       ¦           Unit.php
     ¦   ¦       ¦           
     ¦   ¦       +---StaticAnalysis
-    ¦   ¦       ¦   ¦   CacheWarmer.php
-    ¦   ¦       ¦   ¦   CachingSourceAnalyser.php
-    ¦   ¦       ¦   ¦   FileAnalyser.php
-    ¦   ¦       ¦   ¦   ParsingSourceAnalyser.php
-    ¦   ¦       ¦   ¦   SourceAnalyser.php
-    ¦   ¦       ¦   ¦   
-    ¦   ¦       ¦   +---Value
-    ¦   ¦       ¦   ¦       AnalysisResult.php
-    ¦   ¦       ¦   ¦       Class_.php
-    ¦   ¦       ¦   ¦       Function_.php
-    ¦   ¦       ¦   ¦       Interface_.php
-    ¦   ¦       ¦   ¦       LinesOfCode.php
-    ¦   ¦       ¦   ¦       Method.php
-    ¦   ¦       ¦   ¦       Trait_.php
-    ¦   ¦       ¦   ¦       Visibility.php
-    ¦   ¦       ¦   ¦       
-    ¦   ¦       ¦   +---Visitor
-    ¦   ¦       ¦           AttributeParentConnectingVisitor.php
-    ¦   ¦       ¦           CodeUnitFindingVisitor.php
-    ¦   ¦       ¦           ExecutableLinesFindingVisitor.php
-    ¦   ¦       ¦           IgnoredLinesFindingVisitor.php
-    ¦   ¦       ¦           
-    ¦   ¦       +---Target
-    ¦   ¦       ¦       ClassesThatExtendClass.php
-    ¦   ¦       ¦       ClassesThatImplementInterface.php
-    ¦   ¦       ¦       Class_.php
-    ¦   ¦       ¦       Function_.php
-    ¦   ¦       ¦       MapBuilder.php
-    ¦   ¦       ¦       Mapper.php
-    ¦   ¦       ¦       Method.php
-    ¦   ¦       ¦       Namespace_.php
-    ¦   ¦       ¦       Target.php
-    ¦   ¦       ¦       TargetCollection.php
-    ¦   ¦       ¦       TargetCollectionIterator.php
-    ¦   ¦       ¦       TargetCollectionValidator.php
-    ¦   ¦       ¦       Trait_.php
-    ¦   ¦       ¦       ValidationFailure.php
-    ¦   ¦       ¦       ValidationResult.php
-    ¦   ¦       ¦       ValidationSuccess.php
+    ¦   ¦       ¦       CacheWarmer.php
+    ¦   ¦       ¦       CachingFileAnalyser.php
+    ¦   ¦       ¦       CodeUnitFindingVisitor.php
+    ¦   ¦       ¦       ExecutableLinesFindingVisitor.php
+    ¦   ¦       ¦       FileAnalyser.php
+    ¦   ¦       ¦       IgnoredLinesFindingVisitor.php
+    ¦   ¦       ¦       ParsingFileAnalyser.php
     ¦   ¦       ¦       
     ¦   ¦       +---TestSize
     ¦   ¦       ¦       Known.php
@@ -15673,7 +15541,7 @@ C:.
     ¦   ¦               TimeSinceStartOfRequestNotAvailableException.php
     ¦   ¦               
     ¦   +---phpunit
-    ¦       ¦   ChangeLog-12.5.md
+    ¦       ¦   ChangeLog-11.5.md
     ¦       ¦   composer.json
     ¦       ¦   composer.lock
     ¦       ¦   DEPRECATIONS.md
@@ -15695,12 +15563,6 @@ C:.
     ¦       ¦       11.2.xsd
     ¦       ¦       11.3.xsd
     ¦       ¦       11.4.xsd
-    ¦       ¦       11.5.xsd
-    ¦       ¦       12.0.xsd
-    ¦       ¦       12.1.xsd
-    ¦       ¦       12.2.xsd
-    ¦       ¦       12.3.xsd
-    ¦       ¦       12.4.xsd
     ¦       ¦       8.5.xsd
     ¦       ¦       9.0.xsd
     ¦       ¦       9.1.xsd
@@ -15741,8 +15603,6 @@ C:.
     ¦           ¦   ¦   ¦       StartedSubscriber.php
     ¦           ¦   ¦   ¦       
     ¦           ¦   ¦   +---Test
-    ¦           ¦   ¦   ¦   ¦   AdditionalInformationProvided.php
-    ¦           ¦   ¦   ¦   ¦   AdditionalInformationProvidedSubscriber.php
     ¦           ¦   ¦   ¦   ¦   ComparatorRegistered.php
     ¦           ¦   ¦   ¦   ¦   ComparatorRegisteredSubscriber.php
     ¦           ¦   ¦   ¦   ¦   PrintedUnexpectedOutput.php
@@ -15753,48 +15613,36 @@ C:.
     ¦           ¦   ¦   ¦   ¦       AfterLastTestMethodCalledSubscriber.php
     ¦           ¦   ¦   ¦   ¦       AfterLastTestMethodErrored.php
     ¦           ¦   ¦   ¦   ¦       AfterLastTestMethodErroredSubscriber.php
-    ¦           ¦   ¦   ¦   ¦       AfterLastTestMethodFailed.php
-    ¦           ¦   ¦   ¦   ¦       AfterLastTestMethodFailedSubscriber.php
     ¦           ¦   ¦   ¦   ¦       AfterLastTestMethodFinished.php
     ¦           ¦   ¦   ¦   ¦       AfterLastTestMethodFinishedSubscriber.php
     ¦           ¦   ¦   ¦   ¦       AfterTestMethodCalled.php
     ¦           ¦   ¦   ¦   ¦       AfterTestMethodCalledSubscriber.php
     ¦           ¦   ¦   ¦   ¦       AfterTestMethodErrored.php
     ¦           ¦   ¦   ¦   ¦       AfterTestMethodErroredSubscriber.php
-    ¦           ¦   ¦   ¦   ¦       AfterTestMethodFailed.php
-    ¦           ¦   ¦   ¦   ¦       AfterTestMethodFailedSubscriber.php
     ¦           ¦   ¦   ¦   ¦       AfterTestMethodFinished.php
     ¦           ¦   ¦   ¦   ¦       AfterTestMethodFinishedSubscriber.php
     ¦           ¦   ¦   ¦   ¦       BeforeFirstTestMethodCalled.php
     ¦           ¦   ¦   ¦   ¦       BeforeFirstTestMethodCalledSubscriber.php
     ¦           ¦   ¦   ¦   ¦       BeforeFirstTestMethodErrored.php
     ¦           ¦   ¦   ¦   ¦       BeforeFirstTestMethodErroredSubscriber.php
-    ¦           ¦   ¦   ¦   ¦       BeforeFirstTestMethodFailed.php
-    ¦           ¦   ¦   ¦   ¦       BeforeFirstTestMethodFailedSubscriber.php
     ¦           ¦   ¦   ¦   ¦       BeforeFirstTestMethodFinished.php
     ¦           ¦   ¦   ¦   ¦       BeforeFirstTestMethodFinishedSubscriber.php
     ¦           ¦   ¦   ¦   ¦       BeforeTestMethodCalled.php
     ¦           ¦   ¦   ¦   ¦       BeforeTestMethodCalledSubscriber.php
     ¦           ¦   ¦   ¦   ¦       BeforeTestMethodErrored.php
     ¦           ¦   ¦   ¦   ¦       BeforeTestMethodErroredSubscriber.php
-    ¦           ¦   ¦   ¦   ¦       BeforeTestMethodFailed.php
-    ¦           ¦   ¦   ¦   ¦       BeforeTestMethodFailedSubscriber.php
     ¦           ¦   ¦   ¦   ¦       BeforeTestMethodFinished.php
     ¦           ¦   ¦   ¦   ¦       BeforeTestMethodFinishedSubscriber.php
     ¦           ¦   ¦   ¦   ¦       PostConditionCalled.php
     ¦           ¦   ¦   ¦   ¦       PostConditionCalledSubscriber.php
     ¦           ¦   ¦   ¦   ¦       PostConditionErrored.php
     ¦           ¦   ¦   ¦   ¦       PostConditionErroredSubscriber.php
-    ¦           ¦   ¦   ¦   ¦       PostConditionFailed.php
-    ¦           ¦   ¦   ¦   ¦       PostConditionFailedSubscriber.php
     ¦           ¦   ¦   ¦   ¦       PostConditionFinished.php
     ¦           ¦   ¦   ¦   ¦       PostConditionFinishedSubscriber.php
     ¦           ¦   ¦   ¦   ¦       PreConditionCalled.php
     ¦           ¦   ¦   ¦   ¦       PreConditionCalledSubscriber.php
     ¦           ¦   ¦   ¦   ¦       PreConditionErrored.php
     ¦           ¦   ¦   ¦   ¦       PreConditionErroredSubscriber.php
-    ¦           ¦   ¦   ¦   ¦       PreConditionFailed.php
-    ¦           ¦   ¦   ¦   ¦       PreConditionFailedSubscriber.php
     ¦           ¦   ¦   ¦   ¦       PreConditionFinished.php
     ¦           ¦   ¦   ¦   ¦       PreConditionFinishedSubscriber.php
     ¦           ¦   ¦   ¦   ¦       
@@ -15815,8 +15663,6 @@ C:.
     ¦           ¦   ¦   ¦   ¦       PhpunitDeprecationTriggeredSubscriber.php
     ¦           ¦   ¦   ¦   ¦       PhpunitErrorTriggered.php
     ¦           ¦   ¦   ¦   ¦       PhpunitErrorTriggeredSubscriber.php
-    ¦           ¦   ¦   ¦   ¦       PhpunitNoticeTriggered.php
-    ¦           ¦   ¦   ¦   ¦       PhpunitNoticeTriggeredSubscriber.php
     ¦           ¦   ¦   ¦   ¦       PhpunitWarningTriggered.php
     ¦           ¦   ¦   ¦   ¦       PhpunitWarningTriggeredSubscriber.php
     ¦           ¦   ¦   ¦   ¦       PhpWarningTriggered.php
@@ -15831,8 +15677,6 @@ C:.
     ¦           ¦   ¦   ¦   ¦       DataProviderMethodFinishedSubscriber.php
     ¦           ¦   ¦   ¦   ¦       Finished.php
     ¦           ¦   ¦   ¦   ¦       FinishedSubscriber.php
-    ¦           ¦   ¦   ¦   ¦       PreparationErrored.php
-    ¦           ¦   ¦   ¦   ¦       PreparationErroredSubscriber.php
     ¦           ¦   ¦   ¦   ¦       PreparationFailed.php
     ¦           ¦   ¦   ¦   ¦       PreparationFailedSubscriber.php
     ¦           ¦   ¦   ¦   ¦       PreparationStarted.php
@@ -15855,10 +15699,18 @@ C:.
     ¦           ¦   ¦   ¦   +---TestDouble
     ¦           ¦   ¦   ¦           MockObjectCreated.php
     ¦           ¦   ¦   ¦           MockObjectCreatedSubscriber.php
+    ¦           ¦   ¦   ¦           MockObjectForAbstractClassCreated.php
+    ¦           ¦   ¦   ¦           MockObjectForAbstractClassCreatedSubscriber.php
     ¦           ¦   ¦   ¦           MockObjectForIntersectionOfInterfacesCreated.php
     ¦           ¦   ¦   ¦           MockObjectForIntersectionOfInterfacesCreatedSubscriber.php
+    ¦           ¦   ¦   ¦           MockObjectForTraitCreated.php
+    ¦           ¦   ¦   ¦           MockObjectForTraitCreatedSubscriber.php
+    ¦           ¦   ¦   ¦           MockObjectFromWsdlCreated.php
+    ¦           ¦   ¦   ¦           MockObjectFromWsdlCreatedSubscriber.php
     ¦           ¦   ¦   ¦           PartialMockObjectCreated.php
     ¦           ¦   ¦   ¦           PartialMockObjectCreatedSubscriber.php
+    ¦           ¦   ¦   ¦           TestProxyCreated.php
+    ¦           ¦   ¦   ¦           TestProxyCreatedSubscriber.php
     ¦           ¦   ¦   ¦           TestStubCreated.php
     ¦           ¦   ¦   ¦           TestStubCreatedSubscriber.php
     ¦           ¦   ¦   ¦           TestStubForIntersectionOfInterfacesCreated.php
@@ -15867,8 +15719,6 @@ C:.
     ¦           ¦   ¦   +---TestRunner
     ¦           ¦   ¦   ¦       BootstrapFinished.php
     ¦           ¦   ¦   ¦       BootstrapFinishedSubscriber.php
-    ¦           ¦   ¦   ¦       ChildProcessErrored.php
-    ¦           ¦   ¦   ¦       ChildProcessErroredSubscriber.php
     ¦           ¦   ¦   ¦       ChildProcessFinished.php
     ¦           ¦   ¦   ¦       ChildProcessFinishedSubscriber.php
     ¦           ¦   ¦   ¦       ChildProcessStarted.php
@@ -15897,14 +15747,8 @@ C:.
     ¦           ¦   ¦   ¦       GarbageCollectionEnabledSubscriber.php
     ¦           ¦   ¦   ¦       GarbageCollectionTriggered.php
     ¦           ¦   ¦   ¦       GarbageCollectionTriggeredSubscriber.php
-    ¦           ¦   ¦   ¦       NoticeTriggered.php
-    ¦           ¦   ¦   ¦       NoticeTriggeredSubscriber.php
     ¦           ¦   ¦   ¦       Started.php
     ¦           ¦   ¦   ¦       StartedSubscriber.php
-    ¦           ¦   ¦   ¦       StaticAnalysisForCodeCoverageFinished.php
-    ¦           ¦   ¦   ¦       StaticAnalysisForCodeCoverageFinishedSubscriber.php
-    ¦           ¦   ¦   ¦       StaticAnalysisForCodeCoverageStarted.php
-    ¦           ¦   ¦   ¦       StaticAnalysisForCodeCoverageStartedSubscriber.php
     ¦           ¦   ¦   ¦       WarningTriggered.php
     ¦           ¦   ¦   ¦       WarningTriggeredSubscriber.php
     ¦           ¦   ¦   ¦       
@@ -15962,10 +15806,11 @@ C:.
     ¦           ¦       ¦       Info.php
     ¦           ¦       ¦       MemoryMeter.php
     ¦           ¦       ¦       MemoryUsage.php
+    ¦           ¦       ¦       Php81GarbageCollectorStatusProvider.php
+    ¦           ¦       ¦       Php83GarbageCollectorStatusProvider.php
     ¦           ¦       ¦       Snapshot.php
     ¦           ¦       ¦       StopWatch.php
     ¦           ¦       ¦       System.php
-    ¦           ¦       ¦       SystemGarbageCollectorStatusProvider.php
     ¦           ¦       ¦       SystemMemoryMeter.php
     ¦           ¦       ¦       SystemStopWatch.php
     ¦           ¦       ¦       SystemStopWatchWithOffset.php
@@ -16017,17 +15862,13 @@ C:.
     ¦           ¦   +---Attributes
     ¦           ¦   ¦       After.php
     ¦           ¦   ¦       AfterClass.php
-    ¦           ¦   ¦       AllowMockObjectsWithoutExpectations.php
     ¦           ¦   ¦       BackupGlobals.php
     ¦           ¦   ¦       BackupStaticProperties.php
     ¦           ¦   ¦       Before.php
     ¦           ¦   ¦       BeforeClass.php
     ¦           ¦   ¦       CoversClass.php
-    ¦           ¦   ¦       CoversClassesThatExtendClass.php
-    ¦           ¦   ¦       CoversClassesThatImplementInterface.php
     ¦           ¦   ¦       CoversFunction.php
     ¦           ¦   ¦       CoversMethod.php
-    ¦           ¦   ¦       CoversNamespace.php
     ¦           ¦   ¦       CoversNothing.php
     ¦           ¦   ¦       CoversTrait.php
     ¦           ¦   ¦       DataProvider.php
@@ -16048,13 +15889,11 @@ C:.
     ¦           ¦   ¦       Group.php
     ¦           ¦   ¦       IgnoreDeprecations.php
     ¦           ¦   ¦       IgnorePhpunitDeprecations.php
-    ¦           ¦   ¦       IgnorePhpunitWarnings.php
     ¦           ¦   ¦       Large.php
     ¦           ¦   ¦       Medium.php
     ¦           ¦   ¦       PostCondition.php
     ¦           ¦   ¦       PreCondition.php
     ¦           ¦   ¦       PreserveGlobalState.php
-    ¦           ¦   ¦       RequiresEnvironmentVariable.php
     ¦           ¦   ¦       RequiresFunction.php
     ¦           ¦   ¦       RequiresMethod.php
     ¦           ¦   ¦       RequiresOperatingSystem.php
@@ -16070,19 +15909,13 @@ C:.
     ¦           ¦   ¦       Small.php
     ¦           ¦   ¦       Test.php
     ¦           ¦   ¦       TestDox.php
-    ¦           ¦   ¦       TestDoxFormatter.php
-    ¦           ¦   ¦       TestDoxFormatterExternal.php
     ¦           ¦   ¦       TestWith.php
     ¦           ¦   ¦       TestWithJson.php
     ¦           ¦   ¦       Ticket.php
     ¦           ¦   ¦       UsesClass.php
-    ¦           ¦   ¦       UsesClassesThatExtendClass.php
-    ¦           ¦   ¦       UsesClassesThatImplementInterface.php
     ¦           ¦   ¦       UsesFunction.php
     ¦           ¦   ¦       UsesMethod.php
-    ¦           ¦   ¦       UsesNamespace.php
     ¦           ¦   ¦       UsesTrait.php
-    ¦           ¦   ¦       WithEnvironmentVariable.php
     ¦           ¦   ¦       WithoutErrorHandler.php
     ¦           ¦   ¦       
     ¦           ¦   +---Constraint
@@ -16163,19 +15996,20 @@ C:.
     ¦           ¦   ¦           
     ¦           ¦   +---Exception
     ¦           ¦   ¦   ¦   AssertionFailedError.php
+    ¦           ¦   ¦   ¦   CodeCoverageException.php
     ¦           ¦   ¦   ¦   EmptyStringException.php
-    ¦           ¦   ¦   ¦   ErrorLogNotWritableException.php
     ¦           ¦   ¦   ¦   Exception.php
     ¦           ¦   ¦   ¦   ExpectationFailedException.php
     ¦           ¦   ¦   ¦   GeneratorNotSupportedException.php
     ¦           ¦   ¦   ¦   InvalidArgumentException.php
+    ¦           ¦   ¦   ¦   InvalidCoversTargetException.php
     ¦           ¦   ¦   ¦   InvalidDataProviderException.php
     ¦           ¦   ¦   ¦   InvalidDependencyException.php
     ¦           ¦   ¦   ¦   NoChildTestSuiteException.php
     ¦           ¦   ¦   ¦   PhptAssertionFailedError.php
     ¦           ¦   ¦   ¦   ProcessIsolationException.php
     ¦           ¦   ¦   ¦   UnknownClassOrInterfaceException.php
-    ¦           ¦   ¦   ¦   UnknownNativeTypeException.php
+    ¦           ¦   ¦   ¦   UnknownTypeException.php
     ¦           ¦   ¦   ¦   
     ¦           ¦   ¦   +---Incomplete
     ¦           ¦   ¦   ¦       IncompleteTest.php
@@ -16197,11 +16031,10 @@ C:.
     ¦           ¦   +---MockObject
     ¦           ¦   ¦   ¦   ConfigurableMethod.php
     ¦           ¦   ¦   ¦   MockBuilder.php
-    ¦           ¦   ¦   ¦   TestDoubleBuilder.php
-    ¦           ¦   ¦   ¦   TestStubBuilder.php
     ¦           ¦   ¦   ¦   
     ¦           ¦   ¦   +---Exception
     ¦           ¦   ¦   ¦       BadMethodCallException.php
+    ¦           ¦   ¦   ¦       CannotCloneTestDoubleForReadonlyClassException.php
     ¦           ¦   ¦   ¦       CannotUseOnlyMethodsException.php
     ¦           ¦   ¦   ¦       Exception.php
     ¦           ¦   ¦   ¦       IncompatibleReturnValueException.php
@@ -16217,25 +16050,31 @@ C:.
     ¦           ¦   ¦   ¦       RuntimeException.php
     ¦           ¦   ¦   ¦       
     ¦           ¦   ¦   +---Generator
-    ¦           ¦   ¦   ¦   ¦   DoubledClass.php
-    ¦           ¦   ¦   ¦   ¦   DoubledMethod.php
-    ¦           ¦   ¦   ¦   ¦   DoubledMethodSet.php
     ¦           ¦   ¦   ¦   ¦   Generator.php
     ¦           ¦   ¦   ¦   ¦   HookedProperty.php
     ¦           ¦   ¦   ¦   ¦   HookedPropertyGenerator.php
+    ¦           ¦   ¦   ¦   ¦   MockClass.php
+    ¦           ¦   ¦   ¦   ¦   MockMethod.php
+    ¦           ¦   ¦   ¦   ¦   MockMethodSet.php
+    ¦           ¦   ¦   ¦   ¦   MockTrait.php
+    ¦           ¦   ¦   ¦   ¦   MockType.php
     ¦           ¦   ¦   ¦   ¦   TemplateLoader.php
     ¦           ¦   ¦   ¦   ¦   
     ¦           ¦   ¦   ¦   +---Exception
+    ¦           ¦   ¦   ¦   ¦       CannotUseAddMethodsException.php
     ¦           ¦   ¦   ¦   ¦       ClassIsEnumerationException.php
     ¦           ¦   ¦   ¦   ¦       ClassIsFinalException.php
     ¦           ¦   ¦   ¦   ¦       DuplicateMethodException.php
     ¦           ¦   ¦   ¦   ¦       Exception.php
     ¦           ¦   ¦   ¦   ¦       InvalidMethodNameException.php
-    ¦           ¦   ¦   ¦   ¦       MethodNamedMethodException.php
     ¦           ¦   ¦   ¦   ¦       NameAlreadyInUseException.php
+    ¦           ¦   ¦   ¦   ¦       OriginalConstructorInvocationRequiredException.php
     ¦           ¦   ¦   ¦   ¦       ReflectionException.php
     ¦           ¦   ¦   ¦   ¦       RuntimeException.php
+    ¦           ¦   ¦   ¦   ¦       SoapExtensionNotAvailableException.php
+    ¦           ¦   ¦   ¦   ¦       UnknownClassException.php
     ¦           ¦   ¦   ¦   ¦       UnknownInterfaceException.php
+    ¦           ¦   ¦   ¦   ¦       UnknownTraitException.php
     ¦           ¦   ¦   ¦   ¦       UnknownTypeException.php
     ¦           ¦   ¦   ¦   ¦       
     ¦           ¦   ¦   ¦   +---templates
@@ -16243,26 +16082,40 @@ C:.
     ¦           ¦   ¦   ¦           doubled_method.tpl
     ¦           ¦   ¦   ¦           doubled_static_method.tpl
     ¦           ¦   ¦   ¦           intersection.tpl
+    ¦           ¦   ¦   ¦           proxied_method.tpl
     ¦           ¦   ¦   ¦           test_double_class.tpl
+    ¦           ¦   ¦   ¦           trait_class.tpl
+    ¦           ¦   ¦   ¦           wsdl_class.tpl
+    ¦           ¦   ¦   ¦           wsdl_method.tpl
     ¦           ¦   ¦   ¦           
     ¦           ¦   ¦   +---Runtime
     ¦           ¦   ¦       ¦   Invocation.php
     ¦           ¦   ¦       ¦   InvocationHandler.php
-    ¦           ¦   ¦       ¦   InvocationStubberImplementation.php
     ¦           ¦   ¦       ¦   Matcher.php
     ¦           ¦   ¦       ¦   MethodNameConstraint.php
     ¦           ¦   ¦       ¦   ReturnValueGenerator.php
     ¦           ¦   ¦       ¦   
     ¦           ¦   ¦       +---Api
     ¦           ¦   ¦       ¦       DoubledCloneMethod.php
+    ¦           ¦   ¦       ¦       ErrorCloneMethod.php
+    ¦           ¦   ¦       ¦       GeneratedAsMockObject.php
+    ¦           ¦   ¦       ¦       GeneratedAsTestStub.php
     ¦           ¦   ¦       ¦       Method.php
     ¦           ¦   ¦       ¦       MockObjectApi.php
+    ¦           ¦   ¦       ¦       MutableStubApi.php
     ¦           ¦   ¦       ¦       ProxiedCloneMethod.php
     ¦           ¦   ¦       ¦       StubApi.php
     ¦           ¦   ¦       ¦       TestDoubleState.php
     ¦           ¦   ¦       ¦       
-    ¦           ¦   ¦       +---Interface
+    ¦           ¦   ¦       +---Builder
+    ¦           ¦   ¦       ¦       Identity.php
+    ¦           ¦   ¦       ¦       InvocationMocker.php
     ¦           ¦   ¦       ¦       InvocationStubber.php
+    ¦           ¦   ¦       ¦       MethodNameMatch.php
+    ¦           ¦   ¦       ¦       ParametersMatch.php
+    ¦           ¦   ¦       ¦       Stub.php
+    ¦           ¦   ¦       ¦       
+    ¦           ¦   ¦       +---Interface
     ¦           ¦   ¦       ¦       MockObject.php
     ¦           ¦   ¦       ¦       MockObjectInternal.php
     ¦           ¦   ¦       ¦       Stub.php
@@ -16341,7 +16194,6 @@ C:.
     ¦           ¦   ¦           TestFailedSubscriber.php
     ¦           ¦   ¦           TestFinishedSubscriber.php
     ¦           ¦   ¦           TestMarkedIncompleteSubscriber.php
-    ¦           ¦   ¦           TestPreparationErroredSubscriber.php
     ¦           ¦   ¦           TestPreparationFailedSubscriber.php
     ¦           ¦   ¦           TestPreparationStartedSubscriber.php
     ¦           ¦   ¦           TestPreparedSubscriber.php
@@ -16349,43 +16201,6 @@ C:.
     ¦           ¦   ¦           TestRunnerExecutionFinishedSubscriber.php
     ¦           ¦   ¦           TestSkippedSubscriber.php
     ¦           ¦   ¦           TestSuiteFinishedSubscriber.php
-    ¦           ¦   ¦           TestSuiteStartedSubscriber.php
-    ¦           ¦   ¦           
-    ¦           ¦   +---OpenTestReporting
-    ¦           ¦   ¦   ¦   InfrastructureInformationProvider.php
-    ¦           ¦   ¦   ¦   OtrXmlLogger.php
-    ¦           ¦   ¦   ¦   Status.php
-    ¦           ¦   ¦   ¦   
-    ¦           ¦   ¦   +---Exception
-    ¦           ¦   ¦   ¦       CannotOpenUriForWritingException.php
-    ¦           ¦   ¦   ¦       Exception.php
-    ¦           ¦   ¦   ¦       
-    ¦           ¦   ¦   +---schema
-    ¦           ¦   ¦   ¦       core-0.2.0.xsd
-    ¦           ¦   ¦   ¦       events-0.2.0.xsd
-    ¦           ¦   ¦   ¦       git-0.2.0.xsd
-    ¦           ¦   ¦   ¦       otr.xsd
-    ¦           ¦   ¦   ¦       php.xsd
-    ¦           ¦   ¦   ¦       phpunit.xsd
-    ¦           ¦   ¦   ¦       
-    ¦           ¦   ¦   +---Subscriber
-    ¦           ¦   ¦           AfterLastTestMethodErroredSubscriber.php
-    ¦           ¦   ¦           AfterLastTestMethodFailedSubscriber.php
-    ¦           ¦   ¦           BeforeFirstTestMethodErroredSubscriber.php
-    ¦           ¦   ¦           BeforeFirstTestMethodFailedSubscriber.php
-    ¦           ¦   ¦           Subscriber.php
-    ¦           ¦   ¦           TestAbortedSubscriber.php
-    ¦           ¦   ¦           TestErroredSubscriber.php
-    ¦           ¦   ¦           TestFailedSubscriber.php
-    ¦           ¦   ¦           TestFinishedSubscriber.php
-    ¦           ¦   ¦           TestPreparationErroredSubscriber.php
-    ¦           ¦   ¦           TestPreparationFailedSubscriber.php
-    ¦           ¦   ¦           TestPreparedSubscriber.php
-    ¦           ¦   ¦           TestRunnerFinishedSubscriber.php
-    ¦           ¦   ¦           TestRunnerStartedSubscriber.php
-    ¦           ¦   ¦           TestSkippedSubscriber.php
-    ¦           ¦   ¦           TestSuiteFinishedSubscriber.php
-    ¦           ¦   ¦           TestSuiteSkippedSubscriber.php
     ¦           ¦   ¦           TestSuiteStartedSubscriber.php
     ¦           ¦   ¦           
     ¦           ¦   +---TeamCity
@@ -16440,17 +16255,15 @@ C:.
     ¦           +---Metadata
     ¦           ¦   ¦   After.php
     ¦           ¦   ¦   AfterClass.php
-    ¦           ¦   ¦   AllowMockObjectsWithoutExpectations.php
     ¦           ¦   ¦   BackupGlobals.php
     ¦           ¦   ¦   BackupStaticProperties.php
     ¦           ¦   ¦   Before.php
     ¦           ¦   ¦   BeforeClass.php
+    ¦           ¦   ¦   Covers.php
     ¦           ¦   ¦   CoversClass.php
-    ¦           ¦   ¦   CoversClassesThatExtendClass.php
-    ¦           ¦   ¦   CoversClassesThatImplementInterface.php
+    ¦           ¦   ¦   CoversDefaultClass.php
     ¦           ¦   ¦   CoversFunction.php
     ¦           ¦   ¦   CoversMethod.php
-    ¦           ¦   ¦   CoversNamespace.php
     ¦           ¦   ¦   CoversNothing.php
     ¦           ¦   ¦   CoversTrait.php
     ¦           ¦   ¦   DataProvider.php
@@ -16463,14 +16276,12 @@ C:.
     ¦           ¦   ¦   Group.php
     ¦           ¦   ¦   IgnoreDeprecations.php
     ¦           ¦   ¦   IgnorePhpunitDeprecations.php
-    ¦           ¦   ¦   IgnorePhpunitWarnings.php
     ¦           ¦   ¦   Metadata.php
     ¦           ¦   ¦   MetadataCollection.php
     ¦           ¦   ¦   MetadataCollectionIterator.php
     ¦           ¦   ¦   PostCondition.php
     ¦           ¦   ¦   PreCondition.php
     ¦           ¦   ¦   PreserveGlobalState.php
-    ¦           ¦   ¦   RequiresEnvironmentVariable.php
     ¦           ¦   ¦   RequiresFunction.php
     ¦           ¦   ¦   RequiresMethod.php
     ¦           ¦   ¦   RequiresOperatingSystem.php
@@ -16485,16 +16296,13 @@ C:.
     ¦           ¦   ¦   RunTestsInSeparateProcesses.php
     ¦           ¦   ¦   Test.php
     ¦           ¦   ¦   TestDox.php
-    ¦           ¦   ¦   TestDoxFormatter.php
     ¦           ¦   ¦   TestWith.php
+    ¦           ¦   ¦   Uses.php
     ¦           ¦   ¦   UsesClass.php
-    ¦           ¦   ¦   UsesClassesThatExtendClass.php
-    ¦           ¦   ¦   UsesClassesThatImplementInterface.php
+    ¦           ¦   ¦   UsesDefaultClass.php
     ¦           ¦   ¦   UsesFunction.php
     ¦           ¦   ¦   UsesMethod.php
-    ¦           ¦   ¦   UsesNamespace.php
     ¦           ¦   ¦   UsesTrait.php
-    ¦           ¦   ¦   WithEnvironmentVariable.php
     ¦           ¦   ¦   WithoutErrorHandler.php
     ¦           ¦   ¦   
     ¦           ¦   +---Api
@@ -16503,33 +16311,37 @@ C:.
     ¦           ¦   ¦       Dependencies.php
     ¦           ¦   ¦       Groups.php
     ¦           ¦   ¦       HookMethods.php
-    ¦           ¦   ¦       ProvidedData.php
     ¦           ¦   ¦       Requirements.php
     ¦           ¦   ¦       
     ¦           ¦   +---Exception
+    ¦           ¦   ¦       AnnotationsAreNotSupportedForInternalClassesException.php
     ¦           ¦   ¦       Exception.php
     ¦           ¦   ¦       InvalidAttributeException.php
     ¦           ¦   ¦       InvalidVersionRequirementException.php
     ¦           ¦   ¦       NoVersionRequirementException.php
+    ¦           ¦   ¦       ReflectionException.php
     ¦           ¦   ¦       
     ¦           ¦   +---Parser
-    ¦           ¦   ¦       AttributeParser.php
-    ¦           ¦   ¦       CachingParser.php
-    ¦           ¦   ¦       Parser.php
-    ¦           ¦   ¦       Registry.php
-    ¦           ¦   ¦       
+    ¦           ¦   ¦   ¦   AnnotationParser.php
+    ¦           ¦   ¦   ¦   AttributeParser.php
+    ¦           ¦   ¦   ¦   CachingParser.php
+    ¦           ¦   ¦   ¦   Parser.php
+    ¦           ¦   ¦   ¦   ParserChain.php
+    ¦           ¦   ¦   ¦   Registry.php
+    ¦           ¦   ¦   ¦   
+    ¦           ¦   ¦   +---Annotation
+    ¦           ¦   ¦           DocBlock.php
+    ¦           ¦   ¦           Registry.php
+    ¦           ¦   ¦           
     ¦           ¦   +---Version
     ¦           ¦           ComparisonRequirement.php
     ¦           ¦           ConstraintRequirement.php
     ¦           ¦           Requirement.php
     ¦           ¦           
     ¦           +---Runner
-    ¦           ¦   ¦   BackedUpEnvironmentVariable.php
     ¦           ¦   ¦   CodeCoverage.php
-    ¦           ¦   ¦   CodeCoverageInitializationStatus.php
     ¦           ¦   ¦   ErrorHandler.php
     ¦           ¦   ¦   IssueFilter.php
-    ¦           ¦   ¦   ShutdownHandler.php
     ¦           ¦   ¦   TestSuiteLoader.php
     ¦           ¦   ¦   TestSuiteSorter.php
     ¦           ¦   ¦   Version.php
@@ -16576,7 +16388,10 @@ C:.
     ¦           ¦   ¦       Exception.php
     ¦           ¦   ¦       FileDoesNotExistException.php
     ¦           ¦   ¦       InvalidOrderException.php
+    ¦           ¦   ¦       InvalidPhptFileException.php
     ¦           ¦   ¦       ParameterDoesNotExistException.php
+    ¦           ¦   ¦       PhptExternalFileCannotBeLoadedException.php
+    ¦           ¦   ¦       UnsupportedPhptSectionException.php
     ¦           ¦   ¦       
     ¦           ¦   +---Extension
     ¦           ¦   ¦       Extension.php
@@ -16608,16 +16423,9 @@ C:.
     ¦           ¦   ¦       HookMethod.php
     ¦           ¦   ¦       HookMethodCollection.php
     ¦           ¦   ¦       
-    ¦           ¦   +---Phpt
-    ¦           ¦   ¦   ¦   Parser.php
-    ¦           ¦   ¦   ¦   Renderer.php
-    ¦           ¦   ¦   ¦   TestCase.php
+    ¦           ¦   +---PHPT
+    ¦           ¦   ¦   ¦   PhptTestCase.php
     ¦           ¦   ¦   ¦   
-    ¦           ¦   ¦   +---Exception
-    ¦           ¦   ¦   ¦       InvalidPhptFileException.php
-    ¦           ¦   ¦   ¦       PhptExternalFileCannotBeLoadedException.php
-    ¦           ¦   ¦   ¦       UnsupportedPhptSectionException.php
-    ¦           ¦   ¦   ¦       
     ¦           ¦   ¦   +---templates
     ¦           ¦   ¦           phpt.tpl
     ¦           ¦   ¦           
@@ -16649,10 +16457,7 @@ C:.
     ¦           ¦       ¦   
     ¦           ¦       +---Subscriber
     ¦           ¦               AfterTestClassMethodErroredSubscriber.php
-    ¦           ¦               AfterTestClassMethodFailedSubscriber.php
     ¦           ¦               BeforeTestClassMethodErroredSubscriber.php
-    ¦           ¦               BeforeTestClassMethodFailedSubscriber.php
-    ¦           ¦               ChildProcessErroredSubscriber.php
     ¦           ¦               ExecutionStartedSubscriber.php
     ¦           ¦               Subscriber.php
     ¦           ¦               TestConsideredRiskySubscriber.php
@@ -16662,7 +16467,6 @@ C:.
     ¦           ¦               TestMarkedIncompleteSubscriber.php
     ¦           ¦               TestPreparedSubscriber.php
     ¦           ¦               TestRunnerTriggeredDeprecationSubscriber.php
-    ¦           ¦               TestRunnerTriggeredNoticeSubscriber.php
     ¦           ¦               TestRunnerTriggeredWarningSubscriber.php
     ¦           ¦               TestSkippedSubscriber.php
     ¦           ¦               TestSuiteFinishedSubscriber.php
@@ -16675,7 +16479,6 @@ C:.
     ¦           ¦               TestTriggeredPhpNoticeSubscriber.php
     ¦           ¦               TestTriggeredPhpunitDeprecationSubscriber.php
     ¦           ¦               TestTriggeredPhpunitErrorSubscriber.php
-    ¦           ¦               TestTriggeredPhpunitNoticeSubscriber.php
     ¦           ¦               TestTriggeredPhpunitWarningSubscriber.php
     ¦           ¦               TestTriggeredPhpWarningSubscriber.php
     ¦           ¦               TestTriggeredWarningSubscriber.php
@@ -16707,7 +16510,6 @@ C:.
     ¦           ¦   ¦           WarmCodeCoverageCacheCommand.php
     ¦           ¦   ¦           
     ¦           ¦   +---Configuration
-    ¦           ¦   ¦   ¦   BootstrapLoader.php
     ¦           ¦   ¦   ¦   Builder.php
     ¦           ¦   ¦   ¦   CodeCoverageFilterRegistry.php
     ¦           ¦   ¦   ¦   Configuration.php
@@ -16725,8 +16527,6 @@ C:.
     ¦           ¦   ¦   ¦       XmlConfigurationFileFinder.php
     ¦           ¦   ¦   ¦       
     ¦           ¦   ¦   +---Exception
-    ¦           ¦   ¦   ¦       BootstrapScriptDoesNotExistException.php
-    ¦           ¦   ¦   ¦       BootstrapScriptException.php
     ¦           ¦   ¦   ¦       CannotFindSchemaException.php
     ¦           ¦   ¦   ¦       CodeCoverageReportNotConfiguredException.php
     ¦           ¦   ¦   ¦       ConfigurationCannotBeBuiltException.php
@@ -16800,7 +16600,6 @@ C:.
     ¦           ¦   ¦       ¦           Cobertura.php
     ¦           ¦   ¦       ¦           Crap4j.php
     ¦           ¦   ¦       ¦           Html.php
-    ¦           ¦   ¦       ¦           OpenClover.php
     ¦           ¦   ¦       ¦           Php.php
     ¦           ¦   ¦       ¦           Text.php
     ¦           ¦   ¦       ¦           Xml.php
@@ -16808,7 +16607,6 @@ C:.
     ¦           ¦   ¦       +---Logging
     ¦           ¦   ¦       ¦   ¦   Junit.php
     ¦           ¦   ¦       ¦   ¦   Logging.php
-    ¦           ¦   ¦       ¦   ¦   Otr.php
     ¦           ¦   ¦       ¦   ¦   TeamCity.php
     ¦           ¦   ¦       ¦   ¦   
     ¦           ¦   ¦       ¦   +---TestDox
@@ -16892,7 +16690,6 @@ C:.
     ¦           ¦       ¦       ¦   
     ¦           ¦       ¦       +---Subscriber
     ¦           ¦       ¦               BeforeTestClassMethodErroredSubscriber.php
-    ¦           ¦       ¦               ChildProcessErroredSubscriber.php
     ¦           ¦       ¦               Subscriber.php
     ¦           ¦       ¦               TestConsideredRiskySubscriber.php
     ¦           ¦       ¦               TestErroredSubscriber.php
@@ -16909,7 +16706,6 @@ C:.
     ¦           ¦       ¦               TestTriggeredPhpDeprecationSubscriber.php
     ¦           ¦       ¦               TestTriggeredPhpNoticeSubscriber.php
     ¦           ¦       ¦               TestTriggeredPhpunitDeprecationSubscriber.php
-    ¦           ¦       ¦               TestTriggeredPhpunitNoticeSubscriber.php
     ¦           ¦       ¦               TestTriggeredPhpunitWarningSubscriber.php
     ¦           ¦       ¦               TestTriggeredPhpWarningSubscriber.php
     ¦           ¦       ¦               TestTriggeredWarningSubscriber.php
@@ -16923,13 +16719,13 @@ C:.
     ¦           ¦               ResultPrinter.php
     ¦           ¦               
     ¦           +---Util
+    ¦               ¦   Cloner.php
     ¦               ¦   Color.php
     ¦               ¦   ExcludeList.php
     ¦               ¦   Exporter.php
     ¦               ¦   Filesystem.php
     ¦               ¦   Filter.php
     ¦               ¦   GlobalState.php
-    ¦               ¦   GlobalStateResult.php
     ¦               ¦   Json.php
     ¦               ¦   Reflection.php
     ¦               ¦   Test.php
@@ -17755,6 +17551,43 @@ C:.
     ¦   ¦               RequiredOptionArgumentMissingException.php
     ¦   ¦               UnknownOptionException.php
     ¦   ¦               
+    ¦   +---code-unit
+    ¦   ¦   ¦   ChangeLog.md
+    ¦   ¦   ¦   composer.json
+    ¦   ¦   ¦   LICENSE
+    ¦   ¦   ¦   README.md
+    ¦   ¦   ¦   SECURITY.md
+    ¦   ¦   ¦   
+    ¦   ¦   +---src
+    ¦   ¦       ¦   ClassMethodUnit.php
+    ¦   ¦       ¦   ClassUnit.php
+    ¦   ¦       ¦   CodeUnit.php
+    ¦   ¦       ¦   CodeUnitCollection.php
+    ¦   ¦       ¦   CodeUnitCollectionIterator.php
+    ¦   ¦       ¦   FileUnit.php
+    ¦   ¦       ¦   FunctionUnit.php
+    ¦   ¦       ¦   InterfaceMethodUnit.php
+    ¦   ¦       ¦   InterfaceUnit.php
+    ¦   ¦       ¦   Mapper.php
+    ¦   ¦       ¦   TraitMethodUnit.php
+    ¦   ¦       ¦   TraitUnit.php
+    ¦   ¦       ¦   
+    ¦   ¦       +---exceptions
+    ¦   ¦               Exception.php
+    ¦   ¦               InvalidCodeUnitException.php
+    ¦   ¦               NoTraitException.php
+    ¦   ¦               ReflectionException.php
+    ¦   ¦               
+    ¦   +---code-unit-reverse-lookup
+    ¦   ¦   ¦   ChangeLog.md
+    ¦   ¦   ¦   composer.json
+    ¦   ¦   ¦   LICENSE
+    ¦   ¦   ¦   README.md
+    ¦   ¦   ¦   SECURITY.md
+    ¦   ¦   ¦   
+    ¦   ¦   +---src
+    ¦   ¦           Wizard.php
+    ¦   ¦           
     ¦   +---comparator
     ¦   ¦   ¦   ChangeLog.md
     ¦   ¦   ¦   composer.json
@@ -17764,7 +17597,6 @@ C:.
     ¦   ¦   ¦   
     ¦   ¦   +---src
     ¦   ¦       ¦   ArrayComparator.php
-    ¦   ¦       ¦   ClosureComparator.php
     ¦   ¦       ¦   Comparator.php
     ¦   ¦       ¦   ComparisonFailure.php
     ¦   ¦       ¦   DateTimeComparator.php
@@ -17890,6 +17722,7 @@ C:.
     ¦   ¦       +---Exception
     ¦   ¦               Exception.php
     ¦   ¦               IllogicalValuesException.php
+    ¦   ¦               NegativeValueException.php
     ¦   ¦               RuntimeException.php
     ¦   ¦               
     ¦   +---object-enumerator
@@ -18664,6 +18497,7 @@ C:.
     ¦   ¦   ¦       VirtualRequestStack.php
     ¦   ¦   ¦       
     ¦   ¦   +---DependencyInjection
+    ¦   ¦   ¦       AddAnnotatedClassesToCachePass.php
     ¦   ¦   ¦       ConfigurableExtension.php
     ¦   ¦   ¦       ControllerArgumentValueResolverPass.php
     ¦   ¦   ¦       Extension.php
@@ -18830,6 +18664,7 @@ C:.
     ¦   ¦   +---Test
     ¦   ¦   ¦   ¦   AbstractTransportFactoryTestCase.php
     ¦   ¦   ¦   ¦   IncompleteDsnTestTrait.php
+    ¦   ¦   ¦   ¦   TransportFactoryTestCase.php
     ¦   ¦   ¦   ¦   
     ¦   ¦   ¦   +---Constraint
     ¦   ¦   ¦           EmailCount.php
@@ -19052,8 +18887,32 @@ C:.
     ¦   ¦               UnhandledMatchError.php
     ¦   ¦               ValueError.php
     ¦   ¦               
+    ¦   +---polyfill-php83
+    ¦   ¦   ¦   bootstrap.php
+    ¦   ¦   ¦   bootstrap80.php
+    ¦   ¦   ¦   bootstrap81.php
+    ¦   ¦   ¦   composer.json
+    ¦   ¦   ¦   LICENSE
+    ¦   ¦   ¦   Php83.php
+    ¦   ¦   ¦   README.md
+    ¦   ¦   ¦   
+    ¦   ¦   +---Resources
+    ¦   ¦       +---stubs
+    ¦   ¦               DateError.php
+    ¦   ¦               DateException.php
+    ¦   ¦               DateInvalidOperationException.php
+    ¦   ¦               DateInvalidTimeZoneException.php
+    ¦   ¦               DateMalformedIntervalStringException.php
+    ¦   ¦               DateMalformedPeriodStringException.php
+    ¦   ¦               DateMalformedStringException.php
+    ¦   ¦               DateObjectError.php
+    ¦   ¦               DateRangeError.php
+    ¦   ¦               Override.php
+    ¦   ¦               SQLite3Exception.php
+    ¦   ¦               
     ¦   +---polyfill-php84
     ¦   ¦   ¦   bootstrap.php
+    ¦   ¦   ¦   bootstrap80.php
     ¦   ¦   ¦   bootstrap82.php
     ¦   ¦   ¦   composer.json
     ¦   ¦   ¦   LICENSE
@@ -19061,12 +18920,25 @@ C:.
     ¦   ¦   ¦   README.md
     ¦   ¦   ¦   
     ¦   ¦   +---Resources
+    ¦   ¦       ¦   Deprecated.php
+    ¦   ¦       ¦   RoundingMode.php
+    ¦   ¦       ¦   
     ¦   ¦       +---stubs
-    ¦   ¦               Deprecated.php
-    ¦   ¦               ReflectionConstant.php
-    ¦   ¦               
+    ¦   ¦           ¦   Deprecated.php
+    ¦   ¦           ¦   ReflectionConstant.php
+    ¦   ¦           ¦   RoundingMode.php
+    ¦   ¦           ¦   
+    ¦   ¦           +---Pdo
+    ¦   ¦                   Dblib.php
+    ¦   ¦                   Firebird.php
+    ¦   ¦                   Mysql.php
+    ¦   ¦                   Odbc.php
+    ¦   ¦                   Pgsql.php
+    ¦   ¦                   Sqlite.php
+    ¦   ¦                   
     ¦   +---polyfill-php85
     ¦   ¦   ¦   bootstrap.php
+    ¦   ¦   ¦   bootstrap80.php
     ¦   ¦   ¦   composer.json
     ¦   ¦   ¦   LICENSE
     ¦   ¦   ¦   Php85.php
@@ -19074,8 +18946,13 @@ C:.
     ¦   ¦   ¦   
     ¦   ¦   +---Resources
     ¦   ¦       +---stubs
-    ¦   ¦               NoDiscard.php
-    ¦   ¦               
+    ¦   ¦           ¦   DelayedTargetValidation.php
+    ¦   ¦           ¦   NoDiscard.php
+    ¦   ¦           ¦   
+    ¦   ¦           +---Filter
+    ¦   ¦                   FilterException.php
+    ¦   ¦                   FilterFailedException.php
+    ¦   ¦                   
     ¦   +---polyfill-uuid
     ¦   ¦       bootstrap.php
     ¦   ¦       bootstrap80.php
@@ -19135,6 +19012,9 @@ C:.
     ¦   ¦   ¦   Router.php
     ¦   ¦   ¦   RouterInterface.php
     ¦   ¦   ¦   
+    ¦   ¦   +---Annotation
+    ¦   ¦   ¦       Route.php
+    ¦   ¦   ¦       
     ¦   ¦   +---Attribute
     ¦   ¦   ¦       DeprecatedAlias.php
     ¦   ¦   ¦       Route.php
@@ -19180,6 +19060,7 @@ C:.
     ¦   ¦   ¦   ¦   ObjectLoader.php
     ¦   ¦   ¦   ¦   PhpFileLoader.php
     ¦   ¦   ¦   ¦   Psr4DirectoryLoader.php
+    ¦   ¦   ¦   ¦   XmlFileLoader.php
     ¦   ¦   ¦   ¦   YamlFileLoader.php
     ¦   ¦   ¦   ¦   
     ¦   ¦   ¦   +---Configurator
@@ -19594,7 +19475,6 @@ C:.
     ¦               
     +---theseer
     ¦   +---tokenizer
-    ¦       ¦   .php-cs-fixer.dist.php
     ¦       ¦   CHANGELOG.md
     ¦       ¦   composer.json
     ¦       ¦   composer.lock
@@ -19602,19 +19482,15 @@ C:.
     ¦       ¦   README.md
     ¦       ¦   
     ¦       +---src
-    ¦       ¦       Exception.php
-    ¦       ¦       NamespaceUri.php
-    ¦       ¦       NamespaceUriException.php
-    ¦       ¦       Token.php
-    ¦       ¦       TokenCollection.php
-    ¦       ¦       TokenCollectionException.php
-    ¦       ¦       Tokenizer.php
-    ¦       ¦       XMLSerializer.php
-    ¦       ¦       
-    ¦       +---tools
-    ¦           +---php-cs-fixer.d
-    ¦                   PhpdocSingleLineVarFixer.php
-    ¦                   
+    ¦               Exception.php
+    ¦               NamespaceUri.php
+    ¦               NamespaceUriException.php
+    ¦               Token.php
+    ¦               TokenCollection.php
+    ¦               TokenCollectionException.php
+    ¦               Tokenizer.php
+    ¦               XMLSerializer.php
+    ¦               
     +---tijsverkoyen
     ¦   +---css-to-inline-styles
     ¦       ¦   composer.json
@@ -19952,7 +19828,6 @@ C:.
         ¦       ¦       
         ¦       +---Exports
         ¦       ¦       DataTablesCollectionExport.php
-        ¦       ¦       OpenSpoutStreamExporter.php
         ¦       ¦       
         ¦       +---Generators
         ¦       ¦   ¦   DataTablesHtmlCommand.php
@@ -19983,7 +19858,6 @@ C:.
         ¦               DataArrayTransformer.php
         ¦               
         +---laravel-datatables-editor
-        ¦   ¦   .releaserc.yml
         ¦   ¦   CHANGELOG.md
         ¦   ¦   composer.json
         ¦   ¦   CONDUCT.md
@@ -20047,13 +19921,10 @@ C:.
         ¦       ¦       ExportButtonComponent.php
         ¦       ¦       
         ¦       +---resources
-        ¦       ¦   +---views
-        ¦       ¦           export-button.blade.php
-        ¦       ¦           export-email.blade.php
-        ¦       ¦           
-        ¦       +---Support
-        ¦               OpenSpoutExportStyle.php
-        ¦               
+        ¦           +---views
+        ¦                   export-button.blade.php
+        ¦                   export-email.blade.php
+        ¦                   
         +---laravel-datatables-fractal
         ¦   ¦   .releaserc.yml
         ¦   ¦   CHANGELOG.md

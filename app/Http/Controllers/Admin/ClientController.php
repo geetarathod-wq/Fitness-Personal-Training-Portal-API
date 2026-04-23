@@ -27,12 +27,13 @@ class ClientController extends Controller
         return DataTables::eloquent($clients)
             ->editColumn('created_at', fn ($row) => $row->created_at->format('d M Y'))
             ->addColumn('action', fn ($row) =>
-                '<a href="/admin/clients/'.$row->id.'/edit" class="btn btn-sm btn-primary">Edit</a>
-                 <form method="POST" action="/admin/clients/'.$row->id.'" style="display:inline;">
-                    <input type="hidden" name="_token" value="'.$csrf.'">
-                    <input type="hidden" name="_method" value="DELETE">
-                    <button class="btn btn-sm btn-danger">Delete</button>
-                 </form>'
+            '<a href="/admin/clients/'.$row->id.'/graph" class="btn btn-sm btn-info">Graph</a>
+            <a href="/admin/clients/'.$row->id.'/edit" class="btn btn-sm btn-primary">Edit</a>
+            <form method="POST" action="/admin/clients/'.$row->id.'" style="display:inline;">
+            <input type="hidden" name="_token" value="'.$csrf.'">
+            <input type="hidden" name="_method" value="DELETE">
+            <button class="btn btn-sm btn-danger">Delete</button>
+            </form>'
             )
             ->rawColumns(['action'])
             ->toJson();
