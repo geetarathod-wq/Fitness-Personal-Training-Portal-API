@@ -14,7 +14,6 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
     ];
-
     protected $middlewareGroups = [
         'web' => [
             \Illuminate\Cookie\Middleware\EncryptCookies::class,
@@ -30,7 +29,6 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
     ];
-
     protected $middlewareAliases = [
         'auth' => \App\Http\Middleware\Authenticate::class,
         'trainer' => \App\Http\Middleware\TrainerOnly::class,

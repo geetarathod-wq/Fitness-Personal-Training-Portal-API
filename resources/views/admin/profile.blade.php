@@ -23,10 +23,8 @@
     @endif
 
     <div class="card p-4">
-
         <form method="POST" action="{{ route('admin.profile.update') }}">
             @csrf
-
             <div class="mb-3">
                 <label>Name</label>
                 <input type="text" name="name"
@@ -62,11 +60,8 @@
             <button class="btn btn-primary">
                 Update Profile
             </button>
-
         </form>
-
     </div>
-
 </div>
 
 @push('scripts')
@@ -93,5 +88,4 @@
   })();
 </script>
 @endpush
-
 @endsection

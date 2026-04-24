@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\API;
+namespace App\Http\Requests\Api;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -14,10 +14,10 @@ class PlanRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'client_id' => 'required|integer|exists:users,id',
-            'assigned_date' => 'required|date',
-            'exercises' => 'nullable|array',
+            'name'=>'required|string|max:255',
+            'client_id'=>'required|integer|exists:users,id',
+            'assigned_date'=>'required|date',
+            'exercises'=>'nullable|array',
         ];
     }
 }

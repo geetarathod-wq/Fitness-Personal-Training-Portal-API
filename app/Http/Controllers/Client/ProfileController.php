@@ -17,7 +17,6 @@ class ProfileController extends Controller
     public function update(Request $request)
     {
         $user = auth()->user();
-
         $request->validate([
             'name' => 'required',
             'email' => [
@@ -29,16 +28,13 @@ class ProfileController extends Controller
         ], [
             'password.confirmed' => 'The password confirmation does not match.',
         ]);
-
         $user->name = $request->name;
         $user->email = $request->email;
 
         if ($request->password) {
             $user->password = Hash::make($request->password);
         }
-
         $user->save();
-
         return back()->with('success', 'Profile updated successfully!');
     }
 }

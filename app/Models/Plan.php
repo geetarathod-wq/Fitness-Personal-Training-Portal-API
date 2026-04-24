@@ -42,7 +42,6 @@ class Plan extends Model
             if (!$model->user_id && $model->client_id) {
                 $model->user_id = $model->client_id;
             }
-
             if (!$model->client_id && $model->user_id) {
                 $model->client_id = $model->user_id;
             }

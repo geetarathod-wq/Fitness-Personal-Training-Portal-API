@@ -14,7 +14,7 @@ class DailyLog extends Model
         'client_id',
         'date',
         'weight',
-        'bodyfat',   // ✅ FIXED
+        'bodyfat',   
         'calories',
         'notes'
     ];
@@ -37,7 +37,6 @@ class DailyLog extends Model
             if (!$model->client_id && $model->user_id) {
                 $model->client_id = $model->user_id;
             }
-
         });
     }
 }

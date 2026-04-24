@@ -13,7 +13,6 @@ class Exercise extends Model
         'description',
         'type'
     ];
-
     public function plans()
     {
         return $this->belongsToMany(Plan::class, 'plan_exercises');

@@ -15,14 +15,10 @@ class PlanExercise extends Model
         'reps_min',
         'reps_max'
     ];
-
-    // Each entry belongs to a plan
     public function plan()
     {
         return $this->belongsTo(Plan::class);
     }
-
-    // Each entry belongs to an exercise
     public function exercise()
     {
         return $this->belongsTo(Exercise::class);

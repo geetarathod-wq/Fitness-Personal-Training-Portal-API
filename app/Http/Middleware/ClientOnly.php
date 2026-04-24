@@ -16,7 +16,6 @@ class ClientOnly
                 'message' => 'Unauthorized (Client only access)'
             ], 403);
         }
-
         return $next($request);
     }
 }

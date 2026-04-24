@@ -13,8 +13,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
-
-    // ================= ROLE CONSTANTS =================
     const ROLE_TRAINER = 1;
     const ROLE_CLIENT = 2;
 
@@ -29,7 +27,6 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
-
     protected function casts(): array
     {
         return [
@@ -37,14 +34,10 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-
-    // ================= RELATIONSHIPS =================
-
-    public function role()
+        public function role()
     {
         return $this->belongsTo(\App\Models\Role::class);
     }
-
     public function trainerPlans()
     {
         return $this->hasMany(Plan::class, 'trainer_id');
@@ -59,14 +52,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(DailyLog::class, 'client_id');
     }
-
-    // ================= ROLE CHECK METHODS =================
-
     public function isTrainer()
     {
         return $this->role_id == self::ROLE_TRAINER;
     }
-
     public function isClient()
     {
         return $this->role_id == self::ROLE_CLIENT;

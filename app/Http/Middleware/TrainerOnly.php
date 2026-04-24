@@ -18,7 +18,6 @@ class TrainerOnly
                 'message' => 'Unauthorized (Trainer only access)'
             ], 403);
         }
-
         return $next($request);
     }
 }

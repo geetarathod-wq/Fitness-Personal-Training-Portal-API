@@ -16,14 +16,11 @@ class ClientController extends Controller
     {
         return view('admin.clients.index');
     }
-
     public function getData(Request $request){
         $clients = User::query()
             ->where('role_id', User::ROLE_CLIENT)
             ->select(['id', 'name', 'email', 'created_at']);
-
         $csrf = csrf_token();
-
         return DataTables::eloquent($clients)
             ->editColumn('created_at', fn ($row) => $row->created_at->format('d M Y'))
             ->addColumn('action', fn ($row) =>
@@ -38,7 +35,6 @@ class ClientController extends Controller
             ->rawColumns(['action'])
             ->toJson();
     }
-
     public function create()
     {
         return view('admin.clients.create');
@@ -47,14 +43,12 @@ class ClientController extends Controller
     public function store(StoreClientRequest $request)
     {
         $data = $request->validated();
-
         User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
             'role_id' => User::ROLE_CLIENT,
         ]);
-
         return redirect()->route('admin.clients.index')
             ->with('success', 'Client added');
     }
@@ -64,13 +58,10 @@ class ClientController extends Controller
         $client = User::findOrFail($id);
         return view('admin.clients.edit', compact('client'));
     }
-
     public function update(UpdateClientRequest $request, $id)
     {
         $client = User::findOrFail($id);
-
         $client->update($request->validated());
-
         return redirect()->route('admin.clients.index')
             ->with('success', 'Client updated successfully');
     }
@@ -78,14 +69,12 @@ class ClientController extends Controller
     public function destroy($id)
     {
         User::findOrFail($id)->delete();
-
         return back()->with('success', 'Client deleted');
     }
 
     public function search(Request $request)
     {
         $search = $request->search;
-
         $clients = User::where('role_id', User::ROLE_CLIENT)
             ->where(function ($q) use ($search) {
                 $q->where('name', 'LIKE', "%$search%")
@@ -93,18 +82,15 @@ class ClientController extends Controller
             })
             ->limit(10)
             ->get();
-
         return response()->json($clients);
     }
 
     public function graph($id)
     {
         $client = User::findOrFail($id);
-
         $logs = DailyLog::where('client_id', $id)
             ->orderBy('date')
             ->get();
-
         return view('admin.clients.graph', compact('client', 'logs'));
     }
 }

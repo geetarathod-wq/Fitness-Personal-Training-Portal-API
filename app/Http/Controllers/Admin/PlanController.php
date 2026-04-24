@@ -21,7 +21,6 @@ class PlanController extends Controller
     {
         $exercises = Exercise::latest()->get();
         $clients = User::where('role_id', User::ROLE_CLIENT)->get();
-
         return view('admin.plans.create', compact('exercises', 'clients'));
     }
 
@@ -45,7 +44,6 @@ class PlanController extends Controller
                 ]);
             }
         }
-
         return redirect()->route('admin.plans.index')
             ->with('success', 'Plan created successfully');
     }
@@ -55,14 +53,12 @@ class PlanController extends Controller
         $plan = Plan::with('exercises')->findOrFail($id);
         $exercises = Exercise::latest()->get();
         $clients = User::where('role_id', User::ROLE_CLIENT)->get();
-
         return view('admin.plans.edit', compact('plan', 'exercises', 'clients'));
     }
 
     public function update(PlanRequest $request, $id)
     {
         $plan = Plan::findOrFail($id);
-
         $plan->update([
             'name' => $request->name,
             'client_id' => $request->client_id,
@@ -71,7 +67,6 @@ class PlanController extends Controller
         ]);
 
         $plan->exercises()->detach();
-
         if ($request->exercises) {
             foreach ($request->exercises as $exerciseId) {
                 $plan->exercises()->attach($exerciseId, [
@@ -89,7 +84,6 @@ class PlanController extends Controller
     public function destroy($id)
     {
         Plan::findOrFail($id)->delete();
-
         return redirect()->route('admin.plans.index')
             ->with('success', 'Plan deleted successfully');
     }

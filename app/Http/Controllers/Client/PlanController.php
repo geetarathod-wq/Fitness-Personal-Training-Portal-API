@@ -14,7 +14,6 @@ class PlanController extends Controller
     {
         return view('client.plan.index'); 
     }
-
     public function getData(Request $request)
     {
         $plans = Plan::with(['trainer', 'exercises'])
@@ -23,19 +22,13 @@ class PlanController extends Controller
             ->get();
 
         return DataTables::of($plans)
-
             ->addColumn('name', fn($row) => $row->name)
-
             ->addColumn('trainer', fn($row) => $row->trainer->name ?? 'N/A')
-
             ->addColumn('exercises', function ($row) {
-
                 if ($row->exercises->isEmpty()) {
                     return '<span class="text-muted">No exercises</span>';
                 }
-
                 $html = '';
-
                 foreach ($row->exercises as $exercise) {
                     $html .= '
                         <div class="border rounded p-2 mb-2 bg-light">
@@ -47,14 +40,11 @@ class PlanController extends Controller
                         </div>
                     ';
                 }
-
                 return $html;
             })
-
             ->addColumn('assigned_date', function ($row) {
                 return \Carbon\Carbon::parse($row->assigned_date)->format('d M Y');
             })
-
             ->rawColumns(['exercises'])
             ->make(true);
     }

@@ -29,7 +29,6 @@ class DailyLogController extends Controller
             'calories' => $request->calories,
             'notes' => $request->notes,
         ]);
-
         return redirect()->route('client.logs.index')
             ->with('success', 'Log added successfully');
     }
@@ -39,14 +38,12 @@ class DailyLogController extends Controller
         $logs = DailyLog::where('client_id', auth()->id())
             ->latest()
             ->get();
-
         return view('client.logs.index', compact('logs'));
     }
     public function destroy($id)
     {
         $log = DailyLog::where('client_id', auth()->id())->findOrFail($id);
         $log->delete();
-
         return back()->with('success', 'Log deleted successfully!');
     }
 }

@@ -3,25 +3,18 @@
 @section('content')
 
 <div class="container mt-4">
-
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Clients</h2>
     </div>
-
-    {{-- SUCCESS --}}
     @if(session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
         </div>
     @endif
-
-    {{-- DATATABLE --}}
     @include('admin.clients.table')
-
 </div>
 
 @endsection
-
 @push('scripts')
 <script>
     $(function () {

@@ -21,7 +21,6 @@ class ResetPasswordController extends Controller
             'email' => 'required|email',
             'password' => 'required|min:6|confirmed',
         ]);
-
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
@@ -30,7 +29,6 @@ class ResetPasswordController extends Controller
                 ])->save();
             }
         );
-
         return $status === Password::PASSWORD_RESET
             ? redirect()->route('login')->with('success', 'Password reset successful!')
             : back()->withErrors(['email' => __($status)]);
