@@ -124,22 +124,9 @@
       box-shadow:0 0 0 4px rgba(255,106,61,.15);
     }
     .pw-toggle{
-      position:absolute;
-      right:12px;
-      top:50%;
-      transform:translateY(-50%);
-      background:none;
-      border:0;
-      color:#94a3b8;
-      padding:4px;
-      cursor:pointer;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      height:24px;
-      width:24px;
+      position:absolute; right:34px; top:50%; transform:translateY(-50%);
+      background:none; border:0; color:#94a3b8; padding:4px; cursor:pointer;
     }
-  
     .pw-toggle:hover{color:var(--ink);}
     .btn-auth{
       height:48px; border-radius:12px; font-weight:600; font-size:15px;

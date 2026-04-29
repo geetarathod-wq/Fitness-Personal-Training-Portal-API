@@ -17,21 +17,25 @@ class ExerciseController extends Controller
     }
     public function getData(Request $request)
     {
-        $exercises = Exercise::latest()->get();
+        $exercises = Exercise::select(['id', 'name', 'type', 'description']);
+
         return DataTables::of($exercises)
-            ->addColumn('name', fn($row) => $row->name)
-            ->addColumn('type', fn($row) => $row->type)
-            ->addColumn('description', fn($row) => $row->description)
+
             ->addColumn('action', function ($row) {
+
                 return '
-                    <a href="'.route('admin.exercises.edit', $row->id).'" class="btn btn-sm btn-warning">Edit</a>
-                    <form method="POST" action="'.route('admin.exercises.destroy', $row->id).'" style="display:inline;">
-                        '.csrf_field().'
-                        '.method_field("DELETE").'
-                        <button class="btn btn-sm btn-danger">Delete</button>
-                    </form>
+                    <a href="'.route('admin.exercises.edit', $row->id).'" 
+                    class="btn btn-sm btn-warning">
+                        Edit
+                    </a>
+
+                    <button class="btn btn-sm btn-danger deleteBtn"
+                            data-id="'.$row->id.'">
+                        Delete
+                    </button>
                 ';
             })
+
             ->rawColumns(['action'])
             ->make(true);
     }
@@ -63,6 +67,10 @@ class ExerciseController extends Controller
     public function destroy($id)
     {
         Exercise::findOrFail($id)->delete();
-        return back()->with('success', 'Deleted');
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Exercise deleted successfully'
+        ]);
     }
 }

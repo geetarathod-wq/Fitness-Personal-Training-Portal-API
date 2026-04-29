@@ -13,7 +13,7 @@
 
         <div>
             <a href="{{ route('admin.plans.create') }}" class="btn btn-primary">
-                ➕ Create Plan
+                 + Create Plan
             </a>
         </div>
     </div>
@@ -21,40 +21,52 @@
     <!-- STATS CARDS -->
     <div class="row g-4">
 
+        <!-- CLIENTS -->
         <div class="col-md-3">
-            <div class="card shadow-sm border-0 text-white bg-primary">
-                <div class="card-body">
-                    <h6>Total Clients</h6>
-                    <h2>{{ $clients }}</h2>
+            <a href="{{ route('admin.clients.index') }}" class="card-link-box">
+                <div class="card shadow-sm border-0 text-white bg-primary">
+                    <div class="card-body">
+                        <h6>Total Clients</h6>
+                        <h2>{{ $clients }}</h2>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
 
+        <!-- PLANS -->
         <div class="col-md-3">
-            <div class="card shadow-sm border-0 text-white bg-success">
-                <div class="card-body">
-                    <h6>Total Plans</h6>
-                    <h2>{{ $plans }}</h2>
+            <a href="{{ route('admin.plans.index') }}" class="card-link-box">
+                <div class="card shadow-sm border-0 text-white bg-success">
+                    <div class="card-body">
+                        <h6>Total Plans</h6>
+                        <h2>{{ $plans }}</h2>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
 
+        <!-- EXERCISES -->
         <div class="col-md-3">
-            <div class="card shadow-sm border-0 text-white bg-warning">
-                <div class="card-body">
-                    <h6>Exercises</h6>
-                    <h2>{{ $exercises }}</h2>
+            <a href="{{ route('admin.exercises.index') }}" class="card-link-box">
+                <div class="card shadow-sm border-0 text-white bg-warning">
+                    <div class="card-body">
+                        <h6>Exercises</h6>
+                        <h2>{{ $exercises }}</h2>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
 
+        <!-- LOGS -->
         <div class="col-md-3">
-            <div class="card shadow-sm border-0 text-white bg-danger">
-                <div class="card-body">
-                    <h6>Today's Logs</h6>
-                    <h2>{{ $todayLogs }}</h2>
+            <a href="{{ route('admin.logs.index') }}" class="card-link-box">
+                <div class="card shadow-sm border-0 text-white bg-danger">
+                    <div class="card-body">
+                        <h6>Today's Logs</h6>
+                        <h2>{{ $todayLogs }}</h2>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
 
     </div>
@@ -101,20 +113,40 @@
     </div>
 
     <!-- RECENT ACTIVITY -->
-    <div class="card mt-4 shadow-sm">
-        <div class="card-body">
-            <h5 class="mb-3">📊 Recent Activity</h5>
+ <div class="card mt-4 shadow-sm">
+    <div class="card-body">
+        <h5 class="mb-3">📊 Recent Activity</h5>
 
-            <ul class="list-group list-group-flush">
-                <li class="list-group-item">🧑 New client joined</li>
-                <li class="list-group-item">📋 New plan created</li>
-                <li class="list-group-item">🏋️ Exercise added</li>
-                <li class="list-group-item">📈 Client updated progress</li>
-            </ul>
+        <ul class="list-group list-group-flush">
 
-        </div>
+            <li class="list-group-item p-0">
+                <a href="{{ route('admin.clients.index') }}" class="d-block p-3 text-decoration-none text-dark">
+                    🧑 New client joined
+                </a>
+            </li>
+
+            <li class="list-group-item p-0">
+                <a href="{{ route('admin.plans.index') }}" class="d-block p-3 text-decoration-none text-dark">
+                    📋 New plan created
+                </a>
+            </li>
+
+            <li class="list-group-item p-0">
+                <a href="{{ route('admin.exercises.index') }}" class="d-block p-3 text-decoration-none text-dark">
+                    🏋️ Exercise added
+                </a>
+            </li>
+
+            <li class="list-group-item p-0">
+                <a href="{{ route('admin.logs.index') }}" class="d-block p-3 text-decoration-none text-dark">
+                    📈 Client updated progress
+                </a>
+            </li>
+
+        </ul>
+
     </div>
-
+</div>
 </div>
 
 <!-- CHART -->

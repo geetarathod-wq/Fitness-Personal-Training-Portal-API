@@ -2,79 +2,62 @@
 
 @section('content')
 
-<div class="container mt-4">
+<div class="container-fluid pt-2">
 
-    {{-- HEADER --}}
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4>My Weekly Logs</h4>
+    <h4 class="mb-2">📋 My Weekly Logs</h4>
 
-        <a href="{{ route('client.logs.create') }}" class="btn btn-primary">
-            + Add Log
-        </a>
-    </div>
-
-    {{-- SUCCESS MESSAGE --}}
     @if(session('success'))
-        <div class="alert alert-success">
+        <div class="alert alert-success py-2 mb-2">
             {{ session('success') }}
         </div>
     @endif
 
-    {{-- TABLE --}}
-    <table id="logsTable" class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Date</th>
-                <th>Weight</th>
-                <th>Calories</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
+    <div class="card shadow-sm border-0 p-3">
 
-        <tbody>
-            @foreach($logs as $log)
-                <tr>
-                    <td>{{ $log->date }}</td>
-                    <td>{{ $log->weight }}</td>
-                    <td>{{ $log->calories }}</td>
-                    <td>
-                        <form method="POST" action="{{ route('client.logs.delete', $log->id) }}">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm">
-                                Delete
-                            </button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+        <div class="table-responsive">
+            <table id="logsTable" class="table table-bordered table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Date</th>
+                        <th>Weight</th>
+                        <th>Calories</th>
+                        <th>Notes</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+
+    </div>
 
 </div>
 
 @endsection
 
-{{-- DATATABLE SCRIPT --}}
 @push('scripts')
+
 <script>
 $(document).ready(function () {
 
     $('#logsTable').DataTable({
+        processing: true,
+        serverSide: true,
+        ajax: "{{ route('client.logs.data') }}",
+
+        columns: [
+            { data: 'date', name: 'date' },
+            { data: 'weight', name: 'weight' },
+            { data: 'calories', name: 'calories' },
+            { data: 'notes', name: 'notes', orderable: false, searchable: false },
+            { data: 'action', name: 'action', orderable: false, searchable: false }
+        ],
+
         pageLength: 10,
         lengthMenu: [10, 20, 50, 100],
-        ordering: true,
-        searching: true,
-        paging: true,
-        info: true,
-        responsive: true,
-
-
-        columnDefs: [
-            { orderable: false, targets: 3 }
-        ]
+        responsive: true
     });
 
 });
 </script>
+
 @endpush

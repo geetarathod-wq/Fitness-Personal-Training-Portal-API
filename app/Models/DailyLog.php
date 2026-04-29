@@ -4,9 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class DailyLog extends Model
-{
+{   use SoftDeletes;
     protected $table = 'daily_logs';
 
     protected $fillable = [
@@ -18,14 +19,12 @@ class DailyLog extends Model
         'calories',
         'notes'
     ];
-
-    // Relationship (client = user)
+    protected $dates = ['deleted_at'];
     public function client()
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    // Auto sync user_id and client_id (keeps your existing logic safe)
     protected static function booted()
     {
         static::creating(function ($model) {

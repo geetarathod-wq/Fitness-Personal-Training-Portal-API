@@ -180,23 +180,49 @@
 <body>
 
 <div class="auth-shell">
+<aside class="auth-hero">
 
-  <!-- LEFT HERO (same as login) -->
-  <aside class="auth-hero">
   <div class="hero-brand">
     <div class="mark">
       <iconify-icon icon="solar:dumbbell-large-minimalistic-bold" style="font-size:22px;"></iconify-icon>
     </div>
-    <span style="font-size:15px;">Fitness Portal</span>
+    <span>Fitness Portal</span>
   </div>
 
-    <div class="hero-copy">
-      <h1>Reset & Restart</h1>
-      <p>Forgot your password? No worries — we’ll help you get back to your fitness journey in seconds.</p>
-    </div>
+  <div class="hero-copy">
 
-    <div>© {{ date('Y') }} Fitness Portal</div>
-  </aside>
+    <h1>
+      Can’t access<br>your account?
+    </h1>
+
+    <p>
+      Reset your password and continue tracking your fitness journey without losing progress.
+    </p>
+
+    <ul class="hero-bullets">
+      <li>
+        <iconify-icon icon="solar:lock-password-bold"></iconify-icon>
+        Secure password recovery system
+      </li>
+
+      <li>
+        <iconify-icon icon="solar:letter-bold"></iconify-icon>
+        Instant reset link sent to your email
+      </li>
+
+      <li>
+        <iconify-icon icon="solar:shield-check-bold"></iconify-icon>
+        Your data stays fully protected
+      </li>
+    </ul>
+
+  </div>
+
+  <div class="hero-footer">
+    © {{ date('Y') }} Fitness Portal. All rights reserved.
+  </div>
+
+</aside>
 
   <!-- RIGHT FORM -->
   <main class="auth-panel">

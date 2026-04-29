@@ -14,10 +14,20 @@ class PlanRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'=>'required|string|max:255',
-            'client_id'=>'required|integer|exists:users,id',
-            'assigned_date'=>'required|date',
-            'exercises'=>'nullable|array',
+            'name' => 'required|string|max:255',
+
+            'client_id' => [
+                'required',
+                'integer',
+                \Illuminate\Validation\Rule::exists('users', 'id')
+                    ->where(function ($query) {
+                        $query->where('role_id', \App\Models\User::ROLE_CLIENT);
+                    }),
+            ],
+
+            'assigned_date' => 'required|date|after_or_equal:today',
+
+            'exercises' => 'nullable|array',
         ];
     }
 }

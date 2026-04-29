@@ -3,28 +3,19 @@
 @section('content')
 
 @php
-    $hour = now()->format('H');
-
-    if ($hour < 12) {
-        $greeting = 'Good Morning';
-    } elseif ($hour < 17) {
-        $greeting = 'Good Afternoon';
-    } else {
-        $greeting = 'Good Evening';
-    }
+    $userName = auth()->user()->name;
 @endphp
 
-<!-- ✅ WELCOME TEXT (TOP OF PAGE) -->
 <div class="mb-4">
     <h4 class="fw-bold">
-        {{ $greeting }}, {{ auth()->user()->name }} 👋
+        Hello, {{ $userName }} 👋
     </h4>
     <p class="text-muted mb-0">
         Manage your fitness smartly 💪
     </p>
 </div>
 
-<!-- Stats -->
+<!-- STATS -->
 <div class="row">
 
   <div class="col-md-4">
@@ -70,12 +61,12 @@
   </div>
 </div>
 
-<!-- Plans -->
+<!-- TODAY'S PLAN ONLY -->
 <div class="card mt-4">
   <div class="card-body">
-    <h5>💪 My Fitness Plans</h5>
+    <h5>💪 Today's Workout Plan</h5>
 
-    @forelse(($plans ?? []) as $plan)
+    @forelse($plans as $plan)
 
       <div class="border rounded p-3 mt-3">
 
@@ -103,13 +94,15 @@
       </div>
 
     @empty
-        <p class="mt-3">No plans assigned yet.</p>
+        <p class="text-muted mt-3">
+            No workout plan assigned for today 💪
+        </p>
     @endforelse
 
   </div>
 </div>
 
-<!-- Recent Logs -->
+<!-- RECENT LOGS -->
 <div class="card mt-4">
   <div class="card-body">
     <h5>📅 My Recent Logs</h5>
@@ -142,7 +135,6 @@
 </div>
 
 @endsection
-
 
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

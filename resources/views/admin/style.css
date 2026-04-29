@@ -218,3 +218,42 @@ display:flex;
 align-items:center;
 justify-content:center;
 }
+
+
+.card-link-box{
+    display:block;
+    text-decoration:none;
+}
+
+.card-link-box .card{
+    transition:all 0.25s ease;
+    cursor:pointer;
+    position:relative;
+}
+
+/* hover effect */
+.card-link-box:hover .card{
+    transform:translateY(-3px);
+    box-shadow:0 8px 18px rgba(0,0,0,0.12);
+}
+
+/* hover text */
+.hover-link{
+    position:absolute;
+    bottom:12px;
+    right:15px;
+    font-size:13px;
+    font-weight:600;
+    opacity:0;
+    transition:all 0.25s ease;
+    pointer-events:none;
+}
+
+/* show text */
+.card-link-box:hover .hover-link{
+    opacity:1;
+}
+
+.is-invalid {
+    border: 2px solid red !important;
+}
