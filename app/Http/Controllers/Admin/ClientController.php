@@ -19,38 +19,45 @@ class ClientController extends Controller
     }
 
     public function getData(Request $request)
-{
-    $clients = User::query()
-        ->where('role_id', User::ROLE_CLIENT)
-        ->select(['id', 'name', 'email', 'created_at']);
+    {
+        $clients = User::query()
+            ->where('role_id', User::ROLE_CLIENT)
+            ->select(['id', 'name', 'email', 'created_at']);
 
-    $csrf = csrf_token();
+        $csrf = csrf_token();
 
-    return DataTables::eloquent($clients)
-        ->editColumn('created_at', fn ($row) => $row->created_at->format('d M Y'))
-        ->addColumn('action', function ($row) use ($csrf) {
+        return DataTables::eloquent($clients)
+            ->editColumn('created_at', fn ($row) => $row->created_at->format('d M Y'))
+            ->addColumn('action', function ($row) use ($csrf) {
 
-            return '
-                <a href="/admin/clients/'.$row->id.'/graph" class="btn btn-sm btn-info">Graph</a>
-                <a href="/admin/clients/'.$row->id.'/edit" class="btn btn-sm btn-primary">Edit</a>
+                return '
+                    <a href="/admin/clients/'.$row->id.'/graph"
+                    class="btn btn-sm btn-info">
+                        Graph
+                    </a>
 
-                <form method="POST"
-                      action="/admin/clients/'.$row->id.'"
-                      style="display:inline;"
-                      onsubmit="return confirm(\'Are you sure you want to delete this client?\')">
+                    <a href="/admin/clients/'.$row->id.'/edit"
+                    class="btn btn-sm btn-warning">
+                        Edit
+                    </a>
 
-                    <input type="hidden" name="_token" value="'.$csrf.'">
-                    <input type="hidden" name="_method" value="DELETE">
+                    <form method="POST"
+                        action="/admin/clients/'.$row->id.'"
+                        style="display:inline;"
+                        onsubmit="return confirm(\'Are you sure?\')">
 
-                    <button type="submit" class="btn btn-sm btn-danger">
-                        Delete
-                    </button>
-                </form>
-            ';
-        })
-        ->rawColumns(['action'])
-        ->toJson();
-}
+                        <input type="hidden" name="_token" value="'.$csrf.'">
+                        <input type="hidden" name="_method" value="DELETE">
+
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            Delete
+                        </button>
+                    </form>
+                ';
+            })
+            ->rawColumns(['action'])
+            ->toJson();
+    }
     public function create()
     {
         return view('admin.clients.create');
@@ -77,32 +84,28 @@ class ClientController extends Controller
         return view('admin.clients.edit', compact('client'));
     }
 
-public function update(Request $request, $id)
-{
-    $client = User::where('role_id', User::ROLE_CLIENT)
-        ->findOrFail($id);
+    public function update(Request $request, $id)
+    {
+        $client = User::where('role_id', User::ROLE_CLIENT)
+            ->findOrFail($id);
 
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => [
-            'required',
-            'email',
-            Rule::unique('users')->ignore($client->id),
-        ],
-        'phone' => 'nullable|string',
-        'status' => 'nullable|string',
-    ]);
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users')->ignore($client->id),
+            ],
+        ]);
 
-    $client->update([
-        'name' => $request->name,
-        'email' => $request->email,
-        'phone' => $request->phone,
-        'status' => $request->status,
-    ]);
+        $client->update([
+            'name' => $request->name,
+            'email' => $request->email,
+        ]);
 
-    return redirect()->route('admin.clients.index')
-        ->with('success', 'Client updated successfully');
-}
+        return redirect()->route('admin.clients.index')
+            ->with('success', 'Client updated successfully');
+    }
     public function destroy($id)
     {
         User::findOrFail($id)->delete();
