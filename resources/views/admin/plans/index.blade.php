@@ -1,18 +1,25 @@
 @extends('layouts.admin')
-
 @section('content')
-
 <div class="container mt-4">
-
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show">
+            {{ session('success') }}
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="alert">
+            </button>
+        </div>
+    @endif
     <div class="d-flex justify-content-between mb-3">
         <h2>🏋️ Fitness Plans</h2>
-
-        <a href="{{ route('admin.plans.create') }}" class="btn btn-primary">
+        <a href="{{ route('admin.plans.create') }}"
+           class="btn btn-primary">
             + Create Plan
         </a>
     </div>
 
-    <table id="plansTable" class="table table-bordered table-hover">
+    <table id="plansTable"
+           class="table table-bordered table-hover">
         <thead>
             <tr>
                 <th>ID</th>
@@ -24,28 +31,21 @@
             </tr>
         </thead>
     </table>
-
 </div>
 
 @endsection
-
 @push('scripts')
 <script>
 $(document).ready(function () {
-
     $('#plansTable').DataTable({
         processing: true,
         serverSide: true,
-
-        // ✅ DO NOT disable searching
-
         ajax: "{{ route('admin.plans.data') }}",
-
         columns: [
             { data: 'id', name: 'plans.id' },
             { data: 'name', name: 'plans.name' },
-            { data: 'client', name: 'clients.name' },   // 🔥 critical
-            { data: 'trainer', name: 'trainers.name' }, // 🔥 critical
+            { data: 'client', name: 'clients.name' },
+            { data: 'trainer', name: 'trainers.name' },
             { data: 'assigned_date', name: 'plans.assigned_date' },
             { data: 'action', orderable: false, searchable: false }
         ]

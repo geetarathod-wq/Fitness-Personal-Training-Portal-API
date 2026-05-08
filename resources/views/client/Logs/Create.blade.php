@@ -91,15 +91,12 @@
 document.addEventListener('DOMContentLoaded', function () {
 
     const form = document.getElementById('logForm');
-
     const dateInput = document.getElementById('date');
     const weightInput = document.getElementById('weight');
     const caloriesInput = document.getElementById('calories');
-
     const dateError = document.getElementById('dateError');
     const weightError = document.getElementById('weightError');
     const caloriesError = document.getElementById('caloriesError');
-
     const today = new Date().toISOString().split('T')[0];
     dateInput.setAttribute('min', today);
 
